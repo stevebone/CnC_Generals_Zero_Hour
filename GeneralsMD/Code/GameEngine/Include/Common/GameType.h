@@ -37,20 +37,6 @@
 #define DEFAULT_WORLD_WIDTH		64
 #define DEFAULT_WORLD_HEIGHT	64
 
-/// A unique, generic "identifier" used to access Objects.
-enum ObjectID
-{
-	INVALID_ID = 0,
-	FORCE_OBJECTID_TO_LONG_SIZE = 0x7ffffff
-};
-
-/// A unique, generic "identifier" used to access Drawables.
-enum DrawableID
-{
-	INVALID_DRAWABLE_ID = 0,
-	FORCE_DRAWABLEID_TO_LONG_SIZE = 0x7ffffff
-};
-
 /// A unique, generic "identifier" used to identify player specified formations.
 enum FormationID
 {
