@@ -43,9 +43,9 @@
 // FORWARD REFERENCES /////////////////////////////////////////////////////////////////////////////
 class Snapshot;
 typedef Int Color;
-enum ObjectID;
-enum DrawableID;
-enum KindOfType;
+enum ObjectID : int;
+enum DrawableID : int;
+#include "KindOfTypes.h"
 enum ScienceType;
 class Matrix3D;
 
@@ -169,7 +169,7 @@ public:
 	virtual void xferSTLIntList( std::list< Int > *intListData );
 	virtual void xferScienceType( ScienceType *science );
 	virtual void xferScienceVec( ScienceVec *scienceVec );
-	virtual void xferKindOf( KindOfType *kindOfData );
+	virtual void xferKindOf( enum KindOfType *kindOfData );
 	virtual void xferUpgradeMask( UpgradeMaskType *upgradeMaskData );
 	virtual void xferUser( void *data, Int dataSize );
 	virtual void xferMatrix3D( Matrix3D* mtx );

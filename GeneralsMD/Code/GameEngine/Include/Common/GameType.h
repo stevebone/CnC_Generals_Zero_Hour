@@ -37,20 +37,6 @@
 #define DEFAULT_WORLD_WIDTH		64
 #define DEFAULT_WORLD_HEIGHT	64
 
-/// A unique, generic "identifier" used to access Objects.
-enum ObjectID
-{
-	INVALID_ID = 0,
-	FORCE_OBJECTID_TO_LONG_SIZE = 0x7ffffff
-};
-
-/// A unique, generic "identifier" used to access Drawables.
-enum DrawableID
-{
-	INVALID_DRAWABLE_ID = 0,
-	FORCE_DRAWABLEID_TO_LONG_SIZE = 0x7ffffff
-};
-
 /// A unique, generic "identifier" used to identify player specified formations.
 enum FormationID
 {
@@ -65,7 +51,7 @@ class INI;
 //-------------------------------------------------------------------------------------------------
 /** The time of day enumeration, keep in sync with TimeOfDayNames[] */
 //-------------------------------------------------------------------------------------------------
-enum TimeOfDay
+enum TimeOfDay : int
 {
 	TIME_OF_DAY_INVALID = 0,
 	TIME_OF_DAY_FIRST = 1,

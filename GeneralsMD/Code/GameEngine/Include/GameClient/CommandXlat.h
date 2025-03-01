@@ -83,7 +83,7 @@ enum FilterTypes
 	FT_MAX
 };
 
-enum FilterModes
+enum FilterModes : int
 {
 	FM_NULL_MODE = 0,
 
