@@ -32,7 +32,7 @@
 #include "Common/AudioAffect.h"
 #include "Common/AudioHandleSpecialValues.h"
 #include "Common/BuildAssistant.h"
-#include "Common/CopyProtection.h"
+//#include "Common/CopyProtection.h"
 #include "Common/CRCDebug.h"
 #include "Common/GameAudio.h"
 #include "Common/GameEngine.h"
@@ -128,16 +128,6 @@ FILE *g_UT_commaLog=NULL;
 #include "../../gameenginedevice/include/W3DDevice/GameClient/Module/W3DModelDraw.h"
 extern void externalAddTree(Coord3D location, Real scale, Real angle, AsciiString name);
 #endif
-
-
-#ifdef _INTERNAL
-// for occasional debugging...
-//#pragma optimize("", off)
-//#pragma MESSAGE("************************************** WARNING, optimization disabled for debugging purposes")
-#endif
-
-
-
 
 // I'm making this larger now that we know how big our maps are going to be. 
 enum { OBJ_HASH_SIZE	= 8192 };
@@ -3791,18 +3781,6 @@ void GameLogic::update( void )
 	TheWeaponStore->UPDATE();	
 	TheLocomotorStore->UPDATE();	
 	TheVictoryConditions->UPDATE();
-
-#ifdef DO_COPY_PROTECTION
-	if (!isInShellGame() && isInGame())
-	{
-		if ((m_frame == 1024) && !CopyProtect::validate())
-		{
-			DEBUG_LOG(("Copy protection failed - bailing"));
-			GameMessage *msg = TheMessageStream->appendMessage(GameMessage::MSG_SELF_DESTRUCT);
-			msg->appendBooleanArgument(FALSE);
-		}
-	}
-#endif
 
 	{
 		//Handle disabled statii (and re-enable objects once frame matches)

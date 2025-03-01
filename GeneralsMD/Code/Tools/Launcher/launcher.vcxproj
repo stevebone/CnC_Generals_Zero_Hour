@@ -178,7 +178,6 @@
     <ClInclude Include="process.h" />
     <ClInclude Include="Protect.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="SafeDisk\CdaPfn.h" />
     <ClInclude Include="streamer.h" />
     <ClInclude Include="Toolkit\Debug\DebugPrint.h" />
     <ClInclude Include="Toolkit\Storage\File.h" />
