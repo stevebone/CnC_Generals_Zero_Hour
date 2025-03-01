@@ -58,7 +58,7 @@
 //-----------------------------------------------------------------------------
 #include "Common/GameMemory.h"
 #include "Common/KindOf.h"
-#include "Common/OVERRIDE.h"
+#include "Common/Override.h"
 #include "WWMath/Matrix3D.h"							///< @todo Decide if we're keeping the WWMath libs (MSB)
 
 //-----------------------------------------------------------------------------
