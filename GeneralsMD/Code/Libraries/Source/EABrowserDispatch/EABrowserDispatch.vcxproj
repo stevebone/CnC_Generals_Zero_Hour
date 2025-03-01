@@ -43,12 +43,12 @@
     <_ProjectFileVersion>17.0.35707.178</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>..\..\..\..\..\Run\Lib\EABrowserDispatch\Debug\</OutDir>
-    <IntDir>..\..\..\..\..\Run\Lib\EABrowserDispatch\Debug\</IntDir>
+    <OutDir>..\..\..\..\Run\Lib\EABrowserDispatch\Debug\</OutDir>
+    <IntDir>..\..\..\..\Run\Lib\EABrowserDispatch\Debug\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>..\..\..\..\..\Run\Lib\EABrowserDispatch\Release\</OutDir>
-    <IntDir>..\..\..\..\..\Run\Lib\EABrowserDispatch\Release\</IntDir>
+    <OutDir>..\..\..\..\Run\Lib\EABrowserDispatch\Release\</OutDir>
+    <IntDir>..\..\..\..\Run\Lib\EABrowserDispatch\Release\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -59,9 +59,9 @@
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeaderOutputFile>..\..\..\..\..\Run\EABrowserDispatch\Lib\Debug/EABrowserDispatch.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>..\..\..\..\..\Run\Lib\EABrowserDispatch\Debug/</AssemblerListingLocation>
-      <ObjectFileName>..\..\..\..\..\Run\Lib\EABrowserDispatch\Debug/</ObjectFileName>
-      <ProgramDataBaseFileName>..\..\..\..\..\Run\Lib\EABrowserDispatch\Debug/</ProgramDataBaseFileName>
+      <AssemblerListingLocation>..\..\..\..\Run\Lib\EABrowserDispatch\Debug/</AssemblerListingLocation>
+      <ObjectFileName>..\..\..\..\Run\Lib\EABrowserDispatch\Debug/</ObjectFileName>
+      <ProgramDataBaseFileName>..\..\..\..\Run\Lib\EABrowserDispatch\Debug/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -77,7 +77,7 @@
     </Lib>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>..\..\..\..\..\Run\Lib\EABrowserDispatch\Debug/EABrowserDispatch.bsc</OutputFile>
+      <OutputFile>..\..\..\..\Run\Lib\EABrowserDispatch\Debug/EABrowserDispatch.bsc</OutputFile>
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -89,10 +89,10 @@
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeaderOutputFile>..\..\..\..\..\Run\Lib\EABrowserDispatch\Release/EABrowserDispatch.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>..\..\..\..\..\Run\Lib\EABrowserDispatch\Release/</AssemblerListingLocation>
-      <ObjectFileName>..\..\..\..\..\Run\Lib\EABrowserDispatch\Release/</ObjectFileName>
-      <ProgramDataBaseFileName>..\..\..\..\..\Run\Lib\EABrowserDispatch\Release/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>..\..\..\..\Run\Lib\EABrowserDispatch\Release/EABrowserDispatch.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>..\..\..\..\Run\Lib\EABrowserDispatch\Release/</AssemblerListingLocation>
+      <ObjectFileName>..\..\..\..\Run\Lib\EABrowserDispatch\Release/</ObjectFileName>
+      <ProgramDataBaseFileName>..\..\..\..\Run\Lib\EABrowserDispatch\Release/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -107,7 +107,7 @@
     </Lib>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>..\..\..\..\..\Run\Lib\EABrowserDispatch\Release/EABrowserDispatch.bsc</OutputFile>
+      <OutputFile>..\..\..\..\Run\Lib\EABrowserDispatch\Release/EABrowserDispatch.bsc</OutputFile>
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
