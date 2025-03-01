@@ -58,7 +58,7 @@
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TargetEnvironment>Win32</TargetEnvironment>
-      <TypeLibraryName>.\Debug/buildVersionUpdate.tlb</TypeLibraryName>
+      <TypeLibraryName>..\..\..\Run\buildVersionUpdate\Debug/buildVersionUpdate.tlb</TypeLibraryName>
       <HeaderFileName />
     </Midl>
     <ClCompile>
@@ -67,10 +67,10 @@
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <PrecompiledHeaderOutputFile>.\Debug/buildVersionUpdate.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\Debug/</AssemblerListingLocation>
-      <ObjectFileName>.\Debug/</ObjectFileName>
-      <ProgramDataBaseFileName>.\Debug/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>..\..\..\Run\buildVersionUpdate\Debug/buildVersionUpdate.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>..\..\..\Run\buildVersionUpdate\Debug/</AssemblerListingLocation>
+      <ObjectFileName>..\..\..\Run\buildVersionUpdate\Debug/</ObjectFileName>
+      <ProgramDataBaseFileName>..\..\..\Run\buildVersionUpdate\Debug/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
@@ -93,7 +93,7 @@
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>.\Debug/buildVersionUpdate.bsc</OutputFile>
+      <OutputFile>..\..\..\Run\buildVersionUpdate\Debug/buildVersionUpdate.bsc</OutputFile>
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -102,7 +102,7 @@
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TargetEnvironment>Win32</TargetEnvironment>
-      <TypeLibraryName>.\Release/buildVersionUpdate.tlb</TypeLibraryName>
+      <TypeLibraryName>..\..\..\Run\buildVersionUpdate\Release/buildVersionUpdate.tlb</TypeLibraryName>
       <HeaderFileName />
     </Midl>
     <ClCompile>
@@ -112,10 +112,10 @@
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeaderOutputFile>.\Release/buildVersionUpdate.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\Release/</AssemblerListingLocation>
-      <ObjectFileName>.\Release/</ObjectFileName>
-      <ProgramDataBaseFileName>.\Release/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>..\..\..\Run\buildVersionUpdate\Release/buildVersionUpdate.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>..\..\..\Run\buildVersionUpdate\Release/</AssemblerListingLocation>
+      <ObjectFileName>..\..\..\Run\buildVersionUpdate\Release/</ObjectFileName>
+      <ProgramDataBaseFileName>..\..\..\Run\buildVersionUpdate\Release/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </ClCompile>
@@ -137,7 +137,7 @@
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>.\Release/buildVersionUpdate.bsc</OutputFile>
+      <OutputFile>..\..\..\Run\buildVersionUpdate\Release/buildVersionUpdate.bsc</OutputFile>
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
