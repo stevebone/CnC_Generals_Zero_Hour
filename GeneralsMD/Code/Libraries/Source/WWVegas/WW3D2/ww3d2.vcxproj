@@ -41,12 +41,12 @@
     <_ProjectFileVersion>17.0.35707.178</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>..\..\..\Run\ww3d2\Debug\</OutDir>
-    <IntDir>..\..\..\Run\ww3d2\Debug\</IntDir>
+    <OutDir>..\..\..\..\..\Run\Lib\WW3d2\Debug\</OutDir>
+    <IntDir>..\..\..\..\..\Run\Lib\WW3d2\Debug\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>..\..\..\Run\ww3d2\Release\</OutDir>
-    <IntDir>..\..\..\Run\ww3d2\Release\</IntDir>
+    <OutDir>..\..\..\..\..\Run\Lib\WW3d2\Release\</OutDir>
+    <IntDir>..\..\..\..\..\Run\Lib\WW3d2\Release\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -57,12 +57,12 @@
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeaderOutputFile>..\..\..\Run\ww3d2\Debug/ww3d2.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>..\..\..\Run\ww3d2\Debug/</AssemblerListingLocation>
-      <ObjectFileName>..\..\..\Run\ww3d2\Debug/</ObjectFileName>
-      <ProgramDataBaseFileName>..\..\..\Run\ww3d2\Debug/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>..\..\..\..\..\Run\Lib\WW3d2\Debug/ww3d2.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>..\..\..\..\..\Run\Lib\WW3d2\Debug/</AssemblerListingLocation>
+      <ObjectFileName>..\..\..\..\..\Run\Lib\WW3d2\Debug/</ObjectFileName>
+      <ProgramDataBaseFileName>..\..\..\..\..\Run\Lib\WW3d2\Debug/</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
-      <BrowseInformationFile>..\..\..\Run\ww3d2\Debug/</BrowseInformationFile>
+      <BrowseInformationFile>..\..\..\..\..\Run\Lib\WW3d2\Debug/</BrowseInformationFile>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>false</TreatWarningAsError>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -73,12 +73,12 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>..\..\..\Lib\ww3d2Debug.lib</OutputFile>
+      <OutputFile>..\..\..\..\..\Run\Lib\WW3d2Debug.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>..\..\..\Run\ww3d2\Debug/ww3d2.bsc</OutputFile>
+      <OutputFile>..\..\..\..\..\Run\Lib\WW3d2\Debug/ww3d2.bsc</OutputFile>
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -90,12 +90,12 @@
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeaderOutputFile>..\..\..\Run\ww3d2\Release/ww3d2.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>..\..\..\Run\ww3d2\Release/</AssemblerListingLocation>
-      <ObjectFileName>..\..\..\Run\ww3d2\Release/</ObjectFileName>
-      <ProgramDataBaseFileName>..\..\..\Run\ww3d2\Release/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>..\..\..\..\..\Run\Lib\WW3d2\Release/ww3d2.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>..\..\..\..\..\Run\Lib\WW3d2\Release/</AssemblerListingLocation>
+      <ObjectFileName>..\..\..\..\..\Run\Lib\WW3d2\Release/</ObjectFileName>
+      <ProgramDataBaseFileName>..\..\..\..\..\Run\Lib\WW3d2\Release/</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
-      <BrowseInformationFile>..\..\..\Run\ww3d2\Release/</BrowseInformationFile>
+      <BrowseInformationFile>..\..\..\..\..\Run\Lib\WW3d2\Release/</BrowseInformationFile>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>false</TreatWarningAsError>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -105,12 +105,12 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>..\..\..\Lib\ww3d2.lib</OutputFile>
+      <OutputFile>..\..\..\..\..\Run\Lib\WW3d2.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>..\..\..\Run\ww3d2\Release/ww3d2.bsc</OutputFile>
+      <OutputFile>..\..\..\..\..\Run\Lib\WW3d2\Release/ww3d2.bsc</OutputFile>
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>

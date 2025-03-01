@@ -27,12 +27,6 @@
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Internal|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
-    <PlatformToolset>v143</PlatformToolset>
-    <UseOfMfc>false</UseOfMfc>
-    <CharacterSet>MultiByte</CharacterSet>
-  </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
@@ -49,12 +43,12 @@
     <_ProjectFileVersion>17.0.35707.178</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>..\..\..\Run\wwDownload\Debug\</OutDir>
-    <IntDir>..\..\..\Run\wwDownload\Debug\</IntDir>
+    <OutDir>..\..\..\..\..\Run\Lib\WWDownload\Debug\</OutDir>
+    <IntDir>..\..\..\..\..\Run\Lib\WWDownload\Debug\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>..\..\..\Run\wwDownload\Release\</OutDir>
-    <IntDir>..\..\..\Run\wwDownload\Release\</IntDir>
+    <OutDir>..\..\..\..\..\Run\Lib\WWDownload\Release\</OutDir>
+    <IntDir>..\..\..\..\..\Run\Lib\WWDownload\Release\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -64,12 +58,12 @@
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <PrecompiledHeaderOutputFile>..\..\..\Run\wwDownload\Debug/WWDownload.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>..\..\..\Run\wwDownload\Debug/</AssemblerListingLocation>
-      <ObjectFileName>..\..\..\Run\wwDownload\Debug/</ObjectFileName>
-      <ProgramDataBaseFileName>..\..\..\Run\wwDownload\Debug/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>..\..\..\..\..\Run\Lib\WWDownload\Debug/WWDownload.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>..\..\..\..\..\Run\Lib\WWDownload\Debug/</AssemblerListingLocation>
+      <ObjectFileName>..\..\..\..\..\Run\Lib\WWDownload\Debug/</ObjectFileName>
+      <ProgramDataBaseFileName>..\..\..\..\..\Run\Lib\WWDownload\Debug/</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
-      <BrowseInformationFile>..\..\..\Run\wwDownload\Debug/</BrowseInformationFile>
+      <BrowseInformationFile>..\..\..\..\..\Run\Lib\WWDownload\Debug/</BrowseInformationFile>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
@@ -79,12 +73,12 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>..\..\..\lib\WWDownloadDebug.lib</OutputFile>
+      <OutputFile>..\..\..\..\..\Run\Lib\WWDownloadDebug.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>..\..\..\Run\wwDownload\Debug/WWDownload.bsc</OutputFile>
+      <OutputFile>..\..\..\..\..\Run\Lib\WWDownload\Debug/WWDownload.bsc</OutputFile>
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -96,12 +90,12 @@
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeaderOutputFile>..\..\..\Run\wwDownload\Release/WWDownload.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>..\..\..\Run\wwDownload\Release/</AssemblerListingLocation>
-      <ObjectFileName>..\..\..\Run\wwDownload\Release/</ObjectFileName>
-      <ProgramDataBaseFileName>..\..\..\Run\wwDownload\Release/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>..\..\..\..\..\Run\Lib\WWDownload\Release/WWDownload.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>..\..\..\..\..\Run\Lib\WWDownload\Release/</AssemblerListingLocation>
+      <ObjectFileName>..\..\..\..\..\Run\Lib\WWDownload\Release/</ObjectFileName>
+      <ProgramDataBaseFileName>..\..\..\..\..\Run\Lib\WWDownload\Release/</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
-      <BrowseInformationFile>..\..\..\Run\wwDownload\Release/</BrowseInformationFile>
+      <BrowseInformationFile>..\..\..\..\..\Run\Lib\WWDownload\Release/</BrowseInformationFile>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </ClCompile>
@@ -110,12 +104,12 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>..\..\..\lib\WWDownload.lib</OutputFile>
+      <OutputFile>..\..\..\..\..\Run\Lib\WWDownload.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>..\..\..\Run\wwDownload\Release/WWDownload.bsc</OutputFile>
+      <OutputFile>..\..\..\..\..\Run\Lib\WWDownload\Release/WWDownload.bsc</OutputFile>
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>

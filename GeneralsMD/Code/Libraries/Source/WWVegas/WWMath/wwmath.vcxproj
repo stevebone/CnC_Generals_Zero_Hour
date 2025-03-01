@@ -41,12 +41,12 @@
     <_ProjectFileVersion>17.0.35707.178</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>..\..\..\Run\wwmath\Debug\</OutDir>
-    <IntDir>..\..\..\Run\wwmath\Debug\</IntDir>
+    <OutDir>..\..\..\..\..\Run\Lib\WWmath\Debug\</OutDir>
+    <IntDir>..\..\..\..\..\Run\Lib\WWmath\Debug\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>..\..\..\Run\wwmath\Release\</OutDir>
-    <IntDir>..\..\..\Run\wwmath\Release\</IntDir>
+    <OutDir>..\..\..\..\..\Run\Lib\WWmath\Release\</OutDir>
+    <IntDir>..\..\..\..\..\Run\Lib\WWmath\Release\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -57,12 +57,12 @@
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeaderOutputFile>..\..\..\Run\wwmath\Debug/wwmath.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>..\..\..\Run\wwmath\Debug/</AssemblerListingLocation>
-      <ObjectFileName>..\..\..\Run\wwmath\Debug/</ObjectFileName>
-      <ProgramDataBaseFileName>..\..\..\Run\wwmath\Debug/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>..\..\..\..\..\Run\Lib\WWmath\Debug/wwmath.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>..\..\..\..\..\Run\Lib\WWmath\Debug/</AssemblerListingLocation>
+      <ObjectFileName>..\..\..\..\..\Run\Lib\WWmath\Debug/</ObjectFileName>
+      <ProgramDataBaseFileName>..\..\..\..\..\Run\Lib\WWmath\Debug/</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
-      <BrowseInformationFile>..\..\..\Run\wwmath\Debug/</BrowseInformationFile>
+      <BrowseInformationFile>..\..\..\..\..\Run\Lib\WWmath\Debug/</BrowseInformationFile>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>false</TreatWarningAsError>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -73,12 +73,12 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>..\..\..\Lib\WWMathDebug.lib</OutputFile>
+      <OutputFile>..\..\..\..\..\Run\Lib\WWMathDebug.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>..\..\..\Run\wwmath\Debug/wwmath.bsc</OutputFile>
+      <OutputFile>..\..\..\..\..\Run\Lib\WWmath\Debug/wwmath.bsc</OutputFile>
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -90,12 +90,12 @@
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeaderOutputFile>..\..\..\Run\wwmath\Release/wwmath.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>..\..\..\Run\wwmath\Release/</AssemblerListingLocation>
-      <ObjectFileName>..\..\..\Run\wwmath\Release/</ObjectFileName>
-      <ProgramDataBaseFileName>..\..\..\Run\wwmath\Release/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>..\..\..\..\..\Run\Lib\WWmath\Release/wwmath.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>..\..\..\..\..\Run\Lib\WWmath\Release/</AssemblerListingLocation>
+      <ObjectFileName>..\..\..\..\..\Run\Lib\WWmath\Release/</ObjectFileName>
+      <ProgramDataBaseFileName>..\..\..\..\..\Run\Lib\WWmath\Release/</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
-      <BrowseInformationFile>..\..\..\Run\wwmath\Release/</BrowseInformationFile>
+      <BrowseInformationFile>..\..\..\..\..\Run\Lib\WWmath\Release/</BrowseInformationFile>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>false</TreatWarningAsError>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -105,12 +105,12 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>..\..\..\Lib\WWMath.lib</OutputFile>
+      <OutputFile>..\..\..\..\..\Run\Lib\WWMath.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>..\..\..\Run\wwmath\Release/wwmath.bsc</OutputFile>
+      <OutputFile>..\..\..\..\..\Run\Lib\WWmath\Release/wwmath.bsc</OutputFile>
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>

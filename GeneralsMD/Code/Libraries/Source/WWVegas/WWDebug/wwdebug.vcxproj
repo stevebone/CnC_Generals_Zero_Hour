@@ -41,12 +41,12 @@
     <_ProjectFileVersion>17.0.35707.178</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>..\..\..\Run\wwdebug\Release\</OutDir>
-    <IntDir>..\..\..\Run\wwdebug\Release\</IntDir>
+    <OutDir>..\..\..\..\..\Run\Lib\WWdebug\Release\</OutDir>
+    <IntDir>..\..\..\..\..\Run\Lib\WWdebug\Release\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>..\..\..\Run\wwdebug\Debug\</OutDir>
-    <IntDir>..\..\..\Run\wwdebug\Debug\</IntDir>
+    <OutDir>..\..\..\..\..\Run\Lib\WWdebug\Debug\</OutDir>
+    <IntDir>..\..\..\..\..\Run\Lib\WWdebug\Debug\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -57,12 +57,12 @@
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeaderOutputFile>..\..\..\Run\wwdebug\Release/wwdebug.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>..\..\..\Run\wwdebug\Release/</AssemblerListingLocation>
-      <ObjectFileName>..\..\..\Run\wwdebug\Release/</ObjectFileName>
-      <ProgramDataBaseFileName>..\..\..\Run\wwdebug\Release/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>..\..\..\..\..\Run\Lib\WWdebug\Release/wwdebug.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>..\..\..\..\..\Run\Lib\WWdebug\Release/</AssemblerListingLocation>
+      <ObjectFileName>..\..\..\..\..\Run\Lib\WWdebug\Release/</ObjectFileName>
+      <ProgramDataBaseFileName>..\..\..\..\..\Run\Lib\WWdebug\Release/</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
-      <BrowseInformationFile>..\..\..\Run\wwdebug\Release/</BrowseInformationFile>
+      <BrowseInformationFile>..\..\..\..\..\Run\Lib\WWdebug\Release/</BrowseInformationFile>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -71,12 +71,12 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>..\..\..\Lib\WWDebug.lib</OutputFile>
+      <OutputFile>..\..\..\..\..\Run\Lib\WWDebug.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>..\..\..\Run\wwdebug\Release/wwdebug.bsc</OutputFile>
+      <OutputFile>..\..\..\..\..\Run\Lib\WWdebug\Release/wwdebug.bsc</OutputFile>
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -88,12 +88,12 @@
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeaderOutputFile>..\..\..\Run\wwdebug\Debug/wwdebug.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>..\..\..\Run\wwdebug\Debug/</AssemblerListingLocation>
-      <ObjectFileName>..\..\..\Run\wwdebug\Debug/</ObjectFileName>
-      <ProgramDataBaseFileName>..\..\..\Run\wwdebug\Debug/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>..\..\..\..\..\Run\Lib\WWdebug\Debug/wwdebug.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>..\..\..\..\..\Run\Lib\WWdebug\Debug/</AssemblerListingLocation>
+      <ObjectFileName>..\..\..\..\..\Run\Lib\WWdebug\Debug/</ObjectFileName>
+      <ProgramDataBaseFileName>..\..\..\..\..\Run\Lib\WWdebug\Debug/</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
-      <BrowseInformationFile>..\..\..\Run\wwdebug\Debug/</BrowseInformationFile>
+      <BrowseInformationFile>..\..\..\..\..\Run\Lib\WWdebug\Debug/</BrowseInformationFile>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -103,12 +103,12 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>..\..\..\Lib\WWDebugDebug.lib</OutputFile>
+      <OutputFile>..\..\..\..\..\Run\Lib\WWDebugDebug.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>..\..\..\Run\wwdebug\Debug/wwdebug.bsc</OutputFile>
+      <OutputFile>..\..\..\..\..\Run\Lib\WWdebug\Debug/wwdebug.bsc</OutputFile>
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>

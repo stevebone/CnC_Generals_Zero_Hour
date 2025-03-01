@@ -41,106 +41,13 @@
     <_ProjectFileVersion>17.0.35707.178</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>..\..\..\Run\wwsaveload\Release\</OutDir>
-    <IntDir>..\..\..\Run\wwsaveload\Release\</IntDir>
+    <OutDir>..\..\..\..\..\Run\Lib\WWsaveload\Release\</OutDir>
+    <IntDir>..\..\..\..\..\Run\Lib\WWsaveload\Release\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>..\..\..\Run\wwsaveload\Debug\</OutDir>
-    <IntDir>..\..\..\Run\wwsaveload\Debug\</IntDir>
+    <OutDir>..\..\..\..\..\Run\Lib\WWsaveload\Debug\</OutDir>
+    <IntDir>..\..\..\..\..\Run\Lib\WWsaveload\Debug\</IntDir>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ProfileE|Win32'">
-    <ClCompile>
-      <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\wwlib;..\wwdebug;..\wwmath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NDEBUG;WWDEBUG;WINVER=0x400;_WINDOWS;WIN32;PARAM_EDITING_ON;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
-      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <PrecompiledHeaderOutputFile>.\ProfileE/wwsaveload.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\ProfileE/</AssemblerListingLocation>
-      <ObjectFileName>.\ProfileE/</ObjectFileName>
-      <ProgramDataBaseFileName>.\ProfileE/</ProgramDataBaseFileName>
-      <WarningLevel>Level3</WarningLevel>
-      <TreatWarningAsError>false</TreatWarningAsError>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-    </ClCompile>
-    <ResourceCompile>
-      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <Culture>0x0409</Culture>
-    </ResourceCompile>
-    <Lib>
-      <OutputFile>..\..\..\Lib\WWSaveLoadProfileE.lib</OutputFile>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-    </Lib>
-    <Bscmake>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>.\ProfileE/wwsaveload.bsc</OutputFile>
-    </Bscmake>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Internal|Win32'">
-    <ClCompile>
-      <Optimization>MaxSpeed</Optimization>
-      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\wwlib;..\wwdebug;..\wwmath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NDEBUG;WINVER=0x400;_WINDOWS;WIN32;_INTERNAL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <StringPooling>true</StringPooling>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeaderOutputFile>.\Internal/wwsaveload.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\Internal/</AssemblerListingLocation>
-      <ObjectFileName>.\Internal/</ObjectFileName>
-      <ProgramDataBaseFileName>.\Internal/</ProgramDataBaseFileName>
-      <BrowseInformation>true</BrowseInformation>
-      <BrowseInformationFile>.\Internal/</BrowseInformationFile>
-      <WarningLevel>Level3</WarningLevel>
-      <TreatWarningAsError>false</TreatWarningAsError>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-    </ClCompile>
-    <ResourceCompile>
-      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <Culture>0x0409</Culture>
-    </ResourceCompile>
-    <Lib>
-      <OutputFile>..\..\..\Lib\WWSaveLoadInternal.lib</OutputFile>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-    </Lib>
-    <Bscmake>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>.\Internal/wwsaveload.bsc</OutputFile>
-    </Bscmake>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugE|Win32'">
-    <ClCompile>
-      <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\wwlib;..\wwdebug;..\wwmath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;WWDEBUG;WINVER=0x400;_WINDOWS;WIN32;PARAM_EDITING_ON;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
-      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <PrecompiledHeaderOutputFile>.\DebugE/wwsaveload.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\DebugE/</AssemblerListingLocation>
-      <ObjectFileName>.\DebugE/</ObjectFileName>
-      <ProgramDataBaseFileName>.\DebugE/</ProgramDataBaseFileName>
-      <WarningLevel>Level3</WarningLevel>
-      <TreatWarningAsError>false</TreatWarningAsError>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-    </ClCompile>
-    <ResourceCompile>
-      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <Culture>0x0409</Culture>
-    </ResourceCompile>
-    <Lib>
-      <OutputFile>..\..\..\Lib\WWSaveLoadDebugE.lib</OutputFile>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-    </Lib>
-    <Bscmake>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>.\DebugE/wwsaveload.bsc</OutputFile>
-    </Bscmake>
-  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
@@ -150,12 +57,12 @@
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeaderOutputFile>..\..\..\Run\wwsaveload\Release/wwsaveload.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>..\..\..\Run\wwsaveload\Release/</AssemblerListingLocation>
-      <ObjectFileName>..\..\..\Run\wwsaveload\Release/</ObjectFileName>
-      <ProgramDataBaseFileName>..\..\..\Run\wwsaveload\Release/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>..\..\..\..\..\Run\Lib\WWsaveload\Release/wwsaveload.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>..\..\..\..\..\Run\Lib\WWsaveload\Release/</AssemblerListingLocation>
+      <ObjectFileName>..\..\..\..\..\Run\Lib\WWsaveload\Release/</ObjectFileName>
+      <ProgramDataBaseFileName>..\..\..\..\..\Run\Lib\WWsaveload\Release/</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
-      <BrowseInformationFile>..\..\..\Run\wwsaveload\Release/</BrowseInformationFile>
+      <BrowseInformationFile>..\..\..\..\..\Run\Lib\WWsaveload\Release/</BrowseInformationFile>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>false</TreatWarningAsError>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -165,44 +72,12 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>..\..\..\Lib\WWSaveLoad.lib</OutputFile>
+      <OutputFile>..\..\..\..\..\Run\Lib\WWSaveLoad.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>..\..\..\Run\wwsaveload\Release/wwsaveload.bsc</OutputFile>
-    </Bscmake>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">
-    <ClCompile>
-      <Optimization>MaxSpeed</Optimization>
-      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\wwlib;..\wwdebug;..\wwmath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NDEBUG;WWDEBUG;WINVER=0x400;_WINDOWS;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <StringPooling>true</StringPooling>
-      <MinimalRebuild>true</MinimalRebuild>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeaderOutputFile>.\Profile/wwsaveload.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\Profile/</AssemblerListingLocation>
-      <ObjectFileName>.\Profile/</ObjectFileName>
-      <ProgramDataBaseFileName>.\Profile/</ProgramDataBaseFileName>
-      <WarningLevel>Level3</WarningLevel>
-      <TreatWarningAsError>false</TreatWarningAsError>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-    </ClCompile>
-    <ResourceCompile>
-      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <Culture>0x0409</Culture>
-    </ResourceCompile>
-    <Lib>
-      <OutputFile>..\..\..\Lib\WWSaveLoadProfile.lib</OutputFile>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-    </Lib>
-    <Bscmake>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>.\Profile/wwsaveload.bsc</OutputFile>
+      <OutputFile>..\..\..\..\..\Run\Lib\WWsaveload\Release/wwsaveload.bsc</OutputFile>
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -214,12 +89,12 @@
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeaderOutputFile>..\..\..\Run\wwsaveload\Debug/wwsaveload.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>..\..\..\Run\wwsaveload\Debug/</AssemblerListingLocation>
-      <ObjectFileName>..\..\..\Run\wwsaveload\Debug/</ObjectFileName>
-      <ProgramDataBaseFileName>..\..\..\Run\wwsaveload\Debug/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>..\..\..\..\..\Run\Lib\WWsaveload\Debug/wwsaveload.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>..\..\..\..\..\Run\Lib\WWsaveload\Debug/</AssemblerListingLocation>
+      <ObjectFileName>..\..\..\..\..\Run\Lib\WWsaveload\Debug/</ObjectFileName>
+      <ProgramDataBaseFileName>..\..\..\..\..\Run\Lib\WWsaveload\Debug/</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
-      <BrowseInformationFile>..\..\..\Run\wwsaveload\Debug/</BrowseInformationFile>
+      <BrowseInformationFile>..\..\..\..\..\Run\Lib\WWsaveload\Debug/</BrowseInformationFile>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>false</TreatWarningAsError>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -230,12 +105,12 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>..\..\..\Lib\WWSaveLoadDebug.lib</OutputFile>
+      <OutputFile>..\..\..\..\..\Run\Lib\WWSaveLoadDebug.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>..\..\..\Run\wwsaveload\Debug/wwsaveload.bsc</OutputFile>
+      <OutputFile>..\..\..\..\..\Run\Lib\WWsaveload\Debug/wwsaveload.bsc</OutputFile>
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
