@@ -71,20 +71,12 @@
     <_ProjectFileVersion>17.0.35707.178</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>.\Release\</OutDir>
-    <IntDir>.\Release\</IntDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">
-    <OutDir>.\Profile\</OutDir>
-    <IntDir>.\Profile\</IntDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Internal|Win32'">
-    <OutDir>.\Internal\</OutDir>
-    <IntDir>.\Internal\</IntDir>
+    <OutDir>..\..\..\Run\wwutil\Release\</OutDir>
+    <IntDir>..\..\..\Run\wwutil\Release\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>.\Debug\</OutDir>
-    <IntDir>.\Debug\</IntDir>
+    <OutDir>..\..\..\Run\wwutil\Debug\</OutDir>
+    <IntDir>..\..\..\Run\wwutil\Debug\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -95,12 +87,12 @@
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeaderOutputFile>.\Release/wwutil.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\Release/</AssemblerListingLocation>
-      <ObjectFileName>.\Release/</ObjectFileName>
-      <ProgramDataBaseFileName>.\Release/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>..\..\..\Run\wwutil\Release/wwutil.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>..\..\..\Run\wwutil\Release/</AssemblerListingLocation>
+      <ObjectFileName>..\..\..\Run\wwutil\Release/</ObjectFileName>
+      <ProgramDataBaseFileName>..\..\..\Run\wwutil\Release/</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
-      <BrowseInformationFile>.\Release/</BrowseInformationFile>
+      <BrowseInformationFile>..\..\..\Run\wwutil\Release/</BrowseInformationFile>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>false</TreatWarningAsError>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -115,7 +107,7 @@
     </Lib>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>.\Release/wwutil.bsc</OutputFile>
+      <OutputFile>..\..\..\Run\wwutil\Release/wwutil.bsc</OutputFile>
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">
@@ -191,12 +183,12 @@
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeaderOutputFile>.\Debug/wwutil.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\Debug/</AssemblerListingLocation>
-      <ObjectFileName>.\Debug/</ObjectFileName>
-      <ProgramDataBaseFileName>.\Debug/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>..\..\..\Run\wwutil\Debug/wwutil.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>..\..\..\Run\wwutil\Debug/</AssemblerListingLocation>
+      <ObjectFileName>..\..\..\Run\wwutil\Debug/</ObjectFileName>
+      <ProgramDataBaseFileName>..\..\..\Run\wwutil\Debug/</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
-      <BrowseInformationFile>.\Debug/</BrowseInformationFile>
+      <BrowseInformationFile>..\..\..\Run\wwutil\Debug/</BrowseInformationFile>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>false</TreatWarningAsError>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -212,7 +204,7 @@
     </Lib>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>.\Debug/wwutil.bsc</OutputFile>
+      <OutputFile>..\..\..\Run\wwutil\Debug/wwutil.bsc</OutputFile>
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
