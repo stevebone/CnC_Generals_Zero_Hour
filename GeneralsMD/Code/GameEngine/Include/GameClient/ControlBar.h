@@ -61,14 +61,14 @@ class ControlBarResizer;
 class GameWindowTransitionsHandler;
 class DisplayString;
 
-enum ProductionID;
+enum ProductionID : int;
 
-enum CommandSourceType;
-enum ProductionType;
-enum GadgetGameMessage;
-enum ScienceType;
-enum TimeOfDay;
-enum RadiusCursorType;
+enum CommandSourceType : int;
+enum ProductionType : int;
+enum GadgetGameMessage : int;
+enum ScienceType : int;
+enum TimeOfDay : int;
+enum RadiusCursorType : int;
 
 //-------------------------------------------------------------------------------------------------
 /** Command options */

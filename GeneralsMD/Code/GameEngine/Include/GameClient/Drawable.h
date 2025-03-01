@@ -56,7 +56,7 @@ class ModuleInfo;
 class Anim2DTemplate;
 class Image;
 class DynamicAudioEventInfo;
-enum BodyDamageType;
+enum BodyDamageType : int;
 
 // this is a very worthwhile performance win. left conditionally defined for now, just 
 // in case, but probably should be made permanent soon. (srj)

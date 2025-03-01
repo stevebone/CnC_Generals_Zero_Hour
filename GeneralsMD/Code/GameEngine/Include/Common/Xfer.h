@@ -46,7 +46,7 @@ typedef Int Color;
 enum ObjectID : int;
 enum DrawableID : int;
 #include "KindOfTypes.h"
-enum ScienceType;
+enum ScienceType : int;
 class Matrix3D;
 
 // ------------------------------------------------------------------------------------------------

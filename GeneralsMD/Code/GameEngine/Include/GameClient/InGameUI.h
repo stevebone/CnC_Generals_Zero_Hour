@@ -60,10 +60,10 @@ class WindowLayout;
 class Anim2DTemplate;
 class Anim2D;
 class Shadow;
-enum LegalBuildCode;
-enum KindOfType;
-enum ShadowType;
-enum CanAttackResult;
+enum LegalBuildCode : int;
+enum KindOfType : int;
+enum ShadowType : int;
+enum CanAttackResult : int;
 
 // ------------------------------------------------------------------------------------------------
 enum RadiusCursorType
