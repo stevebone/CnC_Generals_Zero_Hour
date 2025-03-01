@@ -501,7 +501,7 @@ static GHTTPBool configHeadCallback( GHTTPRequest request, GHTTPResult result,
 	std::string gameURL, mapURL;
 	std::string configURL, motdURL;
 	FormatURLFromRegistry(gameURL, mapURL, configURL, motdURL);
-	ghttpGet( configURL.c_str(), GHTTPFalse, configCallback, param );
+	ghttpGet(configURL.c_str(), GHTTPFalse, (ghttpCompletedCallback)configCallback, param);
 
 	return GHTTPTrue;
 }

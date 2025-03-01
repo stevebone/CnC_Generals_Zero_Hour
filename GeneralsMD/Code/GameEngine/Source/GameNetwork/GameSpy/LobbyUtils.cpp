@@ -61,6 +61,7 @@
 #include "GameNetwork/GameSpy/GSConfig.h"
 
 #include "Common/STLTypedefs.h"
+#include <corecrt_wstring.h>
 
 #ifdef _INTERNAL
 // for occasional debugging...
@@ -77,7 +78,7 @@ static enum {
 	COLUMN_NUMPLAYERS,
 	COLUMN_PASSWORD,
 	COLUMN_OBSERVER,
-  COLUMN_USE_STATS,
+    COLUMN_USE_STATS,
 	COLUMN_PING,
 };
 
@@ -687,7 +688,7 @@ void RefreshGameListBox( GameWindow *win, Bool showMap )
 {
 	if (!win)
 		return;
-
+	#if 0 // jmarshall - gamespy
 	// save off selection
 	Int selectedIndex = -1;
 	Int indexToSelect = -1;
@@ -737,6 +738,7 @@ void RefreshGameListBox( GameWindow *win, Bool showMap )
 	{
 		TheWindowManager->winSetLoneWindow(NULL);
 	}
+#endif
 }
 
 void RefreshGameInfoListBox( GameWindow *mainWin, GameWindow *win )
