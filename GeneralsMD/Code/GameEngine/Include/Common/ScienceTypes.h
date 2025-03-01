@@ -1,7 +1,7 @@
 #pragma once
 
 //-------------------------------------------------------------------------------------------------
-enum ScienceType
+enum ScienceType : int
 {
 	SCIENCE_INVALID = -1
 };

@@ -64,6 +64,7 @@ enum PickType
 };
 
 enum FilterModes : int;
+enum FilterTypes : int;
 
 // ------------------------------------------------------------------------------------------------
 /** The implementation of common view functionality. */

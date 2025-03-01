@@ -60,6 +60,7 @@ class UnicodeString;
 
 #ifndef _WIN32
 #define _stricmp strcasecmp
+#define stricmp strcasecmp
 #else
 #include "windows.h"
 #endif

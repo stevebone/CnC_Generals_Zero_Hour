@@ -49,7 +49,7 @@ enum AudioType
 };
 
 extern char *theAudioPriorityNames[];
-enum AudioPriority
+enum AudioPriority : int
 {
 	AP_LOWEST,
 	AP_LOW,
