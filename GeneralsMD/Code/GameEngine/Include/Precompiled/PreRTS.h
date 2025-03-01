@@ -54,7 +54,7 @@ class STLSpecialAlloc;
 #include <io.h>
 #include <limits.h>
 #include <lmcons.h>
-#include <mapicode.h>
+//#include <mapicode.h>
 #include <math.h>
 #include <memory.h>
 #include <mmsystem.h>

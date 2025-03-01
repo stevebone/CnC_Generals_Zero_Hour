@@ -28,7 +28,7 @@
 // Borland defines some implementation constants in std:: namespace,
 // we do not want to import them.
 # if defined  (_STLP_USE_NEW_C_HEADERS) && ! defined (__BORLANDC__)
-#  include _STLP_NATIVE_CPP_C_HEADER(cfloat)
+//#  include _STLP_NATIVE_CPP_C_HEADER(cfloat)
 # else
 #  include _STLP_NATIVE_C_HEADER(float.h)
 # endif

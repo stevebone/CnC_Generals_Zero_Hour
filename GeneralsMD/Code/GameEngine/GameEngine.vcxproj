@@ -1223,6 +1223,7 @@
     <ClInclude Include="Include\GameNetwork\WOLBrowser\FEBDispatch.h" />
     <ClInclude Include="Include\GameNetwork\WOLBrowser\WebBrowser.h" />
     <ClInclude Include="Include\Precompiled\PreRTS.h" />
+	<ClInclude Include="..\Libraries\Include\MAPI\mapicode.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Libraries\Source\EABrowserDispatch\EABrowserDispatch.vcxproj">

@@ -3450,8 +3450,8 @@ void initMemoryManager()
 	linktest = new char[8];
 	delete [] linktest;
 
-	linktest = new char("",1);
-	delete linktest;
+//	linktest = new char("",1);
+//	delete linktest;
 
 #ifdef MEMORYPOOL_OVERRIDE_MALLOC
 	linktest = (char*)malloc(1);

@@ -35,7 +35,7 @@
 # endif
 
 # if !  defined (_STLP_NO_CWCHAR) && defined  (_STLP_USE_NEW_C_HEADERS)
-#  include _STLP_NATIVE_CPP_C_HEADER(cwchar)
+//#  include _STLP_NATIVE_CPP_C_HEADER(cwchar)
 
 # elif defined (__MRC__) || defined (__SC__) || defined (__BORLANDC__) || defined(__FreeBSD__) || (defined (__GNUC__) && defined (__APPLE__) || defined( __Lynx__ )) || defined (_STLP_NO_WCHAR_T)
 
