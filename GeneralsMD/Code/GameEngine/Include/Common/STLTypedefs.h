@@ -71,7 +71,7 @@ class Object;
 	determined at runtime. (The generated code is basically identical, of course.)
 */
 //------------------------------------------------------------------------------------------------- 
-enum NameKeyType
+enum NameKeyType : int
 {
 	NAMEKEY_INVALID					= 0,
 	NAMEKEY_MAX							= 1<<23,					// max ordinal value of a NameKey (some code relies on these fitting into 24 bits safely)
@@ -79,14 +79,14 @@ enum NameKeyType
 };
 
 /// A unique, generic "identifier" used to access Objects.
-enum ObjectID
+enum ObjectID : int
 {
 	INVALID_ID = 0,
 	FORCE_OBJECTID_TO_LONG_SIZE = 0x7ffffff
 };
 
 /// A unique, generic "identifier" used to access Drawables.
-enum DrawableID
+enum DrawableID : int
 {
 	INVALID_DRAWABLE_ID = 0,
 	FORCE_DRAWABLEID_TO_LONG_SIZE = 0x7ffffff

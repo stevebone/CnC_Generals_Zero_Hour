@@ -61,8 +61,8 @@ class Object;
 class SoundManager;
 
 
-enum AudioAffect;
-enum AudioType;
+#include "AudioAffect.h"
+#include "AudioEventInfo.h"
 
 struct AudioEventInfo;
 struct AudioRequest;

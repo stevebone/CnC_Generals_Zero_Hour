@@ -51,7 +51,7 @@ class INI;
 //-------------------------------------------------------------------------------------------------
 /** The time of day enumeration, keep in sync with TimeOfDayNames[] */
 //-------------------------------------------------------------------------------------------------
-enum TimeOfDay
+enum TimeOfDay : int
 {
 	TIME_OF_DAY_INVALID = 0,
 	TIME_OF_DAY_FIRST = 1,
