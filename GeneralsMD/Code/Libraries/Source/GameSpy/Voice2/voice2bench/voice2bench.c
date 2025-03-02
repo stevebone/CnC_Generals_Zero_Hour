@@ -1,3 +1,4 @@
+#include "../winerrordxgi.h"
 #include "../gv.h"
 #include "voicesample.h"
 #include <stdio.h>
@@ -62,7 +63,7 @@ static void Decode(GVSample * out, const GVByte * in, GVDecoderData data)
 
 #elif defined(_PSP) || defined(_WIN32)
 
-#include "../gsm-1.0-pl12/inc/gsm.h"
+#include "../libgsm/inc/gsm.h"
 
 gsm EncoderState;
 
@@ -185,8 +186,12 @@ static void TestCodec(GVCodec codec, GVRate sampleRate, const char * name)
 
 	printf("Testing %s\n", name);
 
+#if defined(_WIN32) || defined(_PS2) || defined(_PSP)
+	if (!Init(codec))
+#else
+    if (!Init(codec, sampleRate))
+#endif
 
-	if(!Init(codec, sampleRate))
 	{
 		printf("Failed to init\n");
 		return;
@@ -237,10 +242,9 @@ static void TestCodec(GVCodec codec, GVRate sampleRate, const char * name)
 	#ifdef __MWERKS__ // CodeWarrior will warn if not prototyped
 		int test_main(int argc, char **argp);
 	#endif	
-int test_main(int argc, char **argp)
-#else
-int main(int argc, char **argp)
 #endif // _PS2
+
+int test_main(int argc, char** argp)
 {
 	printf("Testing codecs\n");
 

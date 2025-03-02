@@ -53,7 +53,7 @@ will you be ready to leave grasshopper.
 #ifndef WDEBUG_HEADER
 #define WDEBUG_HEADER
 
-#include <iostream.h>
+#include <iostream>
 #include "odevice.h"
 #include "streamer.h"
 #include <time.h>
@@ -166,28 +166,35 @@ will you be ready to leave grasshopper.
 
 #endif  // DEBUG
 
+using namespace std;
 
 class MsgManager
 {
- protected:
-   MsgManager();
+protected:
+   // MsgManager();
 
- public:
-   static int                 setAllStreams(OutputDevice *device);
-   static int                 setDebugStream(OutputDevice *device);
-   static int                 setInfoStream(OutputDevice *device);
-   static int                 setWarnStream(OutputDevice *device);
-   static int                 setErrorStream(OutputDevice *device);
+public:
+    static int setAllStreams(OutputDevice* device);
+    static int setDebugStream(OutputDevice* device);
+    static int setInfoStream(OutputDevice* device);
+    static int setWarnStream(OutputDevice* device);
+    static int setErrorStream(OutputDevice* device);
 
-   static void                enableDebug(int flag);
-   static void                enableInfo(int flag);
-   static void                enableWarn(int flag);
-   static void                enableError(int flag);
+    static void enableDebug(int flag);
+    static void enableInfo(int flag);
+    static void enableWarn(int flag);
+    static void enableError(int flag);
 
-   static ostream            *debugStream(void);
-   static ostream            *infoStream(void);
-   static ostream            *warnStream(void);
-   static ostream            *errorStream(void);
+    static std::ostream* debugStream(void);
+    static std::ostream* infoStream(void);
+    static std::ostream* warnStream(void);
+    static std::ostream* errorStream(void);
+
+private:
+    static int debug_enabled;
+    static int info_enabled;
+    static int warn_enabled;
+    static int error_enabled;
 };
 
 #endif

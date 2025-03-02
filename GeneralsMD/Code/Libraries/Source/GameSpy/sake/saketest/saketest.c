@@ -1,10 +1,19 @@
+///////////////////////////////////////////////////////////////////////////////
+// File:	saketest.c
+// SDK:		GameSpy Sake Persistent Storage SDK
+//
+// Copyright (c) IGN Entertainment, Inc.  All rights reserved.  
+// This software is made available only pursuant to certain license terms offered
+// by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed use or use in a 
+// manner not expressly authorized by IGN or GameSpy is prohibited.
+
 #include "../../common/gsCommon.h"
 #include "../../common/gsAvailable.h"
 #include "../../common/gsCore.h"
-#include "../../common/gsSoap.h"
+#include "../../ghttp/ghttpSoap.h"
 #include "../sake.h"
 #include "../../ghttp/ghttp.h"
-#include "../../gp/gp.h"
+#include "../../GP/gp.h"
 
 #if defined(_NITRO)
 	#include "../../common/nitro/screen.h"
@@ -187,10 +196,16 @@ static void Error(GPConnection * pconnection, GPErrorArg * arg, void * param)
 		printf( "GP ERROR\n");
 		printf( "-----\n");
 	}
+
+#ifdef GSI_UNICODE
+	_tprintf( _T("RESULT: %ls (%d)\n"), resultString, arg->result);
+	_tprintf( _T("ERROR CODE: %ls (0x%X)\n"), errorCodeString, arg->errorCode);
+	_tprintf( _T("ERROR STRING: %ls\n"), arg->errorString);
+#else
 	_tprintf( _T("RESULT: %s (%d)\n"), resultString, arg->result);
 	_tprintf( _T("ERROR CODE: %s (0x%X)\n"), errorCodeString, arg->errorCode);
 	_tprintf( _T("ERROR STRING: %s\n"), arg->errorString);
-	
+#endif
 	GSI_UNUSED(pconnection);
 	GSI_UNUSED(param);
 }
@@ -329,7 +344,7 @@ static const char * FieldValueToString(SAKEField * field)
 	else if(type == SAKEFieldType_BINARY_DATA)
 	{
 		int i;
-		int len = min(value->mBinaryData.mLength, 8);
+		int len = GS_MIN(value->mBinaryData.mLength, 8);
 		for(i = 0 ; i < len ; i++)
 			sprintf(buffer + (len*2), "%0X", value->mBinaryData.mValue[i]);
 		buffer[len*2] = '\0';
@@ -603,16 +618,17 @@ static void GetRecordLimitCallback(SAKE sake, SAKERequest request, SAKERequestRe
 
 static gsi_bool gUploadResult;
 static int gUploadedFileId;
-static GHTTPBool UploadCompletedCallback(GHTTPRequest request, GHTTPResult result, char * buffer, GHTTPByteCount bufferLen, void * param)
+static GHTTPBool UploadCompletedCallback(GHTTPRequest request, GHTTPResult result, char * buffer, GHTTPByteCount bufferLen, char* headers, void * param)
 {
 	SAKEFileResult fileResult;
-
-	gUploadResult = gsi_false;
-	NumOperations--;
 
 	GSI_UNUSED(param);
 	GSI_UNUSED(bufferLen);
 	GSI_UNUSED(buffer);
+	GSI_UNUSED(headers);
+
+	gUploadResult = gsi_false;
+	NumOperations--;
 
 	if(result != GHTTPSuccess)
 	{
@@ -644,14 +660,15 @@ static GHTTPBool UploadCompletedCallback(GHTTPRequest request, GHTTPResult resul
 	return GHTTPTrue;
 }
 
-static GHTTPBool DownloadCompletedCallback(GHTTPRequest request, GHTTPResult result, char * buffer, GHTTPByteCount bufferLen, void * param)
+static GHTTPBool DownloadCompletedCallback(GHTTPRequest request, GHTTPResult result, char * buffer, GHTTPByteCount bufferLen, char * headers, void * param)
 {
 	SAKEFileResult fileResult;
 
-	NumOperations--;
-
+	GSI_UNUSED(headers);
 	GSI_UNUSED(param);
 	GSI_UNUSED(buffer);
+
+	NumOperations--;
 
 	if(result != GHTTPSuccess)
 	{
@@ -671,8 +688,13 @@ static GHTTPBool DownloadCompletedCallback(GHTTPRequest request, GHTTPResult res
 		return GHTTPTrue;
 	}
 
+#if (GSI_MAX_INTEGRAL_BITS >= 64)
+	printf("File Download: Downloaded %lld byte file\n", bufferLen);
+#else
 	printf("File Download: Downloaded %d byte file\n", bufferLen);
- 
+#endif
+
+
 	return GHTTPTrue;
 }
 
@@ -722,7 +744,7 @@ static void RunTests(SAKE sake)
 		static SAKEUpdateRecordInput input;
 		static SAKEField fields[16];
 		static char binaryData[] = "\x12\x34\x56\xAB\xCD";
-#if defined(_PS2) || defined(_MACOSX)
+#if defined(_PS2) || defined(__APPLE__) || defined(__linux__)
 		static gsi_u16 unicodeString[] = {'u','n','i','c','o','d','e','\0'};
 #else
 		static gsi_u16 *unicodeString = L"unicode";
@@ -1030,6 +1052,17 @@ static void LoginAndAuthenticate(SAKE sake)
 	GPConnection connection;
 	char loginTicket[GP_LOGIN_TICKET_LEN];
 
+#ifdef _PS3
+	// set communication id to string provided by Sony
+	SceNpCommunicationId communication_id = 
+	{
+		{'N','P','X','S','0','0','0','0','5'},
+		'\0',
+		0,
+		0
+	};
+#endif
+
 	pconn = &connection;
 
 	// initialize GP
@@ -1046,6 +1079,15 @@ static void LoginAndAuthenticate(SAKE sake)
 	CHECK_GP_RESULT(gpSetCallback(pconn, GP_RECV_BUDDY_AUTH, (GPCallback)RecvBuddyAuth, NULL), "gpSetCallback failed");
 	CHECK_GP_RESULT(gpSetCallback(pconn, GP_RECV_BUDDY_REVOKE, (GPCallback)RecvBuddyRevoke, NULL), "gpSetCallback failed");
 
+#ifdef _PS3
+	// set the NP communication ID (provided by Sony)
+	CHECK_GP_RESULT(gpSetNpCommunicationId(pconn, &communication_id), "gpSetNpCommunicationId failed");  
+
+	// register the slot for GameSpy to use for the CellSysUtilCallback to prevent overlap
+	// (0 is fine if you do not use this callback)
+	CHECK_GP_RESULT(gpRegisterCellSysUtilCallbackSlot(pconn, 0), "gpRegisterCellSysUtilCallbackSlot failed");
+#endif
+
 	// connect to GP
 	printf("Connecting to GP...\n");
 	CHECK_GP_RESULT(gpConnect(pconn, NICKNAME, EMAIL, PASSWORD, GP_NO_FIREWALL, GP_BLOCKING, (GPCallback)ConnectResponse, NULL), "gpConnect failed");
@@ -1061,6 +1103,7 @@ static void LoginAndAuthenticate(SAKE sake)
 	printf("Authenticating with Sake\n");
 	sakeSetGame(sake, GAMENAME, GAMEID, SECRET_KEY);
 	sakeSetProfile(sake, profileid, loginTicket);
+    printf("Profile Id is %d \n", profileid);
 
 	// Disconnect from GP
 	gpDisconnect(pconn);

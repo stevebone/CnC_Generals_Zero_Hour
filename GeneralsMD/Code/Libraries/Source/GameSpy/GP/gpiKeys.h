@@ -1,3 +1,13 @@
+///////////////////////////////////////////////////////////////////////////////
+// File:	gpiKeys.h
+// SDK:		GameSpy Presence and Messaging SDK
+//
+// Copyright (c) 2012 GameSpy Technology & IGN Entertainment, Inc. All rights
+// reserved. This software is made available only pursuant to certain license
+// terms offered by IGN or its subsidiary GameSpy Industries, Inc. Unlicensed
+// use or use in a manner not expressly authorized by IGN or GameSpy Technology
+// is prohibited.
+
 #ifndef _GPIKEYS_H_
 #define _GPIKEYS_H_
 
@@ -13,7 +23,7 @@ typedef struct
 void gpiStatusInfoKeyFree(void *element);
 GPResult gpiStatusInfoKeysInit(GPConnection * connection);
 void gpiStatusInfoKeysDestroy(GPConnection * connection);
-int gpiStatusInfoKeyCompFunc(const void *elem1, const void *elem2);
+int GS_STATIC_CALLBACK gpiStatusInfoKeyCompFunc(const void *elem1, const void *elem2);
 GPResult gpiStatusInfoAddKey(GPConnection *connection, DArray keys, const char *theKeyName, const char *theKeyValue);
 GPResult gpiStatusInfoDelKey(GPConnection *connection, DArray keys, const char *keyName);
 GPResult gpiStatusInfoSetKey(GPConnection *connection, DArray keys, const char *keyName, const char *newKeyValue);

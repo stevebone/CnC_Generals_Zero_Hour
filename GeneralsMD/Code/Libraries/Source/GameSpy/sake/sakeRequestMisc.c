@@ -1,5 +1,12 @@
 ///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
+// File:	sakeRequestMisc.c
+// SDK:		GameSpy Sake Persistent Storage SDK
+//
+// Copyright (c) IGN Entertainment, Inc.  All rights reserved.  
+// This software is made available only pursuant to certain license terms offered
+// by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed use or use in a 
+// manner not expressly authorized by IGN or GameSpy is prohibited.
+
 #include "sakeRequestInternal.h"
 #include "sakeRequest.h"
 
@@ -7,7 +14,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 // Rate Record
-
 static SAKEStartRequestResult SAKE_CALL sakeiRateRecordValidateInput(SAKERequest request)
 {
 	SAKERateRecordInput *input = (SAKERateRecordInput *)request->mInput;
@@ -40,7 +46,7 @@ static SAKERequestResult sakeiRateRecordProcessSoapResponse(SAKERequest request)
 	SAKERateRecordOutput *output = (SAKERateRecordOutput *)request->mOutput;
 
 	if(gsi_is_false(gsXmlReadChildAsInt(request->mSoapResponse, "numRatings", &output->mNumRatings)) ||
-	   gsi_is_false(gsXmlReadChildAsFloat(request->mSoapResponse, "averageRating", &output->mAverageRating)))
+		gsi_is_false(gsXmlReadChildAsFloat(request->mSoapResponse, "averageRating", &output->mAverageRating)))
 	{
 		return SAKERequestResult_MALFORMED_RESPONSE;
 	}
@@ -56,11 +62,13 @@ SAKEStartRequestResult SAKE_CALL sakeiStartRateRecordRequest(SAKERequest request
 		SAKEI_FUNC_NAME_STRINGS("RateRecord"),
 		sakeiRateRecordValidateInput,
 		sakeiRateRecordFillSoapRequest,
-		sakeiRateRecordProcessSoapResponse
+		sakeiRateRecordProcessSoapResponse,
+		NULL
 	};
 
 	return sakeiStartRequest(request, &info);
 }
+
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -93,7 +101,7 @@ static SAKERequestResult sakeiGetRecordLimitProcessSoapResponse(SAKERequest requ
 	SAKEGetRecordLimitOutput *output = (SAKEGetRecordLimitOutput *)request->mOutput;
 
 	if(gsi_is_false(gsXmlReadChildAsInt(request->mSoapResponse, "limitPerOwner", &output->mLimitPerOwner)) ||
-	   gsi_is_false(gsXmlReadChildAsInt(request->mSoapResponse, "numOwned", &output->mNumOwned)))
+		gsi_is_false(gsXmlReadChildAsInt(request->mSoapResponse, "numOwned", &output->mNumOwned)))
 	{
 		return SAKERequestResult_MALFORMED_RESPONSE;
 	}
@@ -109,7 +117,8 @@ SAKEStartRequestResult SAKE_CALL sakeiStartGetRecordLimitRequest(SAKERequest req
 		SAKEI_FUNC_NAME_STRINGS("GetRecordLimit"),
 		sakeiGetRecordLimitValidateInput,
 		sakeiGetRecordLimitFillSoapRequest,
-		sakeiGetRecordLimitProcessSoapResponse
+		sakeiGetRecordLimitProcessSoapResponse,
+		NULL
 	};
 
 	return sakeiStartRequest(request, &info);
@@ -153,12 +162,13 @@ static SAKERequestResult sakeiGetRecordCountProcessSoapResponse(SAKERequest requ
 {
 	SAKEGetRecordCountOutput *output = (SAKEGetRecordCountOutput *)request->mOutput;
 
-	if(gsi_is_false(gsXmlReadChildAsInt(request->mSoapResponse, "count", &output->mCount)))
-	{
-		return SAKERequestResult_MALFORMED_RESPONSE;
-	}
+    if(gsi_is_false(gsXmlReadChildAsInt(request->mSoapResponse, "count", &output->mCount)))
+    {
+        return SAKERequestResult_MALFORMED_RESPONSE;
+    }
 
-	return SAKERequestResult_SUCCESS;
+    return SAKERequestResult_SUCCESS;
+
 }
 
 
@@ -170,8 +180,11 @@ SAKEStartRequestResult SAKE_CALL sakeiStartGetRecordCountRequest(SAKERequest req
 		SAKEI_FUNC_NAME_STRINGS("GetRecordCount"),
 		sakeiGetRecordCountValidateInput,
 		sakeiGetRecordCountFillSoapRequest,
-		sakeiGetRecordCountProcessSoapResponse
+		sakeiGetRecordCountProcessSoapResponse,
+		NULL
 	};
 
 	return sakeiStartRequest(request, &info);
 }
+
+

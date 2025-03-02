@@ -1,5 +1,14 @@
-// gptest.h : main header file for the GPTEST application
+///////////////////////////////////////////////////////////////////////////////
+// File:	gptest.h
+// SDK:		GameSpy Presence and Messaging SDK
 //
+// Copyright (c) 2012 GameSpy Technology & IGN Entertainment, Inc. All rights
+// reserved. This software is made available only pursuant to certain license
+// terms offered by IGN or its subsidiary GameSpy Industries, Inc. Unlicensed
+// use or use in a manner not expressly authorized by IGN or GameSpy Technology
+// is prohibited.
+// ------------------------------------
+// Main header file for the GPTEST application
 
 #if !defined(AFX_GPTEST_H__FFE82BD6_F31E_4222_818F_A8EE211E15E4__INCLUDED_)
 #define AFX_GPTEST_H__FFE82BD6_F31E_4222_818F_A8EE211E15E4__INCLUDED_
@@ -16,7 +25,7 @@
 
 /////////////////////////////////////////////////////////////////////////////
 // CGptestApp:
-// See gptest.cpp for the implementation of this class
+// See gptest.cpp for the implementation of this class.
 //
 
 class CGptestApp : public CWinApp

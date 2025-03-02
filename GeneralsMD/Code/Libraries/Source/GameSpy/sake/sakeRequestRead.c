@@ -1,5 +1,12 @@
 ///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
+// File:	sakeRequestRead.c
+// SDK:		GameSpy Sake Persistent Storage SDK
+//
+// Copyright (c) IGN Entertainment, Inc.  All rights reserved.  
+// This software is made available only pursuant to certain license terms offered
+// by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed use or use in a 
+// manner not expressly authorized by IGN or GameSpy is prohibited.
+
 #include "sakeRequestInternal.h"
 #include "sakeRequest.h"
 
@@ -305,16 +312,27 @@ static void SAKE_CALL sakeiFreeOutputRecords(int numFields, int numRecords, SAKE
 
 	for(i = 0 ; i < numRecords ; i++)
 	{
-		//Check for binary data or unicode strings and free it if necessary
-		for (j = 0; j < numFields; j++)
-		{
-			if (records[i][j].mType == SAKEFieldType_BINARY_DATA && records[i][j].mValue.mBinaryData.mValue != NULL)
-				gsifree(records[i][j].mValue.mBinaryData.mValue);
-			if (records[i][j].mType == SAKEFieldType_UNICODE_STRING)
-				gsifree(records[i][j].mValue.mUnicodeString);
-		}
+ 		if (records[i])
+ 		{
+			//Check for binary data or unicode strings and free it if necessary
+			for (j = 0; j < numFields; j++)
+			{
+				if (records[i][j].mType == SAKEFieldType_BINARY_DATA && records[i][j].mValue.mBinaryData.mValue != NULL)
+				{
+					gsifree(records[i][j].mValue.mBinaryData.mValue);
+					//records[i][j].mValue.mBinaryData.mValue = NULL;
+				}
+				if (records[i][j].mType == SAKEFieldType_UNICODE_STRING)
+				{
+					gsifree(records[i][j].mValue.mUnicodeString);
+					//records[i][j].mValue.mUnicodeString = NULL;
+				}
+			}
 
-		gsifree(records[i]);
+			gsifree(records[i]);
+			records[i] = NULL;
+ 		}
+ 		
 	}
 	gsifree(records);
 }
@@ -670,5 +688,3 @@ SAKEStartRequestResult SAKE_CALL sakeiStartGetRandomRecordRequest(SAKERequest re
 
 	return sakeiStartRequest(request, &info);
 }
-
-

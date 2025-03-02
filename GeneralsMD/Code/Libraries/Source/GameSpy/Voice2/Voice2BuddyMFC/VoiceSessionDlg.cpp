@@ -54,7 +54,7 @@ END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // CVoiceSessionDlg message handlers
-void CVoiceSessionDlg::OnTimer(UINT nIDEvent) 
+void CVoiceSessionDlg::OnTimer(UINT_PTR nIDEvent) 
 {
 	// Win32 timers can be called concurrently by the OS.
 	//    (you can get a second timer callback before the first finishes!)
@@ -183,8 +183,8 @@ void GT2ReceivedCallback(GT2Connection theConnection, unsigned char* theBuffer, 
 	VoicePacket* aVoicePacket = (VoicePacket*)theBuffer;
 
 	// Sanity check the packet
-	assert(theLength >= gVoicePacketHeaderSize);
-	assert(theLength == (gVoicePacketHeaderSize + aVoicePacket->mDataLength));
+	GS_ASSERT(theLength >= gVoicePacketHeaderSize);
+	GS_ASSERT(theLength == (gVoicePacketHeaderSize + aVoicePacket->mDataLength));
 
 	// Play the voice data
 	GVSource aSource = gt2GetRemoteIP(theConnection);

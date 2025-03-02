@@ -1,5 +1,11 @@
-// PeerTestDlg.cpp : implementation file
+///////////////////////////////////////////////////////////////////////////////
+// File:	PeerTestDlg.cpp
+// SDK:		GameSpy Peer SDK
 //
+// Copyright (c) IGN Entertainment, Inc.  All rights reserved.  
+// This software is made available only pursuant to certain license terms offered
+// by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed use or use in a 
+// manner not expressly authorized by IGN or GameSpy is prohibited.
 
 #include "stdafx.h"
 #include "PeerTest.h"
@@ -11,6 +17,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+#define NET_PORT              55123
 #define VERBOSE 0
 
 /////////////////////////////////////////////////////////////////////////////
@@ -63,7 +70,8 @@ END_MESSAGE_MAP()
 // CPeerTestDlg dialog
 
 CPeerTestDlg::CPeerTestDlg(CWnd* pParent /*=NULL*/)
-	: CDialog(CPeerTestDlg::IDD, pParent)
+: CDialog(CPeerTestDlg::IDD, pParent),
+m_Socket(INVALID_SOCKET)
 {
 	//{{AFX_DATA_INIT(CPeerTestDlg)
 	m_blocking = FALSE;
@@ -1329,7 +1337,7 @@ static void ConnectCallback
 			reason = "login failed";
 		else
 			reason = "unknown";
-		str.Format(_T("Connect: failure (%s)"), reason);
+		str.Format(_T("Connect: failure (%s)"), reason.GetString());
 	}
 	dlg->MessageBox(str);
 
@@ -1380,18 +1388,18 @@ static void NickErrorCallback
 	if(type == PEER_UNIQUENICK_EXPIRED)
 	{
 		dlg->UpdateData();
-		str.Format(_T("This account's unique nick has expired.\nRegister '%s'?"), dlg->m_nick);
+		str.Format(_T("This account's unique nick has expired.\nRegister '%s'?"), dlg->m_nick.GetString());
 		rcode = dlg->MessageBox(str, NULL, MB_YESNO);
-		peerRegisterUniqueNick(peer, atoi(dlg->m_namespace), (rcode == IDYES)?((LPCSTR)dlg->m_nick):NULL, NULL);
+		peerRegisterUniqueNick(peer, atoi(dlg->m_namespace), (rcode == IDYES)?(dlg->m_nick.GetString()):NULL, NULL);
 		return;
 	}
 
 	if(type == PEER_NO_UNIQUENICK)
 	{
 		dlg->UpdateData();
-		str.Format(_T("This account has no unique nick.\nRegister '%s'?"), dlg->m_nick);
+		str.Format(_T("This account has no unique nick.\nRegister '%s'?"), dlg->m_nick.GetString());
 		rcode = dlg->MessageBox(str, NULL, MB_YESNO);
-		peerRegisterUniqueNick(peer, atoi(dlg->m_namespace), (rcode == IDYES)?((LPCSTR)dlg->m_nick):NULL, NULL);
+		peerRegisterUniqueNick(peer, atoi(dlg->m_namespace), (rcode == IDYES)?(dlg->m_nick.GetString()):NULL, NULL);
 		return;
 	}
 
@@ -1544,12 +1552,40 @@ void CPeerTestDlg::OnButton21()
 	}
 }
 
-void CPeerTestDlg::OnTimer(UINT nIDEvent) 
+void CPeerTestDlg::OnTimer(UINT_PTR nIDEvent) 
 {
 	if(nIDEvent == 100)
 	{
 		if(m_peer)
 		{
+			if (m_Socket != INVALID_SOCKET)
+			{
+				// we want to now check if we have data
+				if (CanReceiveOnSocket(m_Socket) > 0)
+				{
+					char buffer[1500];
+					SOCKADDR_IN fromAddr;
+					socklen_t fromAddrLen;
+
+					fromAddrLen = sizeof(SOCKADDR_IN);
+
+					int rcode = recvfrom(m_Socket, buffer, sizeof(buffer), 0, (SOCKADDR *)&fromAddr, &fromAddrLen);
+					if (rcode == SOCKET_ERROR)
+					{
+						// error catch
+						int sockError = WSAGetLastError();
+						CString sockErrString;
+						sockErrString.Format("Socket error: %d\n", sockError);
+						OutputDebugString(sockErrString);
+					}
+					else 
+					{
+						if ((unsigned char)buffer[0] == QR_MAGIC_1 && (unsigned char)buffer[1] == QR_MAGIC_2)
+							peerParseQuery(m_peer, buffer, rcode, (sockaddr *)&fromAddr);
+					}					
+				}
+				
+			}
 			peerThink(m_peer);
 		}
 	}
@@ -1933,7 +1969,7 @@ void CPeerTestDlg::OnButton12()
 		}
 
 		CString caption;
-		caption.Format(_T("Info for %s"), m_selectedNick);
+		caption.Format(_T("Info for %s"), m_selectedNick.GetString());
 		MessageBox(buffer, caption);
 	}
 }
@@ -2078,7 +2114,7 @@ BOOL CPeerTestDlg::DestroyWindow()
 	if(file)
 	{
 		_ftprintf(file, _T("%s\n%s\n%s\n%s\n%s\n%s\n"),
-			m_title, m_secretKey, m_nick, m_email, m_loginPassword, m_namespace);
+			m_title.GetString(), m_secretKey.GetString(), m_nick.GetString(), m_email.GetString(), m_loginPassword.GetString(), m_namespace.GetString());
 		fclose(file);
 	}
 	
@@ -2094,9 +2130,9 @@ void CPeerTestDlg::OnButton16()
 		gsi_char buffer[256];
 
 		if(peerGetPlayerPing(m_peer, m_selectedNick, &ping))
-			_stprintf(buffer, _T("%s has a %dms ping"), m_selectedNick, ping);
+			_stprintf(buffer, _T("%s has a %dms ping"), m_selectedNick.GetString(), ping);
 		else
-			_stprintf(buffer, _T("Failed to get a ping for %s"), m_selectedNick);
+			_stprintf(buffer, _T("Failed to get a ping for %s"), m_selectedNick.GetString());
 
 		MessageBox(buffer);
 	}
@@ -2835,6 +2871,8 @@ void CPeerTestDlg::OnStartAutoMatch()
 {
 	if(m_peer)
 	{
+		SOCKADDR_IN localAddr; // used if we are calling peerStartAutoMatchWithSocket
+
 		UpdateData();
 		if(m_maxPlayers < 2)
 		{
@@ -2844,7 +2882,25 @@ void CPeerTestDlg::OnStartAutoMatch()
 
 		OutputDebugString(_T("AM Starting\n"));
 
-		peerStartAutoMatch(m_peer, m_maxPlayers, _T(""), AutoMatchStatusCallback, AutoMatchRateCallback, NULL, (PEERBool)m_blocking);
+		//peerStartAutoMatch(m_peer, m_maxPlayers, "", AutoMatchStatusCallback, AutoMatchRateCallback, NULL, (PEERBool)m_blocking);
+		
+		m_Socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+		if(m_Socket == INVALID_SOCKET)
+		{
+			MessageBox("Failed to create socket\n");
+			return;
+		}
+
+		// setup socket for calling peerStartAutoMatchWithSocket
+		memset(&localAddr, 0, sizeof(SOCKADDR_IN));
+		localAddr.sin_family = AF_INET;
+		localAddr.sin_port = htons(NET_PORT);
+		if(gsiSocketIsError(bind(m_Socket, (SOCKADDR *)&localAddr, sizeof(SOCKADDR_IN))))
+		{
+			MessageBox("Failed to bind socket\n");
+			return;
+		}
+		peerStartAutoMatchWithSocket(m_peer, m_maxPlayers, "", m_Socket, NET_PORT, AutoMatchStatusCallback, AutoMatchRateCallback, NULL, (PEERBool)m_blocking);
 	}
 }
 
@@ -2859,5 +2915,9 @@ void CPeerTestDlg::OnStopAutoMatch()
 		UpdateData();
 		m_autoMatchStatus = _T("");
 		UpdateData(FALSE);
+
+		if (m_Socket != INVALID_SOCKET)
+			closesocket(m_Socket);
+		m_Socket = INVALID_SOCKET;
 	}
 }

@@ -1,27 +1,21 @@
-/*
-gpiConnect.h
-GameSpy Presence SDK 
-Dan "Mr. Pants" Schoenblum
-
-Copyright 1999-2007 GameSpy Industries, Inc
-
-devsupport@gamespy.com
-
-***********************************************************************
-Please see the GameSpy Presence SDK documentation for more information
-**********************************************************************/
+///////////////////////////////////////////////////////////////////////////////
+// File:	gpiConnect.h
+// SDK:		GameSpy Presence and Messaging SDK
+//
+// Copyright (c) 2012 GameSpy Technology & IGN Entertainment, Inc. All rights
+// reserved. This software is made available only pursuant to certain license
+// terms offered by IGN or its subsidiary GameSpy Industries, Inc. Unlicensed
+// use or use in a manner not expressly authorized by IGN or GameSpy Technology
+// is prohibited.
 
 #ifndef _GPICONNECT_H_
 #define _GPICONNECT_H_
 
 //INCLUDES
-//////////
 #include "gpi.h"
 
 //DEFINES
-/////////
 // Connect States.
-//////////////////
 #define GPI_NOT_CONNECTED              0
 #define GPI_CONNECTING                 1
 #define GPI_NEGOTIATING                2
@@ -30,7 +24,6 @@ Please see the GameSpy Presence SDK documentation for more information
 #define GPI_PROFILE_DELETING           5
 
 //FUNCTIONS
-///////////
 GPResult
 gpiConnect(
   GPConnection * connection,
@@ -40,6 +33,7 @@ gpiConnect(
   const char password[GP_PASSWORD_LEN],
   const char authtoken[GP_AUTHTOKEN_LEN],
   const char partnerchallenge[GP_PARTNERCHALLENGE_LEN],
+  const char loginticket[GP_LOGIN_TICKET_LEN],
   const char cdkey[GP_CDKEY_LEN],
   GPEnum firewall,
   GPIBool newuser,
@@ -64,6 +58,12 @@ gpiProcessConnect(
 GPResult
 gpiCheckConnect(
   GPConnection * connection
+);
+
+GPResult
+gpiProcessRemoteAuthResponse(
+  GPConnection * connection,
+  const char * input
 );
 
 #endif

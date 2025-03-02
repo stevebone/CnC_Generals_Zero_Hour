@@ -554,27 +554,29 @@ AsciiString AudioManager::nextTrackName(const AsciiString& currentTrack )
 }
 
 //-------------------------------------------------------------------------------------------------
-AsciiString AudioManager::prevTrackName(const AsciiString& currentTrack )
+AsciiString AudioManager::prevTrackName(const AsciiString& currentTrack)
 {
+	// Initialize reverse iterator
 	std::vector<AsciiString>::reverse_iterator rit;
+
+	// Loop through the tracks in reverse order
 	for (rit = m_musicTracks.rbegin(); rit != m_musicTracks.rend(); ++rit) {
 		if (*rit == currentTrack) {
 			break;
 		}
 	}
-	
+
+	// If we found the current track, move to the previous track
 	if (rit != m_musicTracks.rend()) {
-		++rit;
+		++rit; // Move to the previous track
 	}
 
+	// If we reached the end of the list, wrap around to the last track
 	if (rit == m_musicTracks.rend()) {
-		rit = m_musicTracks.rbegin();
-		if (rit == m_musicTracks.rend()) {
-			return AsciiString::TheEmptyString;
-		}
+		rit = m_musicTracks.rbegin(); // Point to the first track
 	}
 
-	return *rit;
+	return *rit; // Return the previous track name (or wrap around)
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1034,18 +1036,18 @@ Bool AudioManager::shouldPlayLocally(const AudioEventRTS *audioEvent)
 		return TRUE;
 	}
 
-	if (!BitTest(ei->m_type, (ST_PLAYER | ST_ALLIES | ST_ENEMIES | ST_EVERYONE))) {
+	if (!BitTestEA(ei->m_type, (ST_PLAYER | ST_ALLIES | ST_ENEMIES | ST_EVERYONE))) {
 		DEBUG_CRASH(("No player restrictions specified for '%s'. Using Everyone.\n", ei->m_audioName.str()));
 		return TRUE;
 	}
 
-	if (BitTest(ei->m_type, ST_EVERYONE)) {
+	if (BitTestEA(ei->m_type, ST_EVERYONE)) {
 		return TRUE;
 	}
 
 	Player *owningPlayer = ThePlayerList->getNthPlayer(audioEvent->getPlayerIndex());
 
-	if (BitTest(ei->m_type, ST_PLAYER) && BitTest(ei->m_type, ST_UI) && owningPlayer == NULL) {
+	if (BitTestEA(ei->m_type, ST_PLAYER) && BitTestEA(ei->m_type, ST_UI) && owningPlayer == NULL) {
 		DEBUG_ASSERTCRASH(!TheGameLogic->isInGameLogicUpdate(), ("Playing %s sound -- player-based UI sound without specifying a player.\n"));
 		return TRUE;
 	}
@@ -1065,17 +1067,17 @@ Bool AudioManager::shouldPlayLocally(const AudioEventRTS *audioEvent)
 		return FALSE;
 	}
 
-	if (BitTest(ei->m_type, ST_PLAYER))  {
+	if (BitTestEA(ei->m_type, ST_PLAYER))  {
 		return owningPlayer == localPlayer;
 	}
 
-	if (BitTest(ei->m_type, ST_ALLIES)) { 
+	if (BitTestEA(ei->m_type, ST_PLAYER)) {
 		// We have to also check that the owning player isn't the local player, because PLAYER 
 		// wasn't specified, or we wouldn't have gotten here.
 		return (owningPlayer != localPlayer) && owningPlayer->getRelationship(localTeam) == ALLIES;
 	}
 
-	if (BitTest(ei->m_type, ST_ENEMIES)) {
+	if (BitTestEA(ei->m_type, ST_ENEMIES)) {
 		return owningPlayer->getRelationship(localTeam) == ENEMIES;
 	}
 	

@@ -1,6 +1,13 @@
-// GameSpy Presence and Messaging SDK Stress Test
-// Dan "Mr. Pants" Schoenblum
-// Copyright 2000 GameSpy Industries, Inc
+///////////////////////////////////////////////////////////////////////////////
+// File:	gpstress.c
+// SDK:		GameSpy Presence and Messaging SDK
+//
+// Copyright (c) IGN Entertainment, Inc.  All rights reserved.  
+// This software is made available only pursuant to certain license terms offered
+// by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed use or use in a 
+// manner not expressly authorized by IGN or GameSpy is prohibited.
+// ------------------------------------
+// Stress Test
 
 /*************
 ** INCLUDES **
@@ -8,6 +15,18 @@
 #include <limits.h>
 #include "../gp.h"
 #include "../../common/gsAvailable.h"
+
+#ifndef _WIN32
+#define MAX_PATH PATH_MAX
+#define OutputDebugString printf
+#endif
+
+#ifndef max
+#define max(a, b) (((a)>(b))?(a):(b))
+#endif
+#ifndef min
+#define min(a, b) (((a)<(b))?(a):(b))
+#endif
 
 /************
 ** DEFINES **
@@ -1022,7 +1041,7 @@ void StartOp(Profile * profile)
 **********************/
 void ProcessProfile(Profile * profile)
 {
-	DWORD now = current_time();
+	unsigned int now = current_time();
 
 	// Is GP initialized?
 	/////////////////////
@@ -1324,12 +1343,12 @@ bool Initialize(void)
 {
 	int i;
 	Profile * profile;
-	DWORD now;
+	unsigned int now;
 	GSIACResult aResult = GSIACWaiting;
 
 	// Seed the random number generator.
 	////////////////////////////////////
-	srand(time(NULL));
+	srand((unsigned int)time(NULL));
 
 	// Perform the availability check
 	GSIStartAvailableCheck("gmtest");

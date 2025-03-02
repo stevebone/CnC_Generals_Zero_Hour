@@ -601,7 +601,7 @@ BOOL CScRaceSampleDlg::SetupHosting()
 	/////////////////////////////////
 	rcode = m_waitingDlg.DoModal();
 
-	// If it was cancelled, try again.
+	// If it was canceled, try again.
 	//////////////////////////////////
 	if(rcode != IDOK)
 		Logout();
@@ -897,7 +897,7 @@ void CScRaceSampleDlg::OnDestroy()
 	}
 }
 
-void CScRaceSampleDlg::OnTimer(UINT nIDEvent) 
+void CScRaceSampleDlg::OnTimer(UINT_PTR nIDEvent) 
 {
 	CString debugStr;
 	
@@ -1404,7 +1404,7 @@ void CScRaceSampleDlg::ReportStats()
 		opponentTeam = SCRACE_HOST_TEAM;
 	}
 
-	sprintf(myTeamName, "%s's Team", m_loginDlg.m_nick);
+	sprintf(myTeamName, "%s's Team", m_loginDlg.m_nick.GetString());
 	sprintf(opponentTeamName, "%s's Team", m_remoteCertificate.mProfileNick);
 
 

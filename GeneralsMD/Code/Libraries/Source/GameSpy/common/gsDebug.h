@@ -1,5 +1,20 @@
+///////////////////////////////////////////////////////////////////////////////
+// File:	gsDebug.h
+// SDK:		GameSpy Common
+//
+// Copyright (c) 2012 GameSpy Technology & IGN Entertainment, Inc.  All rights 
+// reserved. This software is made available only pursuant to certain license 
+// terms offered by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed
+// use or use in a manner not expressly authorized by IGN or GameSpy Technology
+// is prohibited.
+
 #ifndef __GSIDEBUG_H__
 #define __GSIDEBUG_H__
+
+#ifdef _DEBUG
+#define GSI_COMMON_DEBUG 1
+#endif
+
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 //  Advanced debug logging for GameSpy SDKs
@@ -12,11 +27,13 @@
 //  Todo:
 //      Allow user to specify IP to send debug output to (remote log for PS2)
 //#include "nonport.h"
-#include <stdarg.h>
 
+#include <stdarg.h>
+#include "gsPlatformThread.h"
 #if defined(__LANGUAGE_C_PLUS_PLUS)||defined(__cplusplus)||defined(c_plusplus)
 extern "C" {
 #endif
+#include "gsPlatform.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -73,7 +90,15 @@ typedef enum
 	GSIDebugCat_NatNeg,
 	GSIDebugCat_HTTP,
 	GSIDebugCat_CDKey,
+
+	// From GameSpy OpenSDK
+	GSIDebugCat_Direct2Game,
+    GSIDebugCat_Brigades,
+    GSIDebugCat_AuthService,
+    GSIDebugCat_Sake,
+	GSIDebugCat_Atlas,
 	// Add new ones here (update string table in gsiDebug.c!)
+	GSIDebugCat_GT2,
 
 
 	GSIDebugCat_Common, // Common should be last to prevent display weirdness
@@ -167,7 +192,7 @@ void gsDebugBinary(GSIDebugCategory theCat, GSIDebugType theType,
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 // Output functions
-void  gsSetDebugLevel(GSIDebugCategory theCat, GSIDebugType theType, 
+COMMON_API void  gsSetDebugLevel(GSIDebugCategory theCat, GSIDebugType theType, 
 					  GSIDebugLevel theLevel);
 
 #if !defined(_NITRO)
@@ -176,7 +201,7 @@ void  gsSetDebugLevel(GSIDebugCategory theCat, GSIDebugType theType,
 void  gsSetDebugFile(FILE* theFile);
 
 // Open and set the debug file
-FILE* gsOpenDebugFile(const char* theFileName);
+COMMON_API FILE* gsOpenDebugFile(const char* theFileName);
 
 // Retrieve the debug file
 FILE* gsGetDebugFile();
@@ -184,7 +209,7 @@ FILE* gsGetDebugFile();
 #endif
 
 // Set a callback to be triggered with debug output
-void  gsSetDebugCallback(GSIDebugCallback theCallback);
+COMMON_API void  gsSetDebugCallback(GSIDebugCallback theCallback);
 
 
 ///////////////////////////////////////////////////////////////////////////////

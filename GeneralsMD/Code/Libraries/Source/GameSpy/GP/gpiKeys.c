@@ -1,3 +1,12 @@
+///////////////////////////////////////////////////////////////////////////////
+// File:	gpiKeys.c
+// SDK:		GameSpy Presence and Messaging SDK
+//
+// Copyright (c) IGN Entertainment, Inc.  All rights reserved.  
+// This software is made available only pursuant to certain license terms offered
+// by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed use or use in a 
+// manner not expressly authorized by IGN or GameSpy is prohibited.
+
 #include "gpi.h"
 
 void gpiStatusInfoKeyFree(void *element)
@@ -28,7 +37,7 @@ void gpiStatusInfoKeysDestroy(GPConnection * connection)
 	}
 }
 
-int gpiStatusInfoKeyCompFunc(const void *elem1, const void *elem2)
+int GS_STATIC_CALLBACK gpiStatusInfoKeyCompFunc(const void *elem1, const void *elem2)
 {
 	GPIKey *key1 = (GPIKey *)elem1, 
 		   *key2 = (GPIKey *)elem2;
@@ -172,7 +181,7 @@ GPResult gpiSaveKeysToBuffer(GPConnection *connection, char **buffer)
 		gsDebugFormat(GSIDebugCat_GP, GSIDebugType_Memory, GSIDebugLevel_HotError, "gpiSaveKeysToBuffer: buffer Out of memory.");
 		Error(connection, GP_MEMORY_ERROR, "Out of memory.");
 	}
-	bytesWritten = sprintf(*buffer, keysHeader);
+	bytesWritten = sprintf(*buffer, "%s", keysHeader);
 	tempPoint = *buffer + bytesWritten;
 	for (i = 0; i < aLength; i++)
 	{

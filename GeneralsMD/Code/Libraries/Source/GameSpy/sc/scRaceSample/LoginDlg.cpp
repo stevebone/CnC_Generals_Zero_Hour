@@ -179,13 +179,13 @@ void CLoginDlg::OnOK()
 	file = fopen("login.txt", "wt");
 	if(file)
 	{
-		fprintf(file, "%s\n%s\n%s", m_email, m_nick, m_password);
+		fprintf(file, "%s\n%s\n%s", m_email.GetString(), m_nick.GetString(), m_password.GetString());
 		fclose(file);
 	}
 
 	// Login to the Authentication Service
 	//////////////////////////////////////
-	loginResult = wsLoginProfile(WSLogin_NAMESPACE_SHARED_NONUNIQUE, WSLogin_PARTNERCODE_GAMESPY, m_nick, m_email, m_password, "", LoginCallback, NULL);
+	loginResult = wsLoginProfile(SCRACE_GAMEID, WSLogin_NAMESPACE_SHARED_NONUNIQUE, WSLogin_PARTNERCODE_GAMESPY, m_nick, m_email, m_password, "", LoginCallback, NULL);
 	if (loginResult != WSLogin_Success)
 	{
 		if (loginResult == WSLogin_InvalidParameters)

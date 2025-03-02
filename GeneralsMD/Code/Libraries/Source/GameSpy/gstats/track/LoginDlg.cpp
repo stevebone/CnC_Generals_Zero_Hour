@@ -62,7 +62,7 @@ void CLoginDlg::OnOK()
 {
 	GPConnection connection;
 	HCURSOR hourglass;
-	HCURSOR lastCursor;
+	HCURSOR lastCursor = LoadCursor(NULL, IDC_ARROW);
 	GPResult result;
 
 	UpdateData();
@@ -131,7 +131,7 @@ void CLoginDlg::OnOK()
 	file = fopen("login.txt", "wt");
 	if(file)
 	{
-		fprintf(file, "%s\n%s\n%s", m_email, m_nick, m_password);
+		fprintf(file, "%s\n%s\n%s", m_email.GetString(), m_nick.GetString(), m_password.GetString());
 		fclose(file);
 	}
 

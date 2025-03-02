@@ -1,12 +1,11 @@
-/*
-GameSpy Chat SDK 
-Dan "Mr. Pants" Schoenblum
-dan@gamespy.com
-
-Copyright 1999-2007 GameSpy Industries, Inc
-
-devsupport@gamespy.com
-*/
+///////////////////////////////////////////////////////////////////////////////
+// File:	chatSocket.h
+// SDK:		GameSpy Chat SDK
+//
+// Copyright (c) IGN Entertainment, Inc.  All rights reserved.  
+// This software is made available only pursuant to certain license terms offered
+// by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed use or use in a 
+// manner not expressly authorized by IGN or GameSpy is prohibited.
 
 #ifndef _CHATSOCKET_H_
 #define _CHATSOCKET_H_
@@ -23,6 +22,7 @@ devsupport@gamespy.com
 typedef enum ciConnectState
 {
 	ciNotConnected,
+	ciConnecting,
 	ciConnected,
 	ciDisconnected
 } ciConnectState;
@@ -92,5 +92,7 @@ CHATBool ciSocketSendf(ciSocket * sock,
 				   ...);
 
 ciServerMessage * ciSocketRecv(ciSocket * sock);
+
+CHATBool ciSocketCheckConnect(CHAT chat);
 
 #endif

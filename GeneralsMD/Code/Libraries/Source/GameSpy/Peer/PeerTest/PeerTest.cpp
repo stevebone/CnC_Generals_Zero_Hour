@@ -1,5 +1,11 @@
-// PeerTest.cpp : Defines the class behaviors for the application.
+///////////////////////////////////////////////////////////////////////////////
+// File:	PeerTest.cpp
+// SDK:		GameSpy Peer SDK
 //
+// Copyright (c) IGN Entertainment, Inc.  All rights reserved.  
+// This software is made available only pursuant to certain license terms offered
+// by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed use or use in a 
+// manner not expressly authorized by IGN or GameSpy is prohibited.
 
 #include "stdafx.h"
 #include "PeerTest.h"
@@ -60,9 +66,9 @@ BOOL CPeerTestApp::InitInstance()
 	Enable3dControlsStatic();	// Call this when linking to MFC statically
 #endif
 */
-	CPeerTestDlg dlg;
-	m_pMainWnd = &dlg;
-	int nResponse = dlg.DoModal();
+	CPeerTestDlg dlg2;
+	m_pMainWnd = &dlg2;
+	int nResponse = dlg2.DoModal();
 	if (nResponse == IDOK)
 	{
 		// TODO: Place code here to handle when the dialog is

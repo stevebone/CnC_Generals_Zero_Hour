@@ -1,12 +1,21 @@
 ///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
+// File:	gsLargeInt.h
+// SDK:		GameSpy Common
+//
+// Copyright (c) 2012 GameSpy Technology & IGN Entertainment, Inc.  All rights 
+// reserved. This software is made available only pursuant to certain license 
+// terms offered by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed
+// use or use in a manner not expressly authorized by IGN or GameSpy Technology
+// is prohibited.
+// ------------------------------------
 // Large Integer Library
+
 #ifndef __GSLARGEINT_H__
 #define __GSLARGEINT_H__
 
 #include "gsCommon.h"
 #include "gsXML.h"
-#include "../md5.h"
+#include "md5.h"
 
 
 #if defined(__cplusplus)
@@ -22,7 +31,8 @@ extern "C" {
 #define GS_LARGEINT_BINARY_SIZE		 (2048)   // *BIT* size (divide by 8 for byte size)
 #endif
 
-	//  !!!!!!WARNING!!!!!!  Encryption is fastest when digit type is the default system type, (ex: gsi_u32 on 32bit processor)
+//  !!!!!!WARNING!!!!!!  Encryption is fastest when digit type is the default 
+// system type, (ex: gsi_u32 on 32bit processor)
 #define GS_LARGEINT_DIGIT_TYPE       gsi_u32
 #define GS_LARGEINT_DIGIT_LONG_TYPE  gsi_u64
 
@@ -49,7 +59,7 @@ typedef struct gsLargeInt_s
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 // Commonly used functions
-void     gsLargeIntAddToMD5(const gsLargeInt_t * lint, MD5_CTX * md5);
+void     gsLargeIntAddToMD5(const gsLargeInt_t * lint, GSMD5_CTX * md5);
 gsi_bool gsLargeIntSetFromHexString(gsLargeInt_t *lint, const char* hexstring);
 gsi_bool gsLargeIntPrint (FILE* logFile, const gsLargeInt_t *lint);
 gsi_u32  gsLargeIntGetByteLength(const gsLargeInt_t *lint);

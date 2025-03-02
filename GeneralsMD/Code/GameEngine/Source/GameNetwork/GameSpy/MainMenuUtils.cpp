@@ -32,6 +32,8 @@
 #include "PreRTS.h"	// This must go first in EVERY cpp file int the GameEngine
 
 #include <fcntl.h>
+//#include <cstdio>  // For C++
+#include <stdio.h>
 
 //#include "Common/Registry.h"
 #include "Common/UserPreferences.h"
@@ -642,7 +644,7 @@ static GHTTPBool numPlayersOnlineCallback( GHTTPRequest request, GHTTPResult res
 void CheckOverallStats( void )
 {
 	ghttpGet("http://gamestats.gamespy.com/ccgenzh/display.html",
-		GHTTPFalse, overallStatsCallback, NULL);
+		GHTTPFalse, (ghttpCompletedCallback)overallStatsCallback, NULL);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -650,7 +652,7 @@ void CheckOverallStats( void )
 void CheckNumPlayersOnline( void )
 {
 	ghttpGet("http://launch.gamespyarcade.com/software/launch/arcadecount2.dll?svcname=ccgenzh",
-		GHTTPFalse, numPlayersOnlineCallback, NULL);
+		GHTTPFalse, (ghttpCompletedCallback)numPlayersOnlineCallback, NULL);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -812,10 +814,10 @@ static void reallyStartPatchCheck( void )
 	DEBUG_LOG(("Map patch check: [%s]\n", mapURL.c_str()));
 	DEBUG_LOG(("Config: [%s]\n", configURL.c_str()));
 	DEBUG_LOG(("MOTD: [%s]\n", motdURL.c_str()));
-	ghttpGet(gameURL.c_str(), GHTTPFalse, gamePatchCheckCallback, (void *)timeThroughOnline);
-	ghttpGet(mapURL.c_str(), GHTTPFalse, gamePatchCheckCallback, (void *)timeThroughOnline);
-	ghttpHead(configURL.c_str(), GHTTPFalse, configHeadCallback, (void *)timeThroughOnline);
-	ghttpGet(motdURL.c_str(), GHTTPFalse, motdCallback, (void *)timeThroughOnline);
+	ghttpGet(gameURL.c_str(), GHTTPFalse, (ghttpCompletedCallback)gamePatchCheckCallback, (void*)timeThroughOnline);
+	ghttpGet(mapURL.c_str(), GHTTPFalse, (ghttpCompletedCallback)gamePatchCheckCallback, (void*)timeThroughOnline);
+	ghttpHead(configURL.c_str(), GHTTPFalse, (ghttpCompletedCallback)configHeadCallback, (void*)timeThroughOnline);
+	ghttpGet(motdURL.c_str(), GHTTPFalse, (ghttpCompletedCallback)motdCallback, (void*)timeThroughOnline);
 	
 	// check total game stats
 	CheckOverallStats();

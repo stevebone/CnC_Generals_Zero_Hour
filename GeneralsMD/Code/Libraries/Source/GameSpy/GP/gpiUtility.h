@@ -1,31 +1,25 @@
-/*
-gpiUtility.h
-GameSpy Presence SDK 
-Dan "Mr. Pants" Schoenblum
-
-Copyright 1999-2007 GameSpy Industries, Inc
-
-devsupport@gamespy.com
-
-***********************************************************************
-Please see the GameSpy Presence SDK documentation for more information
-**********************************************************************/
+///////////////////////////////////////////////////////////////////////////////
+// File:	gpiUtility.h
+// SDK:		GameSpy Presence and Messaging SDK
+//
+// Copyright (c) 2012 GameSpy Technology & IGN Entertainment, Inc. All rights
+// reserved. This software is made available only pursuant to certain license
+// terms offered by IGN or its subsidiary GameSpy Industries, Inc. Unlicensed
+// use or use in a manner not expressly authorized by IGN or GameSpy Technology
+// is prohibited.
 
 #ifndef _GPIUTILITY_H_
 #define _GPIUTILITY_H_
 
 //INCLUDES
-//////////
 #include "gpi.h"
 
 //DEFINES
-/////////
+
 // Buffer read size.
-////////////////////
 #define GPI_READ_SIZE                  (16 * 1024)
 
 //MACROS
-////////
 #define freeclear(mem)      { gsifree(mem); (mem) = NULL; }
 
 #define Error(connection, result, string)       { gpiSetErrorString(connection, string);\
@@ -34,6 +28,9 @@ Please see the GameSpy Presence SDK documentation for more information
 #define CallbackError(connection, result, code, string)  { gpiSetError(connection, code, string);\
                                                            gpiCallErrorCallback(connection, result, GP_NON_FATAL);\
                                                            return result;}
+
+#define CallbackErrorNoReturn(connection, result, code, string) { gpiSetError(connection, code, string);\
+																  gpiCallErrorCallback(connection, result, GP_NON_FATAL);}
 
 #define CallbackFatalError(connection, result, code, string)  { gpiSetError(connection, code, string);\
                                                                  gpiCallErrorCallback(connection, result, GP_FATAL);\
@@ -44,12 +41,11 @@ Please see the GameSpy Presence SDK documentation for more information
                                                           return __result__;}}
 
 //FUNCTIONS
-///////////
 void
 strzcpy(
   char * dest,
   const char * src,
-  size_t len  // length of buffer, including space for '\0'
+  size_t len  // Length of buffer, including space for '\0'.
 );
 
 void

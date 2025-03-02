@@ -1,12 +1,11 @@
-/*
-GameSpy Chat SDK 
-Dan "Mr. Pants" Schoenblum
-dan@gamespy.com
-
-Copyright 1999-2007 GameSpy Industries, Inc
-
-devsupport@gamespy.com
-*/
+///////////////////////////////////////////////////////////////////////////////
+// File:	chatCallbacks.c
+// SDK:		GameSpy Chat SDK
+//
+// Copyright (c) IGN Entertainment, Inc.  All rights reserved.  
+// This software is made available only pursuant to certain license terms offered
+// by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed use or use in a 
+// manner not expressly authorized by IGN or GameSpy is prohibited.
 
 /*************
 ** INCLUDES **
@@ -15,15 +14,10 @@ devsupport@gamespy.com
 #include "chatCallbacks.h"
 #include "chatChannel.h"
 
-#if defined(_WIN32)
-// warning about casting void* to function*
-#pragma warning(disable:4055)
-#endif
-
 /************
 ** DEFINES **
 ************/
-#define ASSERT_DATA(data)   assert(data != NULL); assert(data->type >= 0); assert(data->type < CALLBACK_NUM); assert(data->callback != NULL); assert(data->callbackParams != NULL);  assert(data->ID >= 0);
+#define ASSERT_DATA(data)   GS_ASSERT(data != NULL); GS_ASSERT(data->type >= 0); GS_ASSERT(data->type < CALLBACK_NUM); GS_ASSERT(data->callback != NULL); GS_ASSERT(data->callbackParams != NULL);  GS_ASSERT(data->ID >= 0);
 #define RAW                 callbackParams->raw
 #define REASON              callbackParams->reason
 #define USER                callbackParams->user
@@ -81,7 +75,7 @@ devsupport@gamespy.com
 								}\
 								memcpy(destParams->mode, srcParams->mode, sizeof(CHATChannelMode));\
 							} else {} // remove dangling "if" danger
-#define COPY_STR_ARRAY(array, num)  assert(srcParams->num >= 0);\
+#define COPY_STR_ARRAY(array, num)  GS_ASSERT(srcParams->num >= 0);\
 									if(!srcParams->array)\
 										destParams->array = NULL;\
 									else\
@@ -112,10 +106,10 @@ devsupport@gamespy.com
 											}\
 										}\
 									}
-#define COPY_INT_ARRAY(array, num)  assert(srcParams->num >= 0);\
+#define COPY_INT_ARRAY(array, num)  GS_ASSERT(srcParams->num >= 0);\
                                     if(srcParams->num > 0)\
 									{\
-										assert(srcParams->array != NULL);\
+										GS_ASSERT(srcParams->array != NULL);\
 										len = (int)(sizeof(int) * srcParams->num);\
 										destParams->array = (int *)gsimalloc((unsigned int)len);\
 										if(destParams->array == NULL)\
@@ -482,7 +476,7 @@ static void ciFreeCallbackData(ciCallbackData * data)
 	default:
 		// The type for this callback is messed up.
 		///////////////////////////////////////////
-		assert(0);
+		GS_FAIL();
 	}
 
 	// gsifree the params structure.
@@ -542,16 +536,16 @@ CHATBool ciAddCallback_(CHAT chat, int type, void * callback, void * callbackPar
 	int i;
 	CONNECTION;
 
-	assert(type >= 0);
-	assert(type < CALLBACK_NUM);
-	assert(connection->callbackList != NULL);
-	assert(callback != NULL);
-	assert(callbackParams != NULL);
-	assert(callbackParamsSize > 0);
-	assert(ID >= 0);
+	GS_ASSERT(type >= 0);
+	GS_ASSERT(type < CALLBACK_NUM);
+	GS_ASSERT(connection->callbackList != NULL);
+	GS_ASSERT(callback != NULL);
+	GS_ASSERT(callbackParams != NULL);
+	GS_ASSERT(callbackParamsSize > 0);
+	GS_ASSERT(ID >= 0);
 #ifdef _DEBUG
 	if(channel != NULL)
-		assert(channel[0] != '\0');
+		GS_ASSERT(channel[0] != '\0');
 #endif
 
 	// Setup the data.
@@ -563,11 +557,13 @@ CHATBool ciAddCallback_(CHAT chat, int type, void * callback, void * callbackPar
 	data.callbackParams = gsimalloc(callbackParamsSize);
 #else
 	data.callbackParams = gsimalloc(callbackParamsSize + 64);
-	memset(data.callbackParams, 0xC4, callbackParamsSize + 64);
 #endif
 	if(data.callbackParams == NULL)
 		return CHATFalse; //ERRCON
 	memcpy(data.callbackParams, callbackParams, callbackParamsSize);
+#ifdef _DEBUG
+	memset((unsigned char*)data.callbackParams + callbackParamsSize, 0xC4, 64);
+#endif
 	data.param = param;
 	data.ID = ID;
 	if(channel == NULL)
@@ -902,7 +898,7 @@ CHATBool ciAddCallback_(CHAT chat, int type, void * callback, void * callbackPar
 	default:
 		// The type for this callback is messed up.
 		///////////////////////////////////////////
-		assert(0);
+		GS_FAIL();
 	}
 
 	// Add it to the array.
@@ -1184,10 +1180,13 @@ static void ciCallCallback(CHAT chat, ciCallbackData * data)
 
 	case CALLBACK_ENUM_CHANNELS_ALL:
 	{
+		ciConnection *connection = (ciConnection *)chat;
+		
 		ciCallbackEnumChannelsAllParams * callbackParams = (ciCallbackEnumChannelsAllParams *)data->callbackParams;
 		chatEnumChannelsCallbackAll callback = (chatEnumChannelsCallbackAll)data->callback;
 #ifndef GSI_UNICODE
 		callback(chat, SUCCESS, NUM_CHANNELS, (const char **)CHANNELS, (const char **)TOPICS, NUM_USERS, param);
+		connection->pendingListing = CHATFalse;
 		break;
 #else
 		unsigned short** channels_W = UTF8ToUCS2StringArrayAlloc((const char **)CHANNELS, NUM_CHANNELS);
@@ -1195,8 +1194,9 @@ static void ciCallCallback(CHAT chat, ciCallbackData * data)
 		callback(chat, SUCCESS, NUM_CHANNELS, (const unsigned short**)channels_W, (const unsigned short**)topics_W, NUM_USERS, param);
 		FREE_STRING_ARRAY(channels_W, NUM_CHANNELS);
 		FREE_STRING_ARRAY(topics_W, NUM_CHANNELS);
+		connection->pendingListing = CHATFalse;
 		break;
-#endif
+#endif		
 	}
 
 	case CALLBACK_ENTER_CHANNEL:
@@ -1543,7 +1543,7 @@ static void ciCallCallback(CHAT chat, ciCallbackData * data)
 	default:
 		// The type for this callback is messed up.
 		///////////////////////////////////////////
-		assert(0);
+		GS_FAIL();
 	}
 
 	// gsifree the data.

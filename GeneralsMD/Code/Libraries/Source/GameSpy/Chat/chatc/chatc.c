@@ -1,6 +1,11 @@
-// GameSpy Chat SDK C Test App
-// Dan "Mr. Pants" Schoenblum
-// dan@gamespy.com
+///////////////////////////////////////////////////////////////////////////////
+// File:	chatc.c
+// SDK:		GameSpy Chat SDK
+//
+// Copyright (c) IGN Entertainment, Inc.  All rights reserved.  
+// This software is made available only pursuant to certain license terms offered
+// by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed use or use in a 
+// manner not expressly authorized by IGN or GameSpy is prohibited.
 
 /*************
 ** INCLUDES **
@@ -23,7 +28,7 @@
 /************
 ** GLOBALS **
 ************/
-// mj Nov 7th, zero out to known state globals.
+// Nov 7th: Zero out to known state globals.
 int port					=	0;
 CHAT chat					=	{0};
 gsi_char serverAddress[128]	=	{0};
@@ -53,7 +58,7 @@ int test_main(int argc, char **argv);
 	#define _tstrncasecmp strncasecmp
 #endif
 
-// Simulate case insensitive compare functions
+// Simulate case-insensitive compare functions.
 #if defined(GSI_UNICODE)
 int WideCaseCompare(const unsigned short* s1, const unsigned short* s2);
 int WideCaseNCompare(const unsigned short* s1, const unsigned short* s2, size_t count);
@@ -255,32 +260,32 @@ static void ChannelModeChanged(CHAT chat, const gsi_char * channel, CHATChannelM
 	GSI_UNUSED(param);
 }
 
-static void UserListUpdated(CHAT chat, const gsi_char * channel, void * param)
+static void UserListUpdated(CHAT chat2, const gsi_char * channel, void * param)
 {
 	_tprintf(_T("User list updated\n"));
 	
-	GSI_UNUSED(chat);
+	GSI_UNUSED(chat2);
 	GSI_UNUSED(channel);
 	GSI_UNUSED(param);
 }
 
-static void ConnectCallback(CHAT chat, CHATBool success, int failureReason, void * param)
+static void ConnectCallback(CHAT chat2, CHATBool success, int failureReason, void * param)
 {
 	if (success == CHATFalse)
 		_tprintf(_T("Failed to connect (%d)\n"), failureReason);
 	else
 		_tprintf(_T("Connected\n"));
-	GSI_UNUSED(chat);
+	GSI_UNUSED(chat2);
 	GSI_UNUSED(success);
 	GSI_UNUSED(param);
 }
 
 
-static void FillInUserCallback(CHAT chat, unsigned int IP, gsi_char user[128], void * param)
+static void FillInUserCallback(CHAT chat2, unsigned int IP, gsi_char user[128], void * param)
 {
 	_tcscpy(user, chatUser);
 	
-	GSI_UNUSED(chat);
+	GSI_UNUSED(chat2);
 	GSI_UNUSED(IP);
 	GSI_UNUSED(param);
 }
@@ -299,7 +304,6 @@ static void NickErrorCallback(CHAT chat, int type, const gsi_char * nick, int nu
 		_tprintf(_T("The nick %s is invalid!\n"), nick);
 		// chatDisconnect(chat); THIS CRASHES
 		
-		// 10-14-2004: Added By Saad Nader
 		// this is necessary as the function will fail if a new nick is not retries.
 		////////////////////////////////////////////////////////////////////////////
 		_tsnprintf(chatNick,CHAT_NICK_SIZE,_T("ChatC%lu"),(unsigned long)current_time());
@@ -323,8 +327,7 @@ static void NickErrorCallback(CHAT chat, int type, const gsi_char * nick, int nu
 			_tprintf(_T("   %s\n"), suggestedNicks[i]);
 	}
 
-	// 10-14-2004: Added By Saad Nader
-	// added for the addition of a new error code.
+	// Added to handle a new error code.
 	////////////////////////////////////////////////////////////////////////////
 	else if(type == CHAT_NICK_TOO_LONG)
 	{
@@ -368,18 +371,7 @@ static void GetUserInfoCallback(CHAT chat, CHATBool success, const gsi_char * ni
 	GSI_UNUSED(chat);
 	GSI_UNUSED(param);
 }
-/*
-static void EnumChannelsAllCallback(CHAT chat, CHATBool success, int numChannels, const gsi_char ** channel, const gsi_char ** topic, int* numUsers, void * param)
-{
-	GSI_UNUSED(chat);
-	GSI_UNUSED(success);
-	GSI_UNUSED(numChannels);
-	GSI_UNUSED(channel);
-	GSI_UNUSED(topic);
-	GSI_UNUSED(numUsers);
-	GSI_UNUSED(param);
-}
-*/
+
 static void EnumUsersCallback(CHAT chat, CHATBool success, const gsi_char * channel, int numUsers, const gsi_char ** users, int * modes, void * param)
 {
 	int i;
@@ -408,9 +400,6 @@ int test_main(int argc, char **argv)
 
 	// Set default options.
 	///////////////////////
-	// SDK takes care of default server address and port now
-	//_tcscpy(serverAddress, _T("peerchat." GSI_DOMAIN_NAME));
-	//port = 6667;
 	_tsnprintf(chatNick,CHAT_NICK_SIZE,_T("ChatC%lu"),(unsigned long)current_time() % 1000);
 	chatNick[CHAT_NICK_SIZE - 1] = '\0';
 	_tcscpy(chatUser, _T("ChatCUser"));
@@ -435,7 +424,7 @@ int test_main(int argc, char **argv)
 			{
 			case 's':
 #ifndef GSI_UNICODE
-				strcpy(serverAddress, argv[++i]);
+				gsiSafeStrcpyA(serverAddress, argv[++i], sizeof(serverAddress));
 #else
 				AsciiToUCS2String(argv[++i], serverAddress);
 #endif
@@ -445,21 +434,21 @@ int test_main(int argc, char **argv)
 				break;
 			case 'n':
 #ifndef GSI_UNICODE
-				strcpy(chatNick, argv[++i]);
+				gsiSafeStrcpyA(chatNick, argv[++i], sizeof(chatNick));
 #else
 				AsciiToUCS2String(argv[++i], chatNick);
 #endif
 				break;
 			case 'u':
 #ifndef GSI_UNICODE
-				strcpy(chatUser, argv[++i]);
+				gsiSafeStrcpyA(chatUser, argv[++i], sizeof(chatUser));
 #else
 				AsciiToUCS2String(argv[++i], chatUser);
 #endif
 				break;
 			case 'c':
 #ifndef GSI_UNICODE
-				strcpy(chatChannel, argv[++i]);
+				gsiSafeStrcpyA(chatChannel, argv[++i], sizeof(chatChannel));
 #else
 				AsciiToUCS2String(argv[++i], chatChannel);
 #endif

@@ -12,7 +12,6 @@
  * modified is included with the above copyright notice.
  *
  */
-
 #ifdef _STLP_USE_PRAGMA_ONCE
 #pragma once	// JKMCD should speed up compile times.
 #endif
@@ -30,7 +29,7 @@
 #endif
 
 # if defined (_STLP_USE_NEW_C_HEADERS)
-#  include _STLP_NATIVE_CPP_C_HEADER(cstdio)
+//#  include _STLP_NATIVE_CPP_C_HEADER(cstdio)
 # else
 #  include _STLP_NATIVE_C_HEADER(stdio.h)
 # endif
@@ -45,11 +44,11 @@
 # endif
 
 #  if defined (_STLP_MSVC) || defined (__ICL)
-inline
-int vsnprintf(char *s1, size_t n, const char *s2, va_list v)
-{
-	return _STLP_VENDOR_CSTD::_vsnprintf(s1, n, s2, v);
-}
+//inline
+//int vsnprintf(char *s1, size_t n, const char *s2, va_list v)
+//{
+//	return _STLP_VENDOR_CSTD::_vsnprintf(s1, n, s2, v);
+//}
 #  endif
 
 # ifdef _STLP_IMPORT_VENDOR_CSTD 

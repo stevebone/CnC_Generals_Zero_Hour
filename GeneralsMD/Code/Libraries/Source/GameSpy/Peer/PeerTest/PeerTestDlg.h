@@ -1,5 +1,11 @@
-// PeerTestDlg.h : header file
+///////////////////////////////////////////////////////////////////////////////
+// File:	PeerTestDlg.h
+// SDK:		GameSpy Peer SDK
 //
+// Copyright (c) IGN Entertainment, Inc.  All rights reserved.  
+// This software is made available only pursuant to certain license terms offered
+// by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed use or use in a 
+// manner not expressly authorized by IGN or GameSpy is prohibited.
 
 #if !defined(AFX_PEERTESTDLG_H__3043C7C9_6FE5_433F_83A6_8186F9E145A8__INCLUDED_)
 #define AFX_PEERTESTDLG_H__3043C7C9_6FE5_433F_83A6_8186F9E145A8__INCLUDED_
@@ -89,7 +95,7 @@ protected:
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
 	afx_msg void OnButton1();
-	afx_msg void OnTimer(UINT nIDEvent);
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg void OnButton2();
 	afx_msg void OnButton3();
 	afx_msg void OnButton4();
@@ -153,6 +159,9 @@ protected:
 	afx_msg void OnButton50();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+
+private: 
+	SOCKET m_Socket;
 };
 
 extern CPeerTestDlg * dlg;

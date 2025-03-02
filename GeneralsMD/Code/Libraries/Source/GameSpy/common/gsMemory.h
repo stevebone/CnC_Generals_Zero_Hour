@@ -1,5 +1,13 @@
 ///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
+// File:	gsMemory.h
+// SDK:		GameSpy Common
+//
+// Copyright (c) 2012 GameSpy Technology & IGN Entertainment, Inc.  All rights 
+// reserved. This software is made available only pursuant to certain license 
+// terms offered by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed
+// use or use in a manner not expressly authorized by IGN or GameSpy Technology
+// is prohibited.
+
 #ifndef __GSIMEMORY_H__
 #define __GSIMEMORY_H__
 
@@ -50,6 +58,12 @@ void* gsimalloc		(size_t size);
 void* gsirealloc	(void* ptr, size_t size);
 void  gsifree		(void* ptr);
 void* gsimemalign	(size_t boundary, size_t size); // TODO
+
+//--------------------------------------------------------------------------
+// Zero memory buffer.  Never removed by compiler, so good candidate to
+// clear security sensitive temporary buffer on function exit, as memset can
+// be removed by compiler when no side effects present.
+void gsiZeroMemory(void* buffer, size_t size);
 
 //--------------------------------------------------------------------------
 // Customer supplied memory manager customization interface

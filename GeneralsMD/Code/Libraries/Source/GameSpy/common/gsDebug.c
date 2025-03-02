@@ -1,5 +1,13 @@
 ///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
+// File:	gsDebug.c
+// SDK:		GameSpy Common
+//
+// Copyright (c) 2012 GameSpy Technology & IGN Entertainment, Inc.  All rights 
+// reserved. This software is made available only pursuant to certain license 
+// terms offered by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed
+// use or use in a manner not expressly authorized by IGN or GameSpy Technology
+// is prohibited.
+
 #include "gsCommon.h"
 #include "gsDebug.h"
 //#include <stdio.h>
@@ -7,13 +15,18 @@
 
 
 // THIS FILE ONLY INCLUDED WHEN USING GAMESPY DEBUG FUNCTIONS
-//    (don't put this above the header includes or VC will whine
+// (Putting this above the header includes may cause compiler warnings.)
 #ifdef GSI_COMMON_DEBUG
 
 #if defined(_NITRO)
 #include "../../common/nitro/screen.h"
 #define printf Printf
 #define vprintf VPrintf
+#endif
+
+#if defined(ANDROID)
+#include <android/log.h>
+#include <stdarg.h>
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -24,7 +37,7 @@ static struct GSIDebugInstance gGSIDebugInstance; // simple singleton "class"
 // Line prefixes, e.g. "[ cat][type][ lev] text"
 char* gGSIDebugCatStrings[GSIDebugCat_Count] =
 {
-	" APP", " GP ", "PEER", " QR2", "  SB", "  V2", "  AD", "  NN", "HTTP", "CDKY", " CMN"
+	" APP", " GP ", "PEER", " QR2", "  SB", "  V2", "  AD", "  NN", "HTTP", "CDKY", "D2G", "BRIG", "AUTH", "SAKE", " CMN", "ATLS", " GT2"
 };
 char* gGSIDebugTypeStrings[GSIDebugType_Count] =
 {
@@ -59,7 +72,7 @@ static gsi_u32 gsiDebugLog2(gsi_u32 theInt)
 static void gsiDebugCallback(GSIDebugCategory category, GSIDebugType type,
 						GSIDebugLevel level, const char * format, va_list params)
 {
-	#if defined(_PSP)
+	#if defined(_PSP) || defined(_PSP2)
 		// Output line prefix
 		vprintf(format, params);
 		//gsDebugTTyPrint(string);
@@ -71,12 +84,47 @@ static void gsiDebugCallback(GSIDebugCategory category, GSIDebugType type,
 		// Output line prefix
 		vprintf(format, params);
 
+	#elif defined(ANDROID)
+		static char string[512];
+		android_LogPriority priority;
+		switch(level)
+		{
+			case GSIDebugLevel_HotError:
+				priority = ANDROID_LOG_ERROR;
+				break;
+			case GSIDebugLevel_WarmError:
+				priority = ANDROID_LOG_ERROR;
+				break;
+			case GSIDebugLevel_Warning:
+				priority = ANDROID_LOG_WARN;
+				break;
+			case GSIDebugLevel_Notice:
+				priority = ANDROID_LOG_INFO;
+				break;
+			case GSIDebugLevel_Comment:
+				priority = ANDROID_LOG_INFO;
+				break;
+			case GSIDebugLevel_RawDump:
+				priority = ANDROID_LOG_DEBUG;
+				break;
+			case GSIDebugLevel_StackTrace:
+				priority = ANDROID_LOG_VERBOSE;
+				break;
+
+			default:
+				priority = ANDROID_LOG_VERBOSE;
+				break;
+		}
+		vsprintf(string,format,params);
+		__android_log_print(priority, "GAMESPY", "[%s] [%s] %s",
+				gGSIDebugCatStrings[category],gGSIDebugTypeStrings[type],string);
+
 	#elif defined(_WIN32)
 		static char string[256];
 		vsprintf(string, format, params); 			
 		OutputDebugStringA(string);
 
-	#elif defined(_LINUX) || defined(_MACOSX)
+	#elif defined(_LINUX) || defined(_MACOSX) || defined (_IPHONE)
 		//static char    string[256];
 		//vsprintf(string, format, params); 			
 		vprintf(format, params);
@@ -115,10 +163,10 @@ void gsDebugVaList(GSIDebugCategory theCat, GSIDebugType theType,
 	GSIDebugLevel aCurLevel;
 
 	// Verify Parameters
-	assert(theCat   <= GSIDebugCat_Count);
-	assert(theType  <= GSIDebugType_Count);
-	assert(theLevel <= (1<<GSIDebugLevel_Count));
-	assert(theTokenStr);
+	GS_ASSERT(theCat   <= GSIDebugCat_Count);
+	GS_ASSERT(theType  <= GSIDebugType_Count);
+	GS_ASSERT(theLevel <= (1<<GSIDebugLevel_Count));
+	GS_ASSERT(theTokenStr);
 
 	// Make thread safe
 	if (gGSIDebugInstance.mInitialized == 0)
@@ -178,10 +226,10 @@ void gsDebugFormat(GSIDebugCategory theCat, GSIDebugType theType,
 	va_list aParameterList;
 
 	// Verify Parameters
-	assert(theCat   <= GSIDebugCat_Count);
-	assert(theType  <= GSIDebugType_Count);
-	assert(theLevel <= (1<<GSIDebugLevel_Count));
-	assert(theTokenStr);
+	GS_ASSERT(theCat   <= GSIDebugCat_Count);
+	GS_ASSERT(theType  <= GSIDebugType_Count);
+	GS_ASSERT(theLevel <= (1<<GSIDebugLevel_Count));
+	GS_ASSERT(theTokenStr);
 
 	// Find start of var arg list
 	va_start(aParameterList, theTokenStr);
@@ -204,7 +252,7 @@ static void HexEncode16(const char* theInStream, char* theOutStream,
 	char* aTextOutStream = (theOutStream+aTextOffSet); // set the write ptr
 	const unsigned int aWriteBit = theInLen & 1; // write on odd or even bytes?
 
-	assert(theInLen <= 16);
+	GS_ASSERT(theInLen <= 16);
 
 	// Set buffer to ' '
 	memset(theOutStream, ' ', aRowWidth);
@@ -253,7 +301,7 @@ void gsDebugBinary(GSIDebugCategory theCat, GSIDebugType theType,
 	// convert and display in 40 byte segments
 	while(aBytesLeft > 0)
 	{
-		gsi_i32 aBytesToRead = min(aBytesLeft, 16);
+		gsi_i32 aBytesToRead = GS_MIN(aBytesLeft, 16);
 
 		HexEncode16(aReadPos, aHexStr, (unsigned int)aBytesToRead);
 		gsDebugFormat(theCat, theType, theLevel, "  %s\r\n", aHexStr);
@@ -266,54 +314,72 @@ void gsDebugBinary(GSIDebugCategory theCat, GSIDebugType theType,
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
-void gsSetDebugLevel(GSIDebugCategory theCat, GSIDebugType theType, 
-					  GSIDebugLevel theLevel)
+static void gsiSetDebugLevel(GSIDebugCategory theCat, GSIDebugType theType, 
+					  GSIDebugLevel theLevel, gsi_bool notifyChange)
 {
 	// Verify Parameters
-	assert(theCat   <= GSIDebugCat_Count);
-	assert(theType  <= GSIDebugType_Count);
+	GS_ASSERT(theCat   <= GSIDebugCat_Count);
+	GS_ASSERT(theType  <= GSIDebugType_Count);
 
 	// Set for all categories?
 	if (theCat == GSIDebugCat_Count)
 	{
 		int i=0;
+
+		if (gsi_is_true(notifyChange))
+		{
+			gsDebugFormat(GSIDebugCat_Common, GSIDebugType_Misc,
+				GSIDebugLevel_Debug,
+				"Debug level set to %s for all categories (SDKs)\r\n",
+				gGSIDebugLevelDescriptionStrings[gsiDebugLog2(theLevel)]);
+		}
+
 		for (; i<GSIDebugCat_Count; i++)
-			gsSetDebugLevel((GSIDebugCategory)i, theType, theLevel);
-
-		gsDebugFormat(GSIDebugCat_Common, GSIDebugType_Misc,
-			GSIDebugLevel_Debug,
-			"Debug level set to %s for all categories (SDKs)\r\n",
-			gGSIDebugLevelDescriptionStrings[gsiDebugLog2(theLevel)]);
-
+			gsiSetDebugLevel((GSIDebugCategory)i, theType, theLevel, gsi_false);
+		
 		return;
 	}
 	
 	// Set for all types?
-	if (theType == GSIDebugType_Count)
+	else if (theType == GSIDebugType_Count)
 	{
 		int i=0;
-		for (; i<GSIDebugType_Count; i++)
-			gsSetDebugLevel(theCat, (GSIDebugType)i, theLevel);
 
-		gsDebugFormat(GSIDebugCat_Common, GSIDebugType_Misc,
-			GSIDebugLevel_Debug,
-			"Debug level set to %s for all types\r\n",
-			gGSIDebugLevelDescriptionStrings[gsiDebugLog2(theLevel)]);
+		if (gsi_is_true(notifyChange))
+		{
+
+			gsDebugFormat(GSIDebugCat_Common, GSIDebugType_Misc,
+				GSIDebugLevel_Debug,
+				"Debug level set to %s for %s (all types)\r\n",
+				gGSIDebugLevelDescriptionStrings[gsiDebugLog2(theLevel)],
+				gGSIDebugCatStrings[theCat]);
+		}
+		
+		for (; i<GSIDebugType_Count; i++)
+			gsiSetDebugLevel(theCat, (GSIDebugType)i, theLevel, gsi_false);
+
 		return;
 	}
 
 	// Is the new level different from the old?
 	if (gGSIDebugInstance.mGSIDebugLevel[theCat][theType] != theLevel)
 	{
-		// Notify of the change
-		gsDebugFormat(GSIDebugCat_Common, GSIDebugType_Misc, 
-			GSIDebugLevel_Comment,
-			"Changing debug level: [%s][%s][%02X]\r\n",
-			gGSIDebugCatStrings[theCat], 
-			gGSIDebugTypeStrings[theType], 
-			theLevel );
+		if (gsi_is_true(notifyChange))
+		{
+			// Notify of the change
+			gsDebugFormat(GSIDebugCat_Common, GSIDebugType_Misc, 
+				GSIDebugLevel_Comment,
+				"Changing debug level: [%s][%s][%02X]\r\n",
+				gGSIDebugCatStrings[theCat], 
+				gGSIDebugTypeStrings[theType], 
+				theLevel );
+		}
 		gGSIDebugInstance.mGSIDebugLevel[theCat][theType] = theLevel;
 	}
+}
+void gsSetDebugLevel(GSIDebugCategory theCat, GSIDebugType theType, GSIDebugLevel theLevel)
+{
+	gsiSetDebugLevel(theCat, theType, theLevel, gsi_true);
 }
 
 #if !defined(_NITRO)
@@ -353,10 +419,10 @@ FILE* gsOpenDebugFile(const char* theFileName)
 	FILE* aFile = NULL;
 
 	// Verify parameters
-	assert(theFileName != NULL);
+	GS_ASSERT(theFileName != NULL);
 
 	// Open the new file (clear contents)
-	aFile = fopen(theFileName, "w+");
+	aFile = gsifopen(theFileName, "w+");
 	if (aFile != NULL)
 		gsSetDebugFile(aFile);
 

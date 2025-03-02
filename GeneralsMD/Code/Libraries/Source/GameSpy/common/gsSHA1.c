@@ -1,35 +1,39 @@
-/*
- *  sha1.c
- *
- *  Description:
- *      This file implements the Secure Hashing Algorithm 1 as
- *      defined in FIPS PUB 180-1 published April 17, 1995.
- *
- *      The SHA-1, produces a 160-bit message digest for a given
- *      data stream.  It should take about 2**n steps to find a
- *      message with the same digest as a given message and
- *      2**(n/2) to find any two messages with the same digest,
- *      when n is the digest size in bits.  Therefore, this
- *      algorithm can serve as a means of providing a
- *      "fingerprint" for a message.
- *
- *  Portability Issues:
- *      SHA-1 is defined in terms of 32-bit "words".  This code
- *      uses <stdint.h> (included via "sha1.h" to define 32 and 8
- *      bit unsigned integer types.  If your C compiler does not
- *      support 32 bit unsigned integers, this code is not
- *      appropriate.
- *
- *  Caveats:
- *      SHA-1 is designed to work with messages less than 2^64 bits
- *      long.  Although SHA-1 allows a message digest to be generated
- *      for messages of any number of bits less than 2^64, this
- *      implementation only works with messages with a length that is
- *      a multiple of the size of an 8-bit character.
- *
- */
+///////////////////////////////////////////////////////////////////////////////
+// File:	gsSHA1.c
+// SDK:		GameSpy Common
+//
+// Copyright (c) 2012 GameSpy Technology & IGN Entertainment, Inc.  All rights 
+// reserved. This software is made available only pursuant to certain license 
+// terms offered by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed
+// use or use in a manner not expressly authorized by IGN or GameSpy Technology
+// is prohibited.
+// ------------------------------------
+// Description:
+//     This file implements the Secure Hashing Algorithm 1 as
+//     defined in FIPS PUB 180-1 published April 17, 1995.
+//
+//     The SHA-1, produces a 160-bit message digest for a given
+//     data stream.  It should take about 2**n steps to find a
+//     message with the same digest as a given message and
+//     2**(n/2) to find any two messages with the same digest,
+//     when n is the digest size in bits.  Therefore, this
+//     algorithm can serve as a means of providing a
+//     "fingerprint" for a message.
+//
+// Portability Issues:
+//     SHA-1 is defined in terms of 32-bit "words".  This code
+//     uses <stdint.h> (included via "sha1.h" to define 32 and 8
+//     bit unsigned integer types.  If your C compiler does not
+//     support 32 bit unsigned integers, this code is not
+//     appropriate.
+//
+// Caveats:
+//     SHA-1 is designed to work with messages less than 2^64 bits
+//     long.  Although SHA-1 allows a message digest to be generated
+//     for messages of any number of bits less than 2^64, this
+//     implementation only works with messages with a length that is
+//     a multiple of the size of an 8-bit character.
 
-//#include "sha1.h"
 #include "gsSHA1.h"
 
 /*
@@ -39,14 +43,14 @@
                 (((word) << (bits)) | ((word) >> (32-(bits))))
 
 /* Local Function Prototyptes */
-void SHA1PadMessage(SHA1Context *);
-void SHA1ProcessMessageBlock(SHA1Context *);
+void SHA1PadMessage(GSSHA1Context *);
+void SHA1ProcessMessageBlock(GSSHA1Context *);
 
 /*
- *  SHA1Reset
+ *  GSSHA1Reset
  *
  *  Description:
- *      This function will initialize the SHA1Context in preparation
+ *      This function will initialize the GSSHA1Context in preparation
  *      for computing a new SHA1 message digest.
  *
  *  Parameters:
@@ -55,9 +59,8 @@ void SHA1ProcessMessageBlock(SHA1Context *);
  *
  *  Returns:
  *      sha Error Code.
- *
  */
-int SHA1Reset(SHA1Context *context)
+int GSSHA1Reset(GSSHA1Context *context)
 {
     if (!context)
     {
@@ -81,7 +84,7 @@ int SHA1Reset(SHA1Context *context)
 }
 
 /*
- *  SHA1Result
+ *  GSSHA1Result
  *
  *  Description:
  *      This function will return the 160-bit message digest into the
@@ -97,10 +100,9 @@ int SHA1Reset(SHA1Context *context)
  *
  *  Returns:
  *      sha Error Code.
- *
  */
-int SHA1Result( SHA1Context *context,
-                uint8_t Message_Digest[SHA1HashSize])
+int GSSHA1Result( GSSHA1Context *context,
+                uint8_t Message_Digest[GSSHA1HashSize])
 {
     int i;
 
@@ -128,7 +130,7 @@ int SHA1Result( SHA1Context *context,
 
     }
 
-    for(i = 0; i < SHA1HashSize; ++i)
+    for(i = 0; i < GSSHA1HashSize; ++i)
     {
         Message_Digest[i] = (uint8_t)(context->Intermediate_Hash[i>>2]
                             >> 8 * ( 3 - ( i & 0x03 ) ));
@@ -138,7 +140,7 @@ int SHA1Result( SHA1Context *context,
 }
 
 /*
- *  SHA1Input
+ *  GSSHA1Input
  *
  *  Description:
  *      This function accepts an array of octets as the next portion
@@ -155,9 +157,8 @@ int SHA1Result( SHA1Context *context,
  *
  *  Returns:
  *      sha Error Code.
- *
  */
-int SHA1Input(    SHA1Context    *context,
+int GSSHA1Input(    GSSHA1Context    *context,
                   const uint8_t  *message_array,
                   unsigned       length)
 {
@@ -184,26 +185,28 @@ int SHA1Input(    SHA1Context    *context,
     }
     while(length-- && !context->Corrupted)
     {
-    context->Message_Block[context->Message_Block_Index++] =
-                    (uint8_t)(*message_array & 0xFF);
+      GS_ASSERT(context->Message_Block_Index < sizeof(context->Message_Block));
 
-    context->Length_Low += 8;
-    if (context->Length_Low == 0)
-    {
-        context->Length_High++;
-        if (context->Length_High == 0)
-        {
-            /* Message is too long */
-            context->Corrupted = 1;
-        }
-    }
+      context->Message_Block[context->Message_Block_Index++] =
+          (uint8_t)(*message_array & 0xFF);
 
-    if (context->Message_Block_Index == 64)
-    {
-        SHA1ProcessMessageBlock(context);
-    }
+      context->Length_Low += 8;
+      if (context->Length_Low == 0)
+      {
+          context->Length_High++;
+          if (context->Length_High == 0)
+          {
+              /* Message is too long */
+              context->Corrupted = 1;
+          }
+      }
 
-    message_array++;
+      if (context->Message_Block_Index == 64)
+      {
+          SHA1ProcessMessageBlock(context);
+      }
+
+      message_array++;
     }
 
     return shaSuccess;
@@ -227,10 +230,8 @@ int SHA1Input(    SHA1Context    *context,
  *      Many of the variable names in this code, especially the
  *      single character names, were used because those were the
  *      names used in the publication.
- *
- *
  */
-void SHA1ProcessMessageBlock(SHA1Context *context)
+void SHA1ProcessMessageBlock(GSSHA1Context *context)
 {
     const uint32_t K[] =    {       /* Constants defined in SHA-1   */
                             0x5A827999,
@@ -338,10 +339,8 @@ void SHA1ProcessMessageBlock(SHA1Context *context)
  *          The appropriate SHA*ProcessMessageBlock function
  *  Returns:
  *      Nothing.
- *
  */
-
-void SHA1PadMessage(SHA1Context *context)
+void SHA1PadMessage(GSSHA1Context *context)
 {
     /*
      *  Check to see if the current message block is too small to hold

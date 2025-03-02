@@ -3,8 +3,11 @@
 // *same as Linux*
 // 
 // NOTE: when implementing this make sure the "-lpthread" compiler option is used
-//
-///////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2012 GameSpy Technology & IGN Entertainment, Inc.  All rights 
+// reserved. This software is made available only pursuant to certain license 
+// terms offered by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed
+// use or use in a manner not expressly authorized by IGN or GameSpy Technology
+// is prohibited.
 ///////////////////////////////////////////////////////////////////////////////
 #include "../gsPlatformUtil.h"
 #include "../gsPlatformThread.h"
@@ -16,21 +19,28 @@
 
 #define PTHREAD_NO_ERROR 0
 
-
-///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
-// These functions are unsupported in the current version of the SDK
-
 gsi_u32 gsiInterlockedIncrement(gsi_u32 * value)
 {
-	GS_ASSERT_STR(gsi_false, "gsiInterlockIncrement is unsupported for Mac OSX in the current version of the SDK\n");
+#if defined(__clang__) || (defined(__GNUC__) && (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__) >= 40700)
+	return __atomic_add_fetch(value, 1, __ATOMIC_SEQ_CST);
+#elif defined(__GNUC__)
+	return __sync_add_and_fetch(value, 1);
+#else
+	GS_ASSERT_STR(gsi_false, "gsiInterlockIncrement is unsupported for Mac OSX in the current version of the SDK when not compiled with GCC or Clang\n");
 	return 1;
+#endif
 }
 
 gsi_u32 gsiInterlockedDecrement(gsi_u32 * value)
 {
-	GS_ASSERT_STR(gsi_false, "gsiInterlockIncrement is unsupported for Mac OSX in the current version of the SDK\n");
+#if defined(__clang__) || (defined(__GNUC__) && (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__) >= 40700)
+	return __atomic_sub_fetch(value, 1, __ATOMIC_SEQ_CST);
+#elif defined(__GNUC__)
+	return __sync_sub_and_fetch(value, 1);
+#else
+	GS_ASSERT_STR(gsi_false, "gsiInterlockDecrement is unsupported for Mac OSX in the current version of the SDK when not compiled with GCC or Clang\n");
 	return 1;
+#endif
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -1,24 +1,29 @@
-/*
- *  sha1.h
- *
- *  Description:
- *      This is the header file for code which implements the Secure
- *      Hashing Algorithm 1 as defined in FIPS PUB 180-1 published
- *      April 17, 1995.
- *
- *      Many of the variable names in this code, especially the
- *      single character names, were used because those were the names
- *      used in the publication.
- *
- *      Please read the file sha1.c for more information.
- *
- */
+///////////////////////////////////////////////////////////////////////////////
+// File:	gsSHA1.h
+// SDK:		GameSpy Common
+//
+// Copyright (c) 2012 GameSpy Technology & IGN Entertainment, Inc.  All rights 
+// reserved. This software is made available only pursuant to certain license 
+// terms offered by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed
+// use or use in a manner not expressly authorized by IGN or GameSpy Technology
+// is prohibited.
+// ------------------------------------
+// This is the header file for code which implements the Secure
+// Hashing Algorithm 1 as defined in FIPS PUB 180-1 published
+// April 17, 1995.
+//
+// Many of the variable names in this code, especially the
+// single character names, were used because those were the names
+// used in the publication.
+//
+// Please read the file sha1.c for more information.
 
 #ifndef _SHA1_H_
 #define _SHA1_H_
 
 //#include <stdint.h>
 #include "gsCommon.h"
+
 /*
  * If you do not have the ISO standard stdint.h header file, then you
  * must typdef the following:
@@ -28,13 +33,16 @@
  *  int_least16_t    integer of >= 16 bits
  *
  */
-#ifndef _PS3
+// WD : THOMAS : These are already defined in Android:
+#ifndef ANDROID
+#if !(defined(_PS3) || defined(_UNIX) || defined(_MACOSX))
 	// these common types are defined in sony libs
 	typedef gsi_u32 uint32_t;
 	typedef gsi_u8  uint8_t;
 #endif
 
 typedef gsi_i16 int_least16_t;
+#endif
 
 #ifndef _SHA_enum_
 #define _SHA_enum_
@@ -46,15 +54,15 @@ enum
     shaStateError       /* called Input after Result */
 };
 #endif
-#define SHA1HashSize 20
+#define GSSHA1HashSize 20
 
 /*
  *  This structure will hold context information for the SHA-1
  *  hashing operation
  */
-typedef struct SHA1Context
+typedef struct GSSHA1Context
 {
-    uint32_t Intermediate_Hash[SHA1HashSize/4]; /* Message Digest  */
+    uint32_t Intermediate_Hash[GSSHA1HashSize/4]; /* Message Digest  */
 
     uint32_t Length_Low;            /* Message length in bits      */
     uint32_t Length_High;           /* Message length in bits      */
@@ -65,7 +73,7 @@ typedef struct SHA1Context
 
     int Computed;               /* Is the digest computed?         */
     int Corrupted;             /* Is the message digest corrupted? */
-} SHA1Context;
+} GSSHA1Context;
 
 /*
  *  Function Prototypes
@@ -77,12 +85,12 @@ extern "C"
 #endif
 
 
-int SHA1Reset(  SHA1Context *);
-int SHA1Input(  SHA1Context *,
+int GSSHA1Reset(  GSSHA1Context *);
+int GSSHA1Input(  GSSHA1Context *,
                 const uint8_t *,
                 unsigned int);
-int SHA1Result( SHA1Context *,
-                uint8_t Message_Digest[SHA1HashSize]);
+int GSSHA1Result( GSSHA1Context *,
+                uint8_t Message_Digest[GSSHA1HashSize]);
 
 
 #if defined(__cplusplus)

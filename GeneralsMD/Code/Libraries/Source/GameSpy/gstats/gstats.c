@@ -17,8 +17,8 @@ INCLUDES
 #include "gstats.h"
 #include "gpersist.h"
 #include "../common/gsAvailable.h"
-#include "../darray.h"
-#include "../md5.h"
+#include "../common/darray.h"
+#include "../common/md5.h"
 
 
 #ifdef __cplusplus
@@ -79,7 +79,7 @@ static void CheckDiskFile();
 static void DiskWrite(char *line, int len);
 #endif
 static void InternalInit();
-static int SendChallengeResponse(const char *indata, int gameport);
+static int SendChallengeResponse(const char *indata, int theGameport);
 static int RecvSessionKey();
 static int DoSend(char *data, int len);
 static void xcode_buf(char *buf, int len);
@@ -112,7 +112,6 @@ void GetPersistDataValuesModifiedA(int localid, int profileid, persisttype_t typ
 /********
 DEFINES
 ********/
-//#define SSHOST "207.199.80.230"
 #define SSHOST "gamestats." GSI_DOMAIN_NAME
 #define SSPORT 29920
 
@@ -124,7 +123,7 @@ DEFINES
 	r = f(g->buckets, n, v); \
 	if (!r) \
 	r = BucketNew(g->buckets, n, t, v); }
-#define DOXCODE(b, l, e) enc = e; xcode_buf(b,l);
+#define DOXCODE(b, l, e) enc = e; xcode_buf(b,(int)(l));
 
 
 /********
@@ -198,7 +197,7 @@ char *GenerateAuthA(const char *challenge, const char *password, char response[3
 	sprintf(rawout, "%s%s",password, challenge );
 
 	/* do the response md5 */
-	MD5Digest((unsigned char *)rawout, strlen(rawout), response);
+	GSMD5Digest((unsigned char *)rawout, (unsigned int)strlen(rawout), response);
 	return response;
 }
 #ifdef GSI_UNICODE
@@ -215,7 +214,9 @@ char *GenerateAuthW(const char* challenge, const unsigned short *password, char 
 int InitStatsAsync(int theGamePort, gsi_time theInitTimeout)
 {
 	struct sockaddr_in saddr;
-	char tempHostname[128];
+#ifndef UNISPY_FORCE_IP
+	char tempHostname[sizeof(gcd_gamename)/sizeof(gcd_gamename[0]) + 2 + sizeof(StatsServerHostname)/sizeof(StatsServerHostname[0])];
+#endif
 	int  ret;
 		
 	gameport = theGamePort;
@@ -240,6 +241,7 @@ int InitStatsAsync(int theGamePort, gsi_time theInitTimeout)
 
 	rcvlen = 0; //make sure ther receive buffer is cleared
 
+#ifndef UNISPY_FORCE_IP
 	if (inet_addr(StatsServerHostname) == INADDR_NONE)
 	{
 		strcpy(tempHostname, gcd_gamename);
@@ -250,6 +252,10 @@ int InitStatsAsync(int theGamePort, gsi_time theInitTimeout)
 	
 	if (get_sockaddrin(tempHostname,SSPORT,&saddr,NULL) == 0)
 		return GE_NODNS;
+#else
+	if (get_sockaddrin(UNISPY_FORCE_IP, SSPORT, &saddr, NULL) == 0)
+		return GE_NODNS;
+#endif
 
 #ifdef INSOCK
 	sock = socket ( AF_INET, SOCK_STREAM, 0 );
@@ -430,9 +436,9 @@ int InitStatsThink()
 
 /****************************************************************************/
 // Blocking version of InitStatsAsync, for backwards compatability
-int InitStatsConnection(int gameport)
+int InitStatsConnection(int gameport_)
 {
-	int aResult = InitStatsAsync(gameport, 0);
+	int aResult = InitStatsAsync(gameport_, 0);
 	while (aResult == GE_CONNECTING)
 	{
 		aResult = InitStatsThink();
@@ -586,7 +592,7 @@ int SendGameSnapShotA(statsgame_t game, const char *snapshot, int final)
 		snapcopy = goastrdup(snapshot);
 	snaplen = (int)strlen(snapcopy);
 
-	data = (char *)gsimalloc((unsigned int)snaplen + 256);
+	data = (char *)gsimalloc((size_t)snaplen + 256);
 
 	/* Escape the data */
 	while (snaplen--)
@@ -898,7 +904,7 @@ int PersistThink()
 				rcvmax = 256;
 			else
 				rcvmax *= 2;
-			rcvbuffer = gsirealloc(rcvbuffer, (unsigned int)(rcvmax+1));
+			rcvbuffer = gsirealloc(rcvbuffer, (size_t)rcvmax+1);
 			if (rcvbuffer == NULL)
 				return 0; //errcon
 		}
@@ -917,7 +923,7 @@ int PersistThink()
 		else
 		{
 			//shift the remaining data down
-			memmove(rcvbuffer,rcvbuffer + processed, (unsigned int)(rcvlen - processed));
+			memmove(rcvbuffer,rcvbuffer + processed, (size_t)(rcvlen - processed));
 			rcvlen -= processed;
 		}
 		
@@ -954,11 +960,11 @@ void InternalInit()
 }
 
 
-static int SendChallengeResponse(const char *indata, int gameport)
+static int SendChallengeResponse(const char *indata, int theGameport)
 {
 	static char challengestr[] = {'\0','h','a','l','l','e','n','g','e','\0'};
 	char *challenge;
-	char resp[128];
+	char resp[384];
 	char md5val[33];
 
 	/* make this harder to find in the string table */
@@ -976,9 +982,9 @@ static int SendChallengeResponse(const char *indata, int gameport)
 	
 	len = sprintf(resp, "%d%s",g_crc32(challenge,(int)strlen(challenge)), gcd_secret_key);
 	
-	MD5Digest((unsigned char *)resp, (unsigned int)len, md5val);
+	GSMD5Digest((unsigned char *)resp, (unsigned int)len, md5val);
 	DOXCODE(respformat, sizeof(respformat)-1, enc3);
-	len = sprintf(resp,respformat,gcd_gamename, md5val, gameport);
+	len = sprintf(resp,respformat,gcd_gamename, md5val, theGameport);
 	
 	if ( DoSend(resp, len) <= 0 )
 	{
@@ -995,9 +1001,9 @@ static int RecvSessionKey()
 {
 	/* get the response */
 	static char sesskeystr[] = {'\0','e','s','s','k','e','y','\0'};
-	char resp[128];
+	char resp[129];
 	char *stext;
-	int len = (int)recv(sock, resp,128,0);
+	int len = (int)recv(sock, resp, (int)(sizeof(resp)/sizeof(resp[0]) - 1), 0);
 	if (gsiSocketIsError(len))
 	{
 		int anError = GOAGetLastError(sock);
@@ -1009,7 +1015,7 @@ static int RecvSessionKey()
 			return GE_DATAERROR; //temp fix in case len == -1, SOCKET_ERROR
 	}
 
-	resp[len] = 0;
+	resp[len] = '\0';
 	DOXCODE(resp, len, enc1);
 	sesskeystr[0] = 's';
 	stext = value_for_key(resp, sesskeystr);
@@ -1311,14 +1317,14 @@ static void SetPersistDataHelper(int localid, int profileid, persisttype_t type,
 	tlen = sprintf(tdata, respformat, profileid, type, index, kvset, localid, len);
 	if (tlen + len < 480) //we have enough room to put it in the data block
 	{
-		memcpy(tdata + tlen, data, (unsigned int)len);
+		memcpy(tdata + tlen, data, (size_t)len);
 		senddata = tdata;
 
 	} else //need to alloc a temp buffer
 	{
-		senddata = (char *)gsimalloc((unsigned int)(len + tlen + 256));
-		memcpy(senddata, tdata, (unsigned int)tlen);
-		memcpy(senddata + tlen, data, (unsigned int)len);
+		senddata = (char *)gsimalloc((size_t)len + tlen + 256);
+		memcpy(senddata, tdata, (size_t)tlen);
+		memcpy(senddata + tlen, data, (size_t)len);
 	}
 
 	if (sock != INVALID_SOCKET)
@@ -1502,9 +1508,9 @@ static void ProcessStatement(char *buff, int len)
 	} else if (strncmp(buff,"\\getpidr\\",9) == 0)
 	{
 		ProcessGetPid(buff, len);
-	} else if (strncmp(buff,"\\getpidr\\",9) == 0)
+/*	} else if (strncmp(buff,"\\getpidr\\",9) == 0)
 	{
-		ProcessGetPid(buff, len);
+		ProcessGetPid(buff, len);*/
 	} else if (strncmp(buff,"\\getpdr\\",8) == 0)
 	{
 		ProcessGetData(buff, len);
@@ -1528,8 +1534,8 @@ static int ProcessInBuffer(char *buff, int len)
 	while ((len > 0) && (pos != NULL))
 	{
 		DOXCODE(buff,pos - buff, enc1);
-		ProcessStatement(buff, pos - buff);
-		len -= (pos - buff) + 7;
+		ProcessStatement(buff, (int)(pos - buff));
+		len -= (int)(pos - buff) + 7;
 		buff = pos + 7; //skip the final
 		if (len>0)
 			pos = FindFinal(buff, len);

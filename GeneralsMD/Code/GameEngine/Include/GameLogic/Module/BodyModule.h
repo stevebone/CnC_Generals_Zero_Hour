@@ -36,7 +36,7 @@
 #include "GameLogic/Damage.h"
 #include "GameLogic/ArmorSet.h"
 #include "GameLogic/Module/BehaviorModule.h"
-
+#include "Common/BodyModuleTypes.h"
 //-------------------------------------------------------------------------------------------------
 /** OBJECT BODY MODULE base class */
 //-------------------------------------------------------------------------------------------------
@@ -50,7 +50,6 @@ class WeaponTemplate;
 	* enumeration being in sequential order
 	*/
 //-------------------------------------------------------------------------------------------------
-#include "BodyModuleTypes.h"
 
 #ifdef DEFINE_BODYDAMAGETYPE_NAMES
 static const char* TheBodyDamageTypeNames[] =

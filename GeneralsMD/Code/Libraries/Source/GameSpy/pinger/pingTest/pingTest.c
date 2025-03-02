@@ -1,9 +1,16 @@
-#include <windows.h>
-#include <process.h>
-#include <conio.h>
-
 #define PINGER_UDP_PING_SIZE  64
 #include "../pinger.h"
+
+#ifdef _WIN32
+#include <process.h>
+#include <conio.h>
+#define s_addr S_un.S_addr
+#else
+#include <arpa/inet.h>
+#define getch getchar
+#define Sleep sleep
+#define _getpid getpid
+#endif
 
 void pinged(unsigned int IP,
 			unsigned short port,
@@ -13,7 +20,7 @@ void pinged(unsigned int IP,
 			void * param)
 {
 	IN_ADDR addr;
-	addr.S_un.S_addr = IP;
+	addr.s_addr = IP;
 
 	printf("PINGED!\n"
 	       "%s:%d %dms", inet_ntoa(addr), ntohs(port), ping);
@@ -32,8 +39,7 @@ void reply(unsigned int IP,
 		   void * param)
 {
 	IN_ADDR addr;
-	addr.S_un.S_addr = IP;
-
+    addr.s_addr = IP;
 	printf("REPLY!\n"
 	       "%s:%d %dms", inet_ntoa(addr), ntohs(port), ping);
 
@@ -47,7 +53,7 @@ void setData(unsigned int IP, unsigned short port, char * data, int len, void * 
 {
 	char buffer[32];
 	sprintf(buffer, "my pid is %d", _getpid());
-	assert((strlen(buffer) + 1) <= (unsigned)len);
+	GS_ASSERT((strlen(buffer) + 1) <= (unsigned int)len);
 	strcpy(data, buffer);
 }
 
@@ -73,7 +79,7 @@ int main(int argc, char * argv[])
 	unsigned int remoteIP;
 	char * remoteAddress;
 
-	assert(argc == 2);
+	GS_ASSERT(argc == 2);
 	remoteAddress = argv[1];
 
 	if(remoteAddress != NULL)
@@ -90,13 +96,13 @@ int main(int argc, char * argv[])
 			hostent = gethostbyname(remoteAddress);
 			if(hostent == NULL)
 			{
-				assert(0);
+				GS_FAIL();
 				return 0;
 			}
 
 			// Grab the IP.
 			///////////////
-			assert(remoteIP != 0);
+			GS_ASSERT(remoteIP != 0);
 			remoteIP = *(unsigned int *)hostent->h_addr_list[0];
 		}
 	}

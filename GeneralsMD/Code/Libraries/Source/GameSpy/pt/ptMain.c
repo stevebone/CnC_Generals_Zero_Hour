@@ -16,8 +16,8 @@ Copyright 2000 GameSpy Industries, Inc
 /************
 ** DEFINES **
 ************/
-#define PTA_DEFAULT_VERCHECK_URL    "http://motd." GSI_DOMAIN_NAME "/motd/vercheck.asp"
-#define PTA_DEFAULT_MOTD_URL        "http://motd." GSI_DOMAIN_NAME "/motd/motd.asp"
+#define PTA_DEFAULT_VERCHECK_URL    GSI_HTTP_PROTOCOL_URL "motd." GSI_DOMAIN_NAME "/motd/vercheck.asp"
+#define PTA_DEFAULT_MOTD_URL        GSI_HTTP_PROTOCOL_URL "motd." GSI_DOMAIN_NAME "/motd/motd.asp"
 #define PTA_DEFAULT_FILEPLANET_URL  "http://www.fileplanet.com/dlfileraw.asp"
 #define MAX_MIRRORS         32
 #define PTA_MAX_STRING_SIZE 2048
@@ -65,7 +65,7 @@ static const char * ptaGetKeyValue
 		return NULL;
 	str += strlen(key);
 	len = (int)strcspn(str, "\\");
-	len = min(len, (int)sizeof(value) - 1);
+	len = GS_MIN(len, (int)sizeof(value) - 1);
 	memcpy(value, str, (unsigned int)len);
 	value[len] = '\0';
 
@@ -217,6 +217,7 @@ static GHTTPBool ptaPatchCompletedCallback
 	GHTTPResult result,
 	char * buffer,
 	GHTTPByteCount bufferLen,
+	char* headers,
 	void * param
 )
 {
@@ -227,6 +228,7 @@ static GHTTPBool ptaPatchCompletedCallback
 	char versionName[PTA_MAX_STRING_SIZE];
 	char downloadURL[PTA_MAX_STRING_SIZE];
 
+	GSI_UNUSED(headers);
 	GSI_UNUSED(bufferLen);
 	GSI_UNUSED(request);
 
@@ -303,16 +305,20 @@ PTBool ptCheckForPatchA
 
 	// Check the arguments.
 	///////////////////////
-	assert(versionUniqueID);
+	GS_ASSERT(versionUniqueID);
 	if(!versionUniqueID)
 		return PTFalse;
-	assert(callback);
+	GS_ASSERT(callback);
 	if(!callback)
 		return PTFalse;
 
 	// override hostname?
 	if (gPTAVercheckURL[0] == '\0')
+#ifdef UNISPY_FORCE_IP
+		sprintf(gPTAVercheckURL, "%s/motd/vercheck.asp", UNISPY_FORCE_IP);
+#else
 		sprintf(gPTAVercheckURL, PTA_DEFAULT_VERCHECK_URL);
+#endif
 
 	// Store some data.
 	///////////////////
@@ -331,7 +337,7 @@ PTBool ptCheckForPatchA
 		gPTAVercheckURL, productID, versionUniqueID, distributionID,
 		__GSIACGamename);
 	
-	assert(charsWritten >= 0);
+	GS_ASSERT(charsWritten >= 0);
 	if (charsWritten < 0)
 		return PTFalse;
 
@@ -377,13 +383,17 @@ PTBool ptTrackUsageA
 
 	// Check the arguments.
 	///////////////////////
-	assert(versionUniqueID);
+	GS_ASSERT(versionUniqueID);
 	if(!versionUniqueID)
 		return PTFalse;
 
 	// override hostname?
 	if (gPTAMOTDURL[0] == '\0')
+#ifndef UNISPY_FORCE_IP
 		sprintf(gPTAMOTDURL, PTA_DEFAULT_MOTD_URL);
+#else
+		sprintf(gPTAMOTDURL, "%s/motd/motd.asp", UNISPY_FORCE_IP);
+#endif
 
 	// Build the URL.
 	/////////////////
@@ -391,7 +401,7 @@ PTBool ptTrackUsageA
 		"%s?userid=%d&productid=%d&versionuniqueid=%s&distid=%d&uniqueid=%s&gamename=%s",
 		gPTAMOTDURL, userID, productID, versionUniqueID,	distributionID,	GOAGetUniqueID(),
 		__GSIACGamename);
-	assert(charsWritten >= 0);
+	GS_ASSERT(charsWritten >= 0);
 	if (charsWritten < 0)
 		return PTFalse;
 	// Send the info.
@@ -439,10 +449,10 @@ PTBool ptCreateCheckPatchTrackUsageReqA
 
 	// Check the arguments.
 	///////////////////////
-	assert(versionUniqueID);
+	GS_ASSERT(versionUniqueID);
 	if(!versionUniqueID)
 		return PTFalse;
-	assert(callback);
+	GS_ASSERT(callback);
 	if(!callback)
 		return PTFalse;
 
@@ -457,7 +467,11 @@ PTBool ptCreateCheckPatchTrackUsageReqA
 
 	// override hostname?
 	if (gPTAVercheckURL[0] == '\0')
+#ifdef UNISPY_FORCE_IP
+		sprintf(gPTAVercheckURL, "%s/motd/vercheck.asp", UNISPY_FORCE_IP);
+#else
 		sprintf(gPTAVercheckURL, PTA_DEFAULT_VERCHECK_URL);
+#endif
 
 	// Build the URL.
 	/////////////////
@@ -466,7 +480,7 @@ PTBool ptCreateCheckPatchTrackUsageReqA
 		gPTAVercheckURL, userID, productID, versionUniqueID, distributionID,	GOAGetUniqueID(),
 		__GSIACGamename);
 
-	assert(charsWritten >= 0);
+	GS_ASSERT(charsWritten >= 0);
 	if (charsWritten < 0)
 		return PTFalse;
 
@@ -540,6 +554,7 @@ static GHTTPBool ptaFilePlanetCompletedCallback
 	GHTTPResult result,
 	char * buffer,
 	GHTTPByteCount bufferLen,
+	char* headers,
 	void * param
 )
 {
@@ -552,12 +567,13 @@ static GHTTPBool ptaFilePlanetCompletedCallback
 	int i;
 	char * str;
 
+	GSI_UNUSED(request);
+	GSI_UNUSED(bufferLen);
+	GSI_UNUSED(headers);
+
 	// check if the backend is available
 	if(__GSIACResult != GSIACAvailable)
 		return GHTTPFalse;
-
-	GSI_UNUSED(request);
-	GSI_UNUSED(bufferLen);
 
 	// Check for success.
 	/////////////////////
@@ -598,18 +614,18 @@ static GHTTPBool ptaFilePlanetCompletedCallback
 
 		// Copy off the name.
 		/////////////////////
-		len = (str - Line);
-		mirrorNames[i] = (char *)gsimalloc((unsigned int)len + 1);
+		len = (int)(str - Line);
+		mirrorNames[i] = (char *)gsimalloc((size_t)len + 1);
 		if(!mirrorNames[i])
 			break;
-		memcpy(mirrorNames[i], Line, (unsigned int)len);
+		memcpy(mirrorNames[i], Line, (size_t)len);
 		mirrorNames[i][len] = '\0';
 
 		// Copy off the URL.
 		////////////////////
 		str++;
 		len = (int)strlen(str);
-		mirrorURLs[i] = (char *)gsimalloc((unsigned int)len + 1);
+		mirrorURLs[i] = (char *)gsimalloc((size_t)len + 1);
 		if(!mirrorURLs[i])
 		{
 			gsifree(mirrorNames[i]);
@@ -650,7 +666,11 @@ PTBool ptLookupFilePlanetInfo
 
 	// override hostname?
 	if (gPTAFilePlanetURL[0] == '\0')
+#ifdef UNISPY_FORCE_IP
+		sprintf(gPTAFilePlanetURL, "%s/dlfileraw.asp", UNISPY_FORCE_IP);
+#else
 		sprintf(gPTAFilePlanetURL, PTA_DEFAULT_FILEPLANET_URL);
+#endif
 
 	// Store some data.
 	///////////////////

@@ -1,5 +1,12 @@
 ///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
+// File:	sciInterface.c
+// SDK:		GameSpy ATLAS Competition SDK
+//
+// Copyright (c) IGN Entertainment, Inc.  All rights reserved.  
+// This software is made available only pursuant to certain license terms offered
+// by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed use or use in a 
+// manner not expressly authorized by IGN or GameSpy is prohibited.
+
 #include "sciInterface.h"
 
 
@@ -10,12 +17,40 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 // This is declared as an extern so it can be overriden when testing
-#define SC_SERVICE_URL_FORMAT   "http://%s.comp.pubsvs." GSI_DOMAIN_NAME "/CompetitionService/CompetitionService.asmx"
+#ifdef UNISPY_FORCE_IP
+#define SC_SERVICE_URL_FORMAT					 GSI_HTTP_PROTOCOL_URL "%s/CompetitionService/CompetitionService.asmx"
+#define SC_GAME_CONFIG_DATA_SERVICE_URL_FORMAT   GSI_HTTP_PROTOCOL_URL "%s/AtlasDataServices/GameConfig.asmx"
+#else
+#define SC_SERVICE_URL_FORMAT					 GSI_HTTP_PROTOCOL_URL "%s.comp.pubsvs." GSI_DOMAIN_NAME "/CompetitionService/CompetitionService.asmx"
+#define SC_GAME_CONFIG_DATA_SERVICE_URL_FORMAT   GSI_HTTP_PROTOCOL_URL "%s.comp.pubsvs." GSI_DOMAIN_NAME "/AtlasDataServices/GameConfig.asmx"
+#endif
+
 char scServiceURL[SC_SERVICE_MAX_URL_LEN] = "";
-
+char scGameConfigDataServiceURL[SC_SERVICE_MAX_URL_LEN] = "";
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
+gsi_u16 sciGetPlatformId(void)
+{
+	// Determine host platform.
+	#if defined(_X360)
+		return(SCPlatform_XBox360);
+	#elif defined(_WIN32)
+		return(SCPlatform_PC);
+	#elif defined(_LINUX)
+		return(SCPlatform_Unix);
+	#elif defined (_IPHONE)
+		return(SCPlatform_iPhone);
+	#elif defined(_PS3)
+		return(SCPlatform_PS3);
+	#elif defined(_PSP)
+		return(SCPlatform_PSP);
+    #elif defined(_REVOLUTION)
+		return(SCPlatform_Wii);
+	#elif defined(_NITRO)
+		return(SCPlatform_DS);
+	#endif	
+}
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -33,7 +68,22 @@ SCResult sciInterfaceCreate(SCInterface** theInterfaceOut)
 	if (__GSIACResult == GSIACAvailable)
 	{
 		if (scServiceURL[0] == '\0')
+		{
+#ifndef UNISPY_FORCE_IP
 			snprintf(scServiceURL, SC_SERVICE_MAX_URL_LEN, SC_SERVICE_URL_FORMAT, __GSIACGamename);
+#else
+			snprintf(scServiceURL, SC_SERVICE_MAX_URL_LEN, SC_SERVICE_URL_FORMAT, UNISPY_FORCE_IP);
+#endif
+		}
+
+		if (scGameConfigDataServiceURL[0] == '\0')
+		{
+#ifndef UNISPY_FORCE_IP
+			snprintf(scGameConfigDataServiceURL, SC_SERVICE_MAX_URL_LEN, SC_GAME_CONFIG_DATA_SERVICE_URL_FORMAT, __GSIACGamename);
+#else
+			snprintf(scGameConfigDataServiceURL, SC_SERVICE_MAX_URL_LEN, SC_GAME_CONFIG_DATA_SERVICE_URL_FORMAT, UNISPY_FORCE_IP);
+#endif
+		}
 	}
 	else
 		return SCResult_NO_AVAILABILITY_CHECK;	
@@ -106,6 +156,7 @@ void sciInterfaceSetSessionId(SCInterface * theInterface, const char * theSessio
 		theInterface->mSessionId[0] = '\0';
 	else
 	{
+		memset(theInterface->mSessionId, 0, sizeof(theInterface->mSessionId));
 		GS_ASSERT(strlen(theSessionId) < sizeof(theInterface->mSessionId));
 		strcpy((char *)theInterface->mSessionId, theSessionId);
 	}
@@ -118,10 +169,9 @@ void sciInterfaceSetConnectionId(SCInterface * theInterface, const char * theCon
 {
 	GS_ASSERT(theInterface != NULL);
 
-	if (theConnectionId == NULL)
-		theInterface->mConnectionId[0] = '\0';
-	else
+	if (theConnectionId)
 	{
+		memset(theInterface->mConnectionId, 0, sizeof(theInterface->mConnectionId));
 		GS_ASSERT(strlen(theConnectionId) < sizeof(theInterface->mConnectionId));
 		strcpy((char *)theInterface->mConnectionId, theConnectionId);
 	}

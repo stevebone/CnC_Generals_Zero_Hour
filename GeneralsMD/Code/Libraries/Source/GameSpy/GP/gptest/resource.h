@@ -1,7 +1,13 @@
-//{{NO_DEPENDENCIES}}
-// Microsoft Visual C++ generated include file.
-// Used by gptest.rc
+///////////////////////////////////////////////////////////////////////////////
+// File:	Resource.h
+// SDK:		GameSpy Presence and Messaging SDK
 //
+// Copyright (c) 2012 GameSpy Technology & IGN Entertainment, Inc. All rights
+// reserved. This software is made available only pursuant to certain license
+// terms offered by IGN or its subsidiary GameSpy Industries, Inc. Unlicensed
+// use or use in a manner not expressly authorized by IGN or GameSpy Technology
+// is prohibited.
+
 #define IDD_GPTEST_DIALOG               102
 #define IDP_SOCKETS_INIT_FAILED         103
 #define IDR_MAINFRAME                   128
@@ -146,6 +152,9 @@
 #define IDC_BUTTON5                     1133
 #define IDC_REMOVE_BLOCK                1134
 #define IDC_ADD_BLOCK                   1135
+#define IDC_IPMBUDDYLIST                1136
+#define IDC_BUDDYLIST                   1137
+#define IDC_GAMEID                      1138
 
 // Next default values for new objects
 // 
@@ -153,7 +162,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        132
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1136
+#define _APS_NEXT_CONTROL_VALUE         1139
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

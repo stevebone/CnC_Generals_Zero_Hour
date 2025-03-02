@@ -1,28 +1,22 @@
-/*
-gpiBuffer.c
-GameSpy Presence SDK 
-Dan "Mr. Pants" Schoenblum
-
-Copyright 1999-2007 GameSpy Industries, Inc
-
-devsupport@gamespy.com
-
-***********************************************************************
-Please see the GameSpy Presence SDK documentation for more information
-**********************************************************************/
+///////////////////////////////////////////////////////////////////////////////
+// File:	gpiBuffer.c
+// SDK:		GameSpy Presence and Messaging SDK
+//
+// Copyright (c) 2012 GameSpy Technology & IGN Entertainment, Inc. All rights
+// reserved. This software is made available only pursuant to certain license
+// terms offered by IGN or its subsidiary GameSpy Industries, Inc. Unlicensed
+// use or use in a manner not expressly authorized by IGN or GameSpy Technology
+// is prohibited.
 
 //INCLUDES
-//////////
 #include <stdlib.h>
 #include <string.h>
 #include "gpi.h"
 
 //DEFINES
-/////////
 #define GPI_DUMP_NET_TRAFFIC
 
 //FUNCTIONS
-///////////
 GPResult
 gpiAppendCharToBuffer(
   GPConnection * connection,
@@ -34,31 +28,27 @@ gpiAppendCharToBuffer(
 	int size;
 	char * output;
 
-	assert(outputBuffer != NULL);
+	GS_ASSERT(outputBuffer != NULL);
 
 	// Init locals.
-	///////////////
 	len = outputBuffer->len;
 	size = outputBuffer->size;
 	output = outputBuffer->buffer;
 
 	// Check if it needs to be resized.
-	///////////////////////////////////
 	if(size == len)
 	{
 		size += GPI_READ_SIZE;
-		output = (char*)gsirealloc(output, (unsigned int)size + 1);
+		output = (char*)gsirealloc(output, (size_t)size + 1);
 		if(output == NULL)
 			Error(connection, GP_MEMORY_ERROR, "Out of memory.");
 	}
 
 	// Do the copy.
-	///////////////
 	output[len] = c;
 	output[len + 1] = '\0';
 
 	// Update the buffer info.
-	//////////////////////////
 	outputBuffer->len++;
 	outputBuffer->size = size;
 	outputBuffer->buffer = output;
@@ -78,36 +68,32 @@ gpiAppendStringToBufferLen(
 	int size;
 	char * output;
 
-	assert(string != NULL);
-	assert(stringLen >= 0);
-	assert(outputBuffer != NULL);
+	GS_ASSERT(string != NULL);
+	GS_ASSERT(stringLen >= 0);
+	GS_ASSERT(outputBuffer != NULL);
 
 	if(!string)
 		return GP_NO_ERROR;
 
 	// Init locals.
-	///////////////
 	len = outputBuffer->len;
 	size = outputBuffer->size;
 	output = outputBuffer->buffer;
 
 	// Check if it needs to be resized.
-	///////////////////////////////////
 	if((size - len) < stringLen)
 	{
-		size += max(GPI_READ_SIZE, stringLen);
-		output = (char*)gsirealloc(output, (unsigned int)size + 1);
+		size += GS_MAX(GPI_READ_SIZE, stringLen);
+		output = (char*)gsirealloc(output, (size_t)size + 1);
 		if(output == NULL)
 			Error(connection, GP_MEMORY_ERROR, "Out of memory.");
 	}
 
 	// Do the copy.
-	///////////////
 	memcpy(&output[len], string, (unsigned int)stringLen);
 	output[len + stringLen] = '\0';
 
 	// Update the buffer info.
-	//////////////////////////
 	outputBuffer->len += stringLen;
 	outputBuffer->size = size;
 	outputBuffer->buffer = output;
@@ -188,7 +174,7 @@ gpiSendData(
 		rcode = GOAGetLastError(sock);
 		if((rcode != WSAEWOULDBLOCK) && (rcode != WSAEINPROGRESS) && (rcode != WSAETIMEDOUT) )
 		{
-			// handle peer connections specially
+			// Handle peer connections specially.
 			if((id[0] == 'P') && (id[1] == 'R'))
 				return GP_NETWORK_ERROR;
 			CallbackError(connection, GP_NETWORK_ERROR, GP_NETWORK, "There was an error sending on a socket.");
@@ -238,24 +224,6 @@ gpiSendOrBufferChar(
   char c
 )
 {
-	//GPIBool closed;
-	//int sent;
-/*
-	assert(peer->outputBuffer.buffer != NULL);
-
-	// Only try to send if the buffer is empty and there are no messages.
-	/////////////////////////////////////////////////////////////////////
-	if(!(peer->outputBuffer.len - peer->outputBuffer.pos) && !ArrayLength(peer->messages))
-	{
-		CHECK_RESULT(gpiSendData(connection, peer->sock, &c, 1, &closed, &sent, "PT"));
-		if(sent)
-			return GP_NO_ERROR;
-	}
-
-	// Buffer if not sent.
-	//////////////////////
-	return gpiAppendCharToBuffer(connection, &peer->outputBuffer, c);
-	*/
 	GSI_UNUSED(c);
 	GSI_UNUSED(peer);
 	GSI_UNUSED(connection);
@@ -276,7 +244,7 @@ gpiSendOrBufferStringLenToPeer(
 	unsigned int total;
 	unsigned int remaining;
 
-	assert(peer->outputBuffer.buffer != NULL);
+	GS_ASSERT(peer->outputBuffer.buffer != NULL);
 	
 	sent = 0;
 	iconnection = (GPIConnection *)*connection;
@@ -284,12 +252,10 @@ gpiSendOrBufferStringLenToPeer(
 	total = 0;
 
 	// Check for nothing to send.
-	/////////////////////////////
 	if(stringLen == 0)
 		return GP_NO_ERROR;
 
 	// Only try to send if the buffer is empty and there are no messages.
-	/////////////////////////////////////////////////////////////////////
 	if(!(peer->outputBuffer.len - peer->outputBuffer.pos) && !ArrayLength(peer->messages))
 	{
 		if ((int)remaining <= (gsUdpEngineGetPeerOutBufferFreeSpace(peer->ip, peer->port) - GS_UDP_RELIABLE_MSG_HEADER - GS_UDP_MSG_HEADER_LEN))
@@ -314,68 +280,11 @@ gpiSendOrBufferStringLenToPeer(
 	}
 
 	// Buffer what wasn't sent.
-	///////////////////////////
 	if(remaining)
 		CHECK_RESULT(gpiAppendStringToBufferLen(connection, &peer->outputBuffer, &string[total], (int)remaining));
 
 	return GP_NO_ERROR;
 }
-
-/*
-GPResult
-gpiSendOrBufferStringLen(
-						 GPConnection * connection,
-						 GPIPeer_st peer,
-						 const char * string,
-						 int stringLen
-						 )
-{
-	
-	GPIBool closed;
-	int sent;
-	int total;
-	int remaining;
-	
-	
-	assert(peer->outputBuffer.buffer != NULL);
-
-	remaining = stringLen;
-	total = 0;
-
-	// Check for nothing to send.
-	/////////////////////////////
-	if(stringLen == 0)
-		return GP_NO_ERROR;
-
-	// Only try to send if the buffer is empty and there are no messages.
-	/////////////////////////////////////////////////////////////////////
-	if(!(peer->outputBuffer.len - peer->outputBuffer.pos) && !ArrayLength(peer->messages))
-	{
-		do
-		{
-			CHECK_RESULT(gpiSendData(connection, peer->sock, &string[total], remaining, &closed, &sent, "PT"));
-			if(sent)
-			{
-				total += sent;
-				remaining -= sent;
-			}
-		}
-		while(sent && remaining);
-	}
-
-	// Buffer what wasn't sent.
-	///////////////////////////
-	if(remaining)
-		CHECK_RESULT(gpiAppendStringToBufferLen(connection, &peer->outputBuffer, &string[total], remaining));
-
-	
-	GSI_UNUSED(stringLen);
-	GSI_UNUSED(string);
-	GSI_UNUSED(peer);
-	GSI_UNUSED(connection);
-	return GP_NO_ERROR;
-}
-*/
 
 GPResult
 gpiSendOrBufferString(
@@ -428,13 +337,12 @@ gpiRecvToBuffer(
 	int total;
 	GPIBool closed;
 
-	assert(sock != INVALID_SOCKET);
-	assert(inputBuffer != NULL);
-	assert(bytesRead != NULL);
-	assert(connClosed != NULL);
+	GS_ASSERT(sock != INVALID_SOCKET);
+	GS_ASSERT(inputBuffer != NULL);
+	GS_ASSERT(bytesRead != NULL);
+	GS_ASSERT(connClosed != NULL);
 
 	// Init locals.
-	///////////////
 	buffer = inputBuffer->buffer;
 	len = inputBuffer->len;
 	size = inputBuffer->size;
@@ -444,13 +352,15 @@ gpiRecvToBuffer(
 	do
 	{
 		// Check if the buffer needs to be resized.
-		///////////////////////////////////////////
 		if((len + GPI_READ_SIZE) > size)
 		{
 			size = (len + GPI_READ_SIZE);
-			buffer = (char *)gsirealloc(buffer, (unsigned int)size + 1);
+			buffer = (char *)gsirealloc(buffer, (size_t)size + 1);
 			if(buffer == NULL)
 				Error(connection, GP_MEMORY_ERROR, "Out of memory.");
+			// In case recv fails and line below it calls Error macro with return in it.
+			inputBuffer->buffer = buffer;
+			inputBuffer->size = size;
 		}
 
 		// Read from the network.
@@ -468,7 +378,6 @@ gpiRecvToBuffer(
 		else if(rcode == 0)
 		{
 			// Check for a closed connection.
-			/////////////////////////////////
 			closed = GPITrue;
 			gsDebugFormat(GSIDebugCat_GP, GSIDebugType_Network, GSIDebugLevel_Comment,
 				"RECVXXXX(%s): Connection closed\n", id);
@@ -493,11 +402,9 @@ gpiRecvToBuffer(
 			}
 			#endif
 			// Update the buffer len.
-			/////////////////////////
 			len += rcode;
 
 			// Update the total.
-			////////////////////
 			total += rcode;
 		}
 
@@ -512,14 +419,13 @@ gpiRecvToBuffer(
 	}
 	
 	// Set output stuff.
-	////////////////////
 	inputBuffer->buffer = buffer;
 	inputBuffer->len = len;
 	inputBuffer->size = size;
 	*bytesRead = total;
 	*connClosed = closed;
 
-	GSI_UNUSED(id); //to get rid of codewarrior warnings
+	GSI_UNUSED(id); // Resolves some CodeWarrior warnings.
 
 	return GP_NO_ERROR;
 }
@@ -542,7 +448,7 @@ gpiSendFromBuffer(
 	int pos;
 	int len;
 
-	assert(outputBuffer != NULL);
+	GS_ASSERT(outputBuffer != NULL);
 
 	buffer = outputBuffer->buffer;
 	len = outputBuffer->len;
@@ -551,7 +457,6 @@ gpiSendFromBuffer(
 	total = 0;
 
 	// Check for nothing to send.
-	/////////////////////////////
 	if(remaining == 0)
 		return GP_NO_ERROR;
 
@@ -570,7 +475,7 @@ gpiSendFromBuffer(
 	{
 		if(total > 0)
 		{
-			memmove(buffer, &buffer[total], (unsigned int)remaining + 1);
+			memmove(buffer, &buffer[total], (size_t)remaining + 1);
 			len -= total;
 		}
 	}
@@ -579,12 +484,11 @@ gpiSendFromBuffer(
 		pos += total;
 	}
 
-	assert(len >= 0);
-	assert(pos >= 0);
-	assert(pos <= len);
+	GS_ASSERT(len >= 0);
+	GS_ASSERT(pos >= 0);
+	GS_ASSERT(pos <= len);
 
 	// Set outputs.
-	///////////////
 	outputBuffer->len = len;
 	outputBuffer->pos = pos;
 	if(connClosed)
@@ -604,7 +508,7 @@ GPResult gpiSendBufferToPeer(GPConnection * connection, unsigned int ip, unsigne
 	unsigned int len;
 	unsigned int total = 0;
 	GSUdpPeerState aPeerState;
-	assert(outputBuffer != NULL);
+	GS_ASSERT(outputBuffer != NULL);
 
 	buffer = (unsigned char *)outputBuffer->buffer;
 	len = (unsigned int)outputBuffer->len;
@@ -612,11 +516,11 @@ GPResult gpiSendBufferToPeer(GPConnection * connection, unsigned int ip, unsigne
 	remaining = (len - pos);
 
 	// Check for nothing to send.
-	/////////////////////////////
 	if(remaining == 0)
 		return GP_NO_ERROR;
 
-	// length of message remaining must be smaller than total buffer size minus gt2 reliable msg header size minus
+	// The length of the message remaining must be smaller than total buffer 
+	// size minus gt2 reliable msg header size minus the message header length 
 	// in order to send the message in one shot.
 	if ((int)remaining <= (gsUdpEngineGetPeerOutBufferFreeSpace(ip, port) - GS_UDP_RELIABLE_MSG_HEADER - GS_UDP_MSG_HEADER_LEN))
 	{
@@ -654,7 +558,6 @@ GPResult gpiSendBufferToPeer(GPConnection * connection, unsigned int ip, unsigne
 		pos += total;
 	}
 	// Set outputs.
-	///////////////
 	outputBuffer->len = (int)len;
 	outputBuffer->pos = (int)pos;
 
@@ -681,63 +584,51 @@ gpiReadMessageFromBuffer(
 	char intValue[16];
 
 	// Default.
-	///////////
 	*message = NULL;
 
 	// Check for not enough data.
-	/////////////////////////////
 	if(inputBuffer->len < 5)
 		return GP_NO_ERROR;
 
 	// Find the end of the header.
-	//////////////////////////////
 	str = strchr(inputBuffer->buffer, '\n');
 	if(str != NULL)
 	{
 		// Check that this is the msg.
-		//////////////////////////////
 		if(strncmp(str - 5, "\\msg\\", 5) != 0)
 			return GP_NETWORK_ERROR;
 
 		// Cap the header.
-		//////////////////
 		*str = '\0';
 
 		// Read the header.
-		///////////////////
 		if(!gpiValueForKey(inputBuffer->buffer, "\\m\\", intValue, sizeof(intValue)))
 			return GP_NETWORK_ERROR;
 		*type = atoi(intValue);
 
 		// Get the length.
-		//////////////////
 		if(!gpiValueForKey(inputBuffer->buffer, "\\len\\", intValue, sizeof(intValue)))
 			return GP_NETWORK_ERROR;
 		len = atoi(intValue);
 		len++;
 
 		// Is the whole message available?
-		//////////////////////////////////
 		if(inputBuffer->len > ((str - inputBuffer->buffer) + len))
 		{
 			// Does it not end with a NUL?
-			//////////////////////////////
 			if(str[len] != '\0')
 				return GP_NETWORK_ERROR;
 
 			// Set the message stuff.
-			/////////////////////////
 			*message = &str[1];
 			*plen = (len - 1);
 
 			// Set the position to the end of the message.
-			//////////////////////////////////////////////
-			inputBuffer->pos = ((str - inputBuffer->buffer) + len + 1);
+			inputBuffer->pos = (int)((str - inputBuffer->buffer) + len + 1);
 		}
 		else
 		{
 			// Put the LF back.
-			///////////////////
 			*str = '\n';
 		}
 	}

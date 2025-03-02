@@ -1,5 +1,12 @@
-// gt2testDlg.h : header file
+///////////////////////////////////////////////////////////////////////////////
+// File:	gt2testDlg.h
+// SDK:		GameSpy Transport 2 SDK
 //
+// Copyright (c) 2012 GameSpy Technology & IGN Entertainment, Inc.  All rights 
+// reserved. This software is made available only pursuant to certain license 
+// terms offered by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed
+// use or use in a manner not expressly authorized by IGN or GameSpy Technology
+// is prohibited.
 
 #if !defined(AFX_GT2TESTDLG_H__0E64F324_FFA4_4A94_A87D_75652134DC2D__INCLUDED_)
 #define AFX_GT2TESTDLG_H__0E64F324_FFA4_4A94_A87D_75652134DC2D__INCLUDED_
@@ -135,7 +142,7 @@ protected:
 	afx_msg void OnListen();
 	afx_msg void OnCloseAllConnections();
 	afx_msg void OnCloseAllConnectionsHard();
-	afx_msg void OnTimer(UINT nIDEvent);
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg void OnSend();
 	afx_msg void OnPing();
 	afx_msg void OnCloseConnection();

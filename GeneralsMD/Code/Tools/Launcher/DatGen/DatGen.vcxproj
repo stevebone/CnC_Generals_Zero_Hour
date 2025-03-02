@@ -43,13 +43,13 @@
     <_ProjectFileVersion>17.0.35707.178</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>..\..\..\Run\datGenUpdate\Debug\</OutDir>
-    <IntDir>..\..\..\Run\datGenUpdate\Debug\</IntDir>
+    <OutDir>.\Debug\</OutDir>
+    <IntDir>.\Debug\</IntDir>
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>..\..\..\Run\datGenUpdate\Release\</OutDir>
-    <IntDir>..\..\..\Run\datGenUpdate\Release\</IntDir>
+    <OutDir>.\Release\</OutDir>
+    <IntDir>.\Release\</IntDir>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -58,7 +58,7 @@
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TargetEnvironment>Win32</TargetEnvironment>
-      <TypeLibraryName>..\..\..\Run\datGenUpdate\Debug/DatGen.tlb</TypeLibraryName>
+      <TypeLibraryName>.\Debug/DatGen.tlb</TypeLibraryName>
       <HeaderFileName />
     </Midl>
     <ClCompile>
@@ -68,10 +68,10 @@
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <PrecompiledHeaderOutputFile>..\..\..\Run\datGenUpdate\Debug/DatGen.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>..\..\..\Run\datGenUpdate\Debug/</AssemblerListingLocation>
-      <ObjectFileName>..\..\..\Run\datGenUpdate\Debug/</ObjectFileName>
-      <ProgramDataBaseFileName>..\..\..\Run\datGenUpdate\Debug/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>.\Debug/DatGen.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\Debug/</AssemblerListingLocation>
+      <ObjectFileName>.\Debug/</ObjectFileName>
+      <ProgramDataBaseFileName>.\Debug/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
@@ -94,7 +94,7 @@
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>..\..\..\Run\datGenUpdate\Debug/DatGen.bsc</OutputFile>
+      <OutputFile>.\Debug/DatGen.bsc</OutputFile>
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -103,7 +103,7 @@
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <TargetEnvironment>Win32</TargetEnvironment>
-      <TypeLibraryName>..\..\..\Run\datGenUpdate\Release/DatGen.tlb</TypeLibraryName>
+      <TypeLibraryName>.\Release/DatGen.tlb</TypeLibraryName>
       <HeaderFileName />
     </Midl>
     <ClCompile>
@@ -114,10 +114,10 @@
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeaderOutputFile>..\..\..\Run\datGenUpdate\Release/DatGen.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>..\..\..\Run\datGenUpdate\Release/</AssemblerListingLocation>
-      <ObjectFileName>..\..\..\Run\datGenUpdate\Release/</ObjectFileName>
-      <ProgramDataBaseFileName>..\..\..\Run\datGenUpdate\Release/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>.\Release/DatGen.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\Release/</AssemblerListingLocation>
+      <ObjectFileName>.\Release/</ObjectFileName>
+      <ProgramDataBaseFileName>.\Release/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </ClCompile>
@@ -132,14 +132,14 @@
       <ProgramDatabaseFile>../../../../Run/DatGen.pdb</ProgramDatabaseFile>
       <GenerateMapFile>true</GenerateMapFile>
       <MapFileName>../../../../Run/DatGen.map</MapFileName>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>..\..\..\Run\datGenUpdate\Release/DatGen.bsc</OutputFile>
+      <OutputFile>.\Release/DatGen.bsc</OutputFile>
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -149,7 +149,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\BFISH.H" />
-    <ClInclude Include="..\SafeDisk\CdaPfn.h" />
     <ClInclude Include="..\Toolkit\Debug\DebugPrint.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

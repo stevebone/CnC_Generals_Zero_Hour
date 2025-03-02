@@ -1,5 +1,12 @@
 ///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
+// File:	sakeRequestModify.c
+// SDK:		GameSpy Sake Persistent Storage SDK
+//
+// Copyright (c) IGN Entertainment, Inc.  All rights reserved.  
+// This software is made available only pursuant to certain license terms offered
+// by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed use or use in a 
+// manner not expressly authorized by IGN or GameSpy is prohibited.
+
 #include "sakeRequestInternal.h"
 #include "sakeRequest.h"
 
@@ -131,7 +138,6 @@ static void SAKE_CALL sakeiFillSoapRequestFieldValues(SAKERequest request, SAKEF
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 // Create Record
-
 static SAKEStartRequestResult SAKE_CALL sakeiCreateRecordValidateInput(SAKERequest request)
 {
 	SAKECreateRecordInput *input = (SAKECreateRecordInput *)request->mInput;
@@ -185,7 +191,8 @@ SAKEStartRequestResult SAKE_CALL sakeiStartCreateRecordRequest(SAKERequest reque
 		SAKEI_FUNC_NAME_STRINGS("CreateRecord"),
 		sakeiCreateRecordValidateInput,
 		sakeiCreateRecordFillSoapRequest,
-		sakeiCreateRecordProcessSoapResponse
+		sakeiCreateRecordProcessSoapResponse,
+		NULL
 	};
 
 	return sakeiStartRequest(request, &info);
@@ -240,6 +247,7 @@ SAKEStartRequestResult SAKE_CALL sakeiStartUpdateRecordRequest(SAKERequest reque
 		SAKEI_FUNC_NAME_STRINGS("UpdateRecord"),
 		sakeiUpdateRecordValidateInput,
 		sakeiUpdateRecordFillSoapRequest,
+		NULL,
 		NULL
 	};
 
@@ -283,8 +291,10 @@ SAKEStartRequestResult SAKE_CALL sakeiStartDeleteRecordRequest(SAKERequest reque
 		SAKEI_FUNC_NAME_STRINGS("DeleteRecord"),
 		sakeiDeleteRecordValidateInput,
 		sakeiDeleteRecordFillSoapRequest,
+		NULL,
 		NULL
 	};
 
 	return sakeiStartRequest(request, &info);
 }
+

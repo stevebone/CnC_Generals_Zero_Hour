@@ -1,27 +1,21 @@
-/*
-gpiOperation.h
-GameSpy Presence SDK 
-Dan "Mr. Pants" Schoenblum
-
-Copyright 1999-2007 GameSpy Industries, Inc
-
-devsupport@gamespy.com
-
-***********************************************************************
-Please see the GameSpy Presence SDK documentation for more information
-**********************************************************************/
+///////////////////////////////////////////////////////////////////////////////
+// File:	gpiOperation.h
+// SDK:		GameSpy Presence and Messaging SDK
+//
+// Copyright (c) 2012 GameSpy Technology & IGN Entertainment, Inc. All rights
+// reserved. This software is made available only pursuant to certain license
+// terms offered by IGN or its subsidiary GameSpy Industries, Inc. Unlicensed
+// use or use in a manner not expressly authorized by IGN or GameSpy Technology
+// is prohibited.
 
 #ifndef _GPIOPERATION_H_
 #define _GPIOPERATION_H_
 
 //INCLUDES
-//////////
 #include "gpi.h"
 
 //DEFINES
-/////////
 // Operation Types.
-///////////////////
 #define GPI_CONNECT                    0
 #define GPI_NEW_PROFILE                1
 #define GPI_GET_INFO                   2
@@ -30,7 +24,6 @@ Please see the GameSpy Presence SDK documentation for more information
 #define GPI_DELETE_PROFILE             5
 #define GPI_REGISTER_CDKEY             6
 // Operation States.
-////////////////////
 #define GPI_START                      0
 //#define GPI_CONNECTING               1
 #define GPI_LOGIN                      2
@@ -39,9 +32,7 @@ Please see the GameSpy Presence SDK documentation for more information
 #define GPI_FINISHING                  5
 
 //TYPES
-///////
 // Operation data.
-//////////////////
 typedef struct GPIOperation_s
 {
   int type;
@@ -55,7 +46,6 @@ typedef struct GPIOperation_s
 } GPIOperation;
 
 // Connect operation data.
-//////////////////////////
 typedef struct
 {
   char serverChallenge[128];
@@ -63,12 +53,12 @@ typedef struct
   char passwordHash[33];
   char authtoken[GP_AUTHTOKEN_LEN];
   char partnerchallenge[GP_PARTNERCHALLENGE_LEN];
+  char loginticket[GP_LOGIN_TICKET_LEN];
   char cdkey[GP_CDKEY_LEN];
   GPIBool newuser;
 } GPIConnectData;
 
 //FUNCTIONS
-///////////
 GPResult
 gpiAddOperation(
   GPConnection * connection,

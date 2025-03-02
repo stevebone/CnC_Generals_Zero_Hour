@@ -1,5 +1,12 @@
-// gptestDlg.h : header file
+///////////////////////////////////////////////////////////////////////////////
+// File:	gptestDlg.h
+// SDK:		GameSpy Presence and Messaging SDK
 //
+// Copyright (c) 2012 GameSpy Technology & IGN Entertainment, Inc. All rights
+// reserved. This software is made available only pursuant to certain license
+// terms offered by IGN or its subsidiary GameSpy Industries, Inc. Unlicensed
+// use or use in a manner not expressly authorized by IGN or GameSpy Technology
+// is prohibited.
 
 #include "afxcmn.h"
 #include "afxwin.h"
@@ -70,6 +77,7 @@ public:
 	BOOL	m_ipmhomepage;
 	BOOL	m_ipmsex;
 	BOOL	m_ipmzipcode;
+	BOOL	m_ipmbuddylist;
 	CString	m_newnick;
 	BOOL	m_replace;
 	CString	m_izipcode;
@@ -117,7 +125,7 @@ protected:
 	//{{AFX_MSG(CGptestDlg)
 	virtual BOOL OnInitDialog();
 	afx_msg HCURSOR OnQueryDragIcon();
-	afx_msg void OnTimer(UINT nIDEvent);
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg void OnConnect();
 	afx_msg void OnDisconnect();
 	afx_msg void OnDestroy();
@@ -181,6 +189,8 @@ public:
     afx_msg void OnAddBlock();
     afx_msg void OnRemoveBlock();
 	afx_msg void OnSelchangeBlocklist();
+	afx_msg void OnBuddyList();
+	int m_gameId;
 };
 
 //{{AFX_INSERT_LOCATION}}

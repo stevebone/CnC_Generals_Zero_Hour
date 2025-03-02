@@ -1,5 +1,11 @@
-// ghttpmfcDlg.cpp : implementation file
+///////////////////////////////////////////////////////////////////////////////
+// File:	ghttpmfcDlg.cpp
+// SDK:		GameSpy HTTP SDK
 //
+// Copyright (c) IGN Entertainment, Inc.  All rights reserved.  
+// This software is made available only pursuant to certain license terms offered
+// by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed use or use in a 
+// manner not expressly authorized by IGN or GameSpy is prohibited.
 
 #include "stdafx.h"
 #include "ghttpmfc.h"
@@ -172,6 +178,7 @@ static GHTTPBool CompletedCallback
 	GHTTPResult result,
 	char * buffer,
 	GHTTPByteCount bufferLen,
+	char * headers,
 	void * param
 )
 {
@@ -224,6 +231,7 @@ static GHTTPBool CompletedCallback
 	GSI_UNUSED(bufferLen);
 	GSI_UNUSED(buffer);
 	GSI_UNUSED(request);
+	GSI_UNUSED(headers);
 }
 
 void ProgressCallback
@@ -407,7 +415,7 @@ void CGhttpmfcDlg::OnCancel_()
 		ghttpCancelRequest(m_request);
 }
 
-void CGhttpmfcDlg::OnTimer(UINT nIDEvent) 
+void CGhttpmfcDlg::OnTimer(UINT_PTR nIDEvent) 
 {
 	if(nIDEvent == 50)
 	{
@@ -452,14 +460,14 @@ void CGhttpmfcDlg::OnDestroy()
 	fp = fopen("url.cache", "wt");
 	if(fp)
 	{
-		fprintf(fp, "%s", m_url);
+		fprintf(fp, "%s", m_url.GetString());
 		fclose(fp);
 	}
 
 	fp = fopen("saveas.cache", "wt");
 	if(fp)
 	{
-		fprintf(fp, "%s", m_saveAs);
+		fprintf(fp, "%s", m_saveAs.GetString());
 		fclose(fp);
 	}
 

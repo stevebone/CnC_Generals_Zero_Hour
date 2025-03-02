@@ -1,10 +1,16 @@
 ///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
+// File:	sciReport.c
+// SDK:		GameSpy ATLAS Competition SDK
+//
+// Copyright (c) IGN Entertainment, Inc.  All rights reserved.  
+// This software is made available only pursuant to certain license terms offered
+// by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed use or use in a 
+// manner not expressly authorized by IGN or GameSpy is prohibited.
+
 #include "sciReport.h"
 #include "sciSerialize.h"
-#include "../md5.h"
+#include "../common/md5.h"
 
-#pragma warning(disable: 4267)
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -25,7 +31,6 @@ SCResult SC_CALL sciCreateReport(gsi_u8 theSessionGuid[SC_SESSION_GUID_SIZE],
 	GS_ASSERT(theReportOut != NULL);
 
 	// allocate the report
-	//GS_ASSERT(0); // todo: memalignment
 	theNewReport = (SCIReport*)gsimalloc(sizeof(SCIReport));
 	if (theNewReport == NULL)
 		return SCResult_OUT_OF_MEMORY;
@@ -150,7 +155,7 @@ SCResult SC_CALL sciReportSetPlayerGameResult(SCIReport * theReport, gsi_u32 the
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
-SCResult SC_CALL sciReportSetPlayerAuthInfo(SCIReport * theReport, gsi_u32 thePlayerIndex, const GSLoginCertificate * theCertificate, const gsi_u8 theAuthHash[16])
+SCResult SC_CALL sciReportSetPlayerAuthInfo(SCIReport * theReport, gsi_u32 thePlayerIndex, const GSLoginCertificate * certificate, const gsi_u8 theAuthHash[16])
 {
 	SCIReportHeader * aHeader = (SCIReportHeader*)theReport->mBuffer.mData;
 	gsi_u32 authDataOffset = 0;
@@ -162,7 +167,7 @@ SCResult SC_CALL sciReportSetPlayerAuthInfo(SCIReport * theReport, gsi_u32 thePl
 	// copy auth data into the buffer
 	// &theReport->mBuffer.mData[authDataOffset]
 	GSI_UNUSED(theAuthHash);
-	GSI_UNUSED(theCertificate);
+	GSI_UNUSED(certificate);
 	return SCResult_NO_ERROR;
 }
 
@@ -349,8 +354,11 @@ SCResult SC_CALL sciReportBeginNewTeam(SCIReport * theReport)
 ///////////////////////////////////////////////////////////////////////////////
 SCResult SC_CALL sciReportBeginNewPlayer(SCIReport * theReport)
 {
-	SCIReportHeader * aHeader = (SCIReportHeader*)theReport->mBuffer.mData;
+	SCIReportHeader* aHeader;
+
 	GS_ASSERT(theReport != NULL);
+
+	aHeader = (SCIReportHeader*)theReport->mBuffer.mData;
 
 	//if (theReport->mReportState == SCIReportState_ROSTER)
 	{
@@ -386,10 +394,12 @@ SCResult SC_CALL sciReportBeginNewPlayer(SCIReport * theReport)
 ///////////////////////////////////////////////////////////////////////////////
 SCResult SC_CALL sciReportBeginGlobalData(SCIReport * theReport)
 {
-	SCIReportHeader * aHeader = (SCIReportHeader*)theReport->mBuffer.mData;
+	SCIReportHeader* aHeader;
 
 	GS_ASSERT(theReport != NULL);
 	GS_ASSERT(theReport->mReportState == SCIReportState_ROSTER);
+	
+	aHeader = (SCIReportHeader*)theReport->mBuffer.mData;
 
 	theReport->mReportState = SCIReportState_GLOBALDATA;
 	//theReport->mCurEntityIndex = 0;
@@ -514,7 +524,7 @@ SCResult SC_CALL sciReportAddIntValue(SCIReport * theReport,
 {
 	SCIReportHeader * aHeader = (SCIReportHeader*)theReport->mBuffer.mData;
 	int writtenLen = 0;
-	gsi_i16 theKeyType = SCIKeyType_INT32;
+	gsi_i16 theKeyType = (gsi_i16)SCDataType_INT32;
 	
 	// calculate length of data to be written
 	writtenLen += sizeof(gsi_u16) + sizeof(gsi_u16); // 2 byte key ID, 2 byte key type;
@@ -570,7 +580,7 @@ SCResult SC_CALL sciReportAddInt64Value(SCIReport * theReport,
 {
 	SCIReportHeader * aHeader = (SCIReportHeader*)theReport->mBuffer.mData;
 	int writtenLen = 0;
-	gsi_i16 theKeyType = SCIKeyType_INT64;
+	gsi_i16 theKeyType = SCDataType_INT64;
 
 	// calculate length of data to be written
 	writtenLen += sizeof(gsi_u16) + sizeof(gsi_u16); // 2 byte key ID, 2 byte key type;
@@ -623,7 +633,7 @@ SCResult SC_CALL sciReportAddShortValue(SCIReport * theReport,
 {
 	SCIReportHeader * aHeader = (SCIReportHeader*)theReport->mBuffer.mData;
 	int writtenLen = 0;
-	gsi_i16 theKeyType = SCIKeyType_INT16;
+	gsi_i16 theKeyType = SCDataType_INT16;
 	
 	// calculate length of data to be written
 	writtenLen += sizeof(gsi_u16) + sizeof(gsi_u16); // 2 byte key ID, 2 byte key type;
@@ -679,7 +689,7 @@ SCResult SC_CALL sciReportAddByteValue(SCIReport * theReport,
 {
 	SCIReportHeader * aHeader = (SCIReportHeader*)theReport->mBuffer.mData;
 	int writtenLen = 0;
-	gsi_i16 theKeyType = SCIKeyType_BYTE;
+	gsi_i16 theKeyType = SCDataType_BYTE;
 	
 	// calculate length of data to be written
 	writtenLen += sizeof(gsi_u16) + sizeof(gsi_u16); // 2 byte key ID, 2 byte key type;
@@ -735,7 +745,7 @@ SCResult SC_CALL sciReportAddFloatValue(SCIReport * theReport,
 {
 	SCIReportHeader * aHeader = (SCIReportHeader*)theReport->mBuffer.mData;
 	int writtenLen = 0;
-	gsi_i16 theKeyType = SCIKeyType_FLOAT;
+	gsi_i16 theKeyType = SCDataType_FLOAT;
 
 	// calculate length of data to be written
 	writtenLen += sizeof(gsi_u16) + sizeof(gsi_u16); // 2 byte key ID, 2 byte key type;
@@ -784,13 +794,69 @@ SCResult SC_CALL sciReportAddFloatValue(SCIReport * theReport,
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
+// Some defines to support the 7-bit encoded int writer below.
+#define MASK_7_BITS    0x7F
+#define SET_MORE_BYTES 0x80
+#define NEEDS_2_BYTES  0x00000080
+#define NEEDS_3_BYTES  0x00000400
+#define NEEDS_4_BYTES  0x00200000
+#define NEEDS_5_BYTES  0x10000000
+
+static void SevenBitEncoderWriteByte(char *dest, int value, int moreBytes)
+{
+	*dest = (char)value;
+	if(moreBytes)
+		*dest |= SET_MORE_BYTES;
+}
+
+static int SevenBitEncoderWriteInt(char *dest, int value)
+{
+	int moreBytes;
+
+	// First byte.
+	moreBytes = (value >= NEEDS_2_BYTES);
+	if(dest != NULL) SevenBitEncoderWriteByte(dest, value & MASK_7_BITS, moreBytes);
+	if(moreBytes)
+	{
+		// Second byte.
+		moreBytes = (value >= NEEDS_3_BYTES);
+		if(dest != NULL) SevenBitEncoderWriteByte(dest + 1, (value >> 7) & MASK_7_BITS, moreBytes);
+		if(moreBytes)
+		{
+			// Third byte.
+			moreBytes = (value >= NEEDS_4_BYTES);
+			if(dest != NULL) SevenBitEncoderWriteByte(dest + 2, (value >> 14) & MASK_7_BITS, moreBytes);
+			if(moreBytes)
+			{
+				// Fourth byte.
+				moreBytes = (value >= NEEDS_5_BYTES);
+				if(dest != NULL) SevenBitEncoderWriteByte(dest + 3, (value >> 21) & MASK_7_BITS, moreBytes);
+				if(moreBytes)
+				{
+					// Fifth byte.
+					if(dest != NULL) SevenBitEncoderWriteByte(dest + 4, (value >> 28) & MASK_7_BITS, 0);
+					return 5;
+				}
+				else
+					return 4;
+			}
+			else
+				return 3;
+		}
+		else
+			return 2;
+	}
+	else
+		return 1;
+}
+
 SCResult SC_CALL sciReportAddStringValue(SCIReport *      theReport,
 										 gsi_u16          theKeyId,
 										 const gsi_char * theValue)
 {
 	SCIReportHeader * aHeader = (SCIReportHeader*)theReport->mBuffer.mData;
 	int writtenLen = 0, numLenBytes = 0, asciiLen = 0;
-	gsi_i16 theKeyType = SCIKeyType_STRING;	
+	gsi_i16 theKeyType = SCDataType_STRING;	
 
 	// for unicode we need to store the ascii-converted string first in the buffer so as
 	// not to dynamically allocate space for it. Then once we have the length of it, we can
@@ -806,14 +872,13 @@ SCResult SC_CALL sciReportAddStringValue(SCIReport *      theReport,
 	asciiLen = UCS2ToAsciiString(theValue, &theReport->mBuffer.mData[theReport->mBuffer.mPos])-1;
 
 	// now determine how many bytes are necessary to represent len
-	numLenBytes = (asciiLen/127)+1; 
+	numLenBytes = SevenBitEncoderWriteInt(NULL, asciiLen);
 
 #else
 
-	numLenBytes = (gsi_i32)(strlen(theValue)/127)+1; //finds out number of bytes necessary to represent len
+	numLenBytes = SevenBitEncoderWriteInt(NULL, (int)strlen(theValue)); //finds out number of bytes necessary to represent len
 	asciiLen = (int)strlen(theValue);
 #endif
-
 
 	// calculate length of data to be written
 	writtenLen += sizeof(gsi_u16) + sizeof(gsi_u16);	// 2 byte key ID, 2 byte key type;
@@ -857,7 +922,7 @@ SCResult SC_CALL sciReportAddStringValue(SCIReport *      theReport,
 
 	// now prior to writing the string we need to prepend the length of the string to follow
 	// the .NET format of (string length)(String)
-	memset(&theReport->mBuffer.mData[theReport->mBuffer.mPos], asciiLen, (gsi_u32)numLenBytes);
+	SevenBitEncoderWriteInt(&theReport->mBuffer.mData[theReport->mBuffer.mPos], asciiLen);
 	theReport->mBuffer.mPos += numLenBytes;
 
 #if defined(GSI_UNICODE)
@@ -870,5 +935,3 @@ SCResult SC_CALL sciReportAddStringValue(SCIReport *      theReport,
 
 	return SCResult_NO_ERROR;
 }
-
-#pragma warning(default: 4267)

@@ -92,7 +92,7 @@
       <AdditionalIncludeDirectories>../Libraries/Source/;..\Libraries\STLport-4.5.3\stlport;..\Libraries\DX90SDK\Include\;../Libraries/Source/Compression;Include/Precompiled;../Libraries/Source/WWVegas;../Libraries/Source/WWVegas/WWLib;Include;../Libraries/Include;../Libraries/Source/GameSpy;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS;IG_DEBUG_STACKTRACE;NDEBUG;_RELEASE;_LIB;_WINDOWS;WIN32;Z_PREFIX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>PreRTS.h</PrecompiledHeaderFile>
@@ -711,6 +711,7 @@
     <ClInclude Include="..\Libraries\Source\GameSpy\GameSpy\pinger\pinger.h" />
     <ClInclude Include="..\Libraries\Source\GameSpy\GameSpy\queryreporting\gqueryreporting.h" />
     <ClInclude Include="Include\Common\ActionManager.h" />
+    <ClInclude Include="Include\Common\AITypes.h" />
     <ClInclude Include="Include\Common\ArchiveFile.h" />
     <ClInclude Include="Include\Common\ArchiveFileSystem.h" />
     <ClInclude Include="Include\Common\AsciiString.h" />
@@ -1223,7 +1224,6 @@
     <ClInclude Include="Include\GameNetwork\WOLBrowser\FEBDispatch.h" />
     <ClInclude Include="Include\GameNetwork\WOLBrowser\WebBrowser.h" />
     <ClInclude Include="Include\Precompiled\PreRTS.h" />
-    <ClInclude Include="..\Libraries\Include\MAPI\mapicode.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Libraries\Source\EABrowserDispatch\EABrowserDispatch.vcxproj">

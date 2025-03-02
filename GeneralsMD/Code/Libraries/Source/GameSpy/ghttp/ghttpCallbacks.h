@@ -1,12 +1,12 @@
-/*
-GameSpy GHTTP SDK 
-Dan "Mr. Pants" Schoenblum
-dan@gamespy.com
-
-Copyright 1999-2007 GameSpy Industries, Inc
-
-devsupport@gamespy.com
-*/
+///////////////////////////////////////////////////////////////////////////////
+// File:	ghttpCallbacks.h
+// SDK:		GameSpy HTTP SDK
+//
+// Copyright (c) 2012 GameSpy Technology & IGN Entertainment, Inc. All rights
+// reserved. This software is made available only pursuant to certain license 
+// terms offered by IGN or its subsidiary GameSpy Industries, Inc. Unlicensed 
+// use or use in a  manner not expressly authorized by IGN or GameSpy 
+// Technology is prohibited.
 
 #ifndef _GHTTPCALLBACKS_H_
 #define _GHTTPCALLBACKS_H_
@@ -19,14 +19,12 @@ extern "C" {
 #endif
 
 // Call the completed callback for this connection.
-///////////////////////////////////////////////////
 void ghiCallCompletedCallback
 (
 	GHIConnection * connection
 );
 
 // Call the progress callback for this connection.
-//////////////////////////////////////////////////
 void ghiCallProgressCallback
 (
 	GHIConnection * connection,
@@ -35,7 +33,6 @@ void ghiCallProgressCallback
 );
 
 // Call the post callback for this connection.
-//////////////////////////////////////////////
 void ghiCallPostCallback
 (
 	GHIConnection * connection

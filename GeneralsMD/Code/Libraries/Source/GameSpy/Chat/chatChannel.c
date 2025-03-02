@@ -1,12 +1,11 @@
-/*
-GameSpy Chat SDK 
-Dan "Mr. Pants" Schoenblum
-dan@gamespy.com
-
-Copyright 1999-2007 GameSpy Industries, Inc
-
-devsupport@gamespy.com
-*/
+///////////////////////////////////////////////////////////////////////////////
+// File:	chatChannel.c
+// SDK:		GameSpy Chat SDK
+//
+// Copyright (c) IGN Entertainment, Inc.  All rights reserved.  
+// This software is made available only pursuant to certain license terms offered
+// by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed use or use in a 
+// manner not expressly authorized by IGN or GameSpy is prohibited.
 
 /*************
 ** INCLUDES **
@@ -17,11 +16,6 @@ devsupport@gamespy.com
 #include "chatMain.h"
 #include "chatChannel.h"
 #include "chatCallbacks.h"
-
-#if defined(_WIN32)
-// Compiler warns when explicitly casting from function* to void*
-#pragma warning(disable:4054)
-#endif
 
 /************
 ** DEFINES **
@@ -34,10 +28,10 @@ devsupport@gamespy.com
 #define MAX_CACHED_USER        24
 #define MAX_CACHED_ADDRESS     64
 
-#define ASSERT_CHANNEL()   assert(channel != NULL); assert(channel[0] != '\0'); assert(strlen(channel) < MAX_CHANNEL);
-#define ASSERT_USER(user)  assert(user != NULL); assert(user[0] != '\0'); assert(strlen(user) < MAX_NAME);
-#define ASSERT_STR(str)    assert(str != NULL); assert(str[0] != '\0');
-#define ASSERT_MODE(mode)  assert((mode >= 0) && (mode <= 3));
+#define ASSERT_CHANNEL()   GS_ASSERT(channel != NULL); GS_ASSERT(channel[0] != '\0'); GS_ASSERT(strlen(channel) < MAX_CHANNEL);
+#define ASSERT_USER(user)  GS_ASSERT(user != NULL); GS_ASSERT(user[0] != '\0'); GS_ASSERT(strlen(user) < MAX_NAME);
+#define ASSERT_STR(str)    GS_ASSERT(str != NULL); GS_ASSERT(str[0] != '\0');
+#define ASSERT_MODE(mode)  GS_ASSERT((mode >= 0) && (mode <= 3));
 
 /**********
 ** TYPES **
@@ -173,8 +167,8 @@ static int ciChannelTableHashFn(const void * elem, int numBuckets)
 {
 	int hash;
 
-	assert(elem != NULL);
-	assert(numBuckets > 0);
+	GS_ASSERT(elem != NULL);
+	GS_ASSERT(numBuckets > 0);
 
 	hash = ciHashString(((ciChatChannel *)elem)->name, numBuckets);
 
@@ -186,13 +180,13 @@ static int GS_STATIC_CALLBACK ciChannelTableCompareFn(const void * elem1, const 
 	const char * str1;
 	const char * str2;
 
-	assert(elem1 != NULL);
-	assert(elem2 != NULL);
+	GS_ASSERT(elem1 != NULL);
+	GS_ASSERT(elem2 != NULL);
 
 	str1 = ((ciChatChannel *)elem1)->name;
 	str2 = ((ciChatChannel *)elem2)->name;
-	assert(str1 != NULL);
-	assert(str2 != NULL);
+	GS_ASSERT(str1 != NULL);
+	GS_ASSERT(str2 != NULL);
 	ASSERT_STR(str1);
 	ASSERT_STR(str2);
 
@@ -203,7 +197,7 @@ static void ciChannelTableElementFreeFn(void * elem)
 {
 	ciChatChannel * channel;
 
-	assert(elem != NULL);
+	GS_ASSERT(elem != NULL);
 
 	channel = (ciChatChannel *)elem;
 	gsifree(channel->password);
@@ -218,8 +212,8 @@ static int ciUserTableHashFn(const void * elem, int numBuckets)
 {
 	int hash;
 
-	assert(elem != NULL);
-	assert(numBuckets > 0);
+	GS_ASSERT(elem != NULL);
+	GS_ASSERT(numBuckets > 0);
 
 	hash = ciHashString(((ciChatUser *)elem)->name, numBuckets);
 
@@ -231,8 +225,8 @@ static int GS_STATIC_CALLBACK ciUserTableCompareFn(const void * elem1, const voi
 	const char * str1;
 	const char * str2;
 
-	assert(elem1 != NULL);
-	assert(elem2 != NULL);
+	GS_ASSERT(elem1 != NULL);
+	GS_ASSERT(elem2 != NULL);
 
 	// Sept 20, 2004 - Bill Dewey
 	// A NULL parameter has been causing Arcade to crash.  (FogBugz 2825)
@@ -259,7 +253,7 @@ static int GS_STATIC_CALLBACK ciUserTableCompareFn(const void * elem1, const voi
 
 static void ciUserTableElementFreeFn(void * elem)
 {
-	assert(elem != NULL);
+	GS_ASSERT(elem != NULL);
 	
 	GSI_UNUSED(elem);
 
@@ -332,7 +326,7 @@ CHATBool ciIsEnteringChannel(CHAT chat, const char * channel)
 	for(i = 0 ; i < count ; i++)
 	{
 		chatChannel = (ciChatChannel *)ArrayNth(connection->enteringChannelList, i);
-		assert(chatChannel);
+		GS_ASSERT(chatChannel);
 		if(strcasecmp(chatChannel->name, channel) == 0)
 			return CHATTrue;
 	}
@@ -348,14 +342,14 @@ void ciChannelEntered(CHAT chat, const char * channel, chatChannelCallbacks * ca
 	CONNECTION;
 
 	ASSERT_CHANNEL();
-	assert(callbacks != NULL);
+	GS_ASSERT(callbacks != NULL);
 
 	// Setup an empty password.
 	///////////////////////////
 	password = (char *)gsimalloc(2);
 	if(password == NULL)
 		return; //ERRCON
-	strcpy(password, "");
+	password[0] = 0;
 
 	// Setup the channel.
 	/////////////////////
@@ -385,7 +379,6 @@ void ciChannelLeft(CHAT chat, const char * channel)
 {
 	ciChatChannel chatChannel;
 	int index;
-	//int rcode;
 	CONNECTION;
 	
 	ASSERT_CHANNEL();
@@ -407,12 +400,8 @@ void ciChannelLeft(CHAT chat, const char * channel)
 	{
 		// Remove based on the name.
 		////////////////////////////
-		//rcode = TableRemove(connection->channelTable, &chatChannel);
 		TableRemove(connection->channelTable, &chatChannel);
 
-		// This will assert if we don't think we're in this channel.
-		////////////////////////////////////////////////////////////
-		//assert(rcode != 0);
 	}
 }
 
@@ -438,8 +427,8 @@ static void ciChannelListUsersMap(void * elem, void * clientData)
 	ciChannelListUsersData * data;
 	void * tempPtr;
 
-	assert(elem != NULL);
-	assert(clientData != NULL);
+	GS_ASSERT(elem != NULL);
+	GS_ASSERT(clientData != NULL);
 
 	// Get the user.
 	////////////////
@@ -449,7 +438,7 @@ static void ciChannelListUsersMap(void * elem, void * clientData)
 	// Get the data.
 	////////////////
 	data = (ciChannelListUsersData *)clientData;
-	assert(data->numUsers >= 0);
+	GS_ASSERT(data->numUsers >= 0);
 #ifdef _DEBUG
 	{
 	int i;
@@ -467,14 +456,14 @@ static void ciChannelListUsersMap(void * elem, void * clientData)
 	tempPtr = gsirealloc(data->users, sizeof(char *) * (data->numUsers + 1));
 	if(tempPtr == NULL)
 	{
-		assert(0);
+		GS_FAIL();
 		return; //ERRCON
 	}
 	data->users = (char **)tempPtr;
 	tempPtr = gsirealloc(data->modes, sizeof(int) * (data->numUsers + 1));
 	if(tempPtr == NULL)
 	{
-		assert(0);
+		GS_FAIL();
 		return; //ERRCON
 	}
 	data->modes = (int *)tempPtr;
@@ -493,7 +482,7 @@ void ciChannelListUsers(CHAT chat, const char * channel, ciChannelListUsersCallb
 	CONNECTION;
 
 	ASSERT_CHANNEL();
-	assert(callback != NULL);
+	GS_ASSERT(callback != NULL);
 
 	// Find this channel.
 	/////////////////////
@@ -753,7 +742,7 @@ void ciUserEnteredChannel(CHAT chat, const char * name, const char * channel, in
 
 	// Check that we're in.
 	///////////////////////
-	assert(TableLookup(chatChannel->users, &chatUser) != NULL);
+	GS_ASSERT(TableLookup(chatChannel->users, &chatUser) != NULL);
 }
 
 void ciUserLeftChannel(CHAT chat, const char * user, const char * channel)
@@ -786,20 +775,20 @@ static void ciUserEnumChannelsMap(void * elem, void * clientData)
 	ciChatUser * user;
 	ciUserEnumChannelsData * data;
 
-	assert(elem != NULL);
-	assert(clientData != NULL);
+	GS_ASSERT(elem != NULL);
+	GS_ASSERT(clientData != NULL);
 
 	// Get the channel.
 	///////////////////
 	channel = (ciChatChannel *)elem;
-	assert(channel->users != NULL);
+	GS_ASSERT(channel->users != NULL);
 
 	// Get the user and callback.
 	/////////////////////////////
 	data = (ciUserEnumChannelsData *)clientData;
-	assert(data->user != NULL);
-	assert(data->user->name[0] != '\0');
-	assert(data->callback != NULL);
+	GS_ASSERT(data->user != NULL);
+	GS_ASSERT(data->user->name[0] != '\0');
+	GS_ASSERT(data->callback != NULL);
 
 	// Check for the user.
 	//////////////////////
@@ -819,7 +808,7 @@ void ciUserEnumChannels(CHAT chat, const char * user, ciUserEnumChannelsCallback
 	CONNECTION;
 
 	ASSERT_USER(user);
-	assert(callback != NULL);
+	GS_ASSERT(callback != NULL);
 
 	strzcpy(chatUser.name, user, MAX_NAME);
 	data.chat = chat;
@@ -841,13 +830,13 @@ static void ciUserChangeNickMap(void * elem, void * clientData)
 	ciCallbackUserChangedNickParams params;
 	int rcode;
 
-	assert(elem != NULL);
-	assert(clientData != NULL);
+	GS_ASSERT(elem != NULL);
+	GS_ASSERT(clientData != NULL);
 
 	// Get the channel.
 	///////////////////
 	channel = (ciChatChannel *)elem;
-	assert(channel->users != NULL);
+	GS_ASSERT(channel->users != NULL);
 
 	// Get the data.
 	////////////////
@@ -865,7 +854,7 @@ static void ciUserChangeNickMap(void * elem, void * clientData)
 		// Remove the old user.
 		///////////////////////
 		rcode = TableRemove(channel->users, user);
-		assert(rcode != 0);
+		GS_ASSERT(rcode != 0);
 		user = &tempUser;
 
 		// Update the nick.
@@ -997,8 +986,8 @@ static void ciEnumJoinedChannelsMap(void * elem, void * clientData)
 {
 	ciEnumJoinedChannelsData * data;
 	ciChatChannel * channel;
-	assert(elem != NULL);
-	assert(clientData != NULL);
+	GS_ASSERT(elem != NULL);
+	GS_ASSERT(clientData != NULL);
 
 	// Get the channel.
 	///////////////////
@@ -1007,7 +996,7 @@ static void ciEnumJoinedChannelsMap(void * elem, void * clientData)
 	// Get the callback & param
 	/////////////////////////////
 	data = (ciEnumJoinedChannelsData *)clientData;
-	assert(data->callback != NULL);
+	GS_ASSERT(data->callback != NULL);
 
 	// Call the callback.
 	/////////////////////
@@ -1045,8 +1034,8 @@ static void ciSetUserBasicInfoMap(void * elem, void * clientData)
 	ciChatUser * user;
 	ciSetUserBasicInfoData * data;
 
-	assert(elem != NULL);
-	assert(clientData != NULL);
+	GS_ASSERT(elem != NULL);
+	GS_ASSERT(clientData != NULL);
 
 	// Get the data.
 	////////////////
@@ -1055,7 +1044,7 @@ static void ciSetUserBasicInfoMap(void * elem, void * clientData)
 	// Get the channel.
 	///////////////////
 	channel = (ciChatChannel *)elem;
-	assert(channel->users != NULL);
+	GS_ASSERT(channel->users != NULL);
 
 	// Check for the user.
 	//////////////////////
@@ -1100,8 +1089,8 @@ static void ciGetUserBasicInfoMap(void * elem, void * clientData)
 	ciChatUser * user;
 	ciGetUserBasicInfoData * data;
 
-	assert(elem != NULL);
-	assert(clientData != NULL);
+	GS_ASSERT(elem != NULL);
+	GS_ASSERT(clientData != NULL);
 
 	// Get the data.
 	////////////////
@@ -1116,7 +1105,7 @@ static void ciGetUserBasicInfoMap(void * elem, void * clientData)
 	// Get the channel.
 	///////////////////
 	channel = (ciChatChannel *)elem;
-	assert(channel->users != NULL);
+	GS_ASSERT(channel->users != NULL);
 
 	// Check for the user.
 	//////////////////////
@@ -1201,8 +1190,8 @@ static void ciClearAllUsersUsersMap(void * elem, void * clientData)
 	ciChatUser * user;
 	ciChatChannel * channel;
 
-	assert(elem != NULL);
-	assert(clientData != NULL);
+	GS_ASSERT(elem != NULL);
+	GS_ASSERT(clientData != NULL);
 
 	// Get the user.
 	////////////////
@@ -1224,13 +1213,13 @@ static void ciClearAllUsersChannelMap(void * elem, void * clientData)
 	ciClearAllUsersData data;
 	CHAT chat;
 
-	assert(elem != NULL);
-	assert(clientData != NULL);
+	GS_ASSERT(elem != NULL);
+	GS_ASSERT(clientData != NULL);
 
 	// Get the channel.
 	///////////////////
 	channel = (ciChatChannel *)elem;
-	assert(channel->users != NULL);
+	GS_ASSERT(channel->users != NULL);
 
 	// Get the chat object.
 	///////////////////////

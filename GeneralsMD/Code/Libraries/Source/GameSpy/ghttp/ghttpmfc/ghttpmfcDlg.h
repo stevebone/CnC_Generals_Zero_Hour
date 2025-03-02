@@ -1,5 +1,11 @@
-// ghttpmfcDlg.h : header file
+///////////////////////////////////////////////////////////////////////////////
+// File:	ghttpmfcDlg.h
+// SDK:		GameSpy HTTP SDK
 //
+// Copyright (c) IGN Entertainment, Inc.  All rights reserved.  
+// This software is made available only pursuant to certain license terms offered
+// by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed use or use in a 
+// manner not expressly authorized by IGN or GameSpy is prohibited.
 
 #if !defined(AFX_GHTTPMFCDLG_H__14B35CAF_3960_4669_972D_59B741AA032C__INCLUDED_)
 #define AFX_GHTTPMFCDLG_H__14B35CAF_3960_4669_972D_59B741AA032C__INCLUDED_
@@ -63,7 +69,7 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	afx_msg void OnStart();
 	afx_msg void OnCancel_();
-	afx_msg void OnTimer(UINT nIDEvent);
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg void OnDestroy();
 	afx_msg void OnThrottle();
 	afx_msg void OnThink();

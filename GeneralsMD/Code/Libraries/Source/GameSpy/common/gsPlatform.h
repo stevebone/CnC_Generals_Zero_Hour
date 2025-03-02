@@ -1,5 +1,13 @@
 ///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
+// File:	gsPlatform.h
+// SDK:		GameSpy Common
+//
+// Copyright (c) 2012 GameSpy Technology & IGN Entertainment, Inc.  All rights 
+// reserved. This software is made available only pursuant to certain license 
+// terms offered by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed
+// use or use in a manner not expressly authorized by IGN or GameSpy Technology
+// is prohibited.
+
 #ifndef __GSPLATFORM_H__
 #define __GSPLATFORM_H__
 
@@ -9,10 +17,13 @@
 // Xbox:             _WIN32 + _XBOX
 // Xbox360:          _WIN32 + _XBOX + _X360
 // MacOSX:           _MACOSX + _UNIX
+// iPhone:           _IPHONE + _UNIX
 // Linux:            _LINUX + _UNIX
 // Nintendo DS:      _NITRO
+// Nintendo Wii:     _REVOLUTION
 // PSP:              _PSP
 // PS3:              _PS3
+// Android:          ANDROID
 
 // PlayStation2:     _PS2
 //    w/ EENET:      EENET       (set by developer project)
@@ -34,8 +45,25 @@
 	#endif
 #endif
 
-#if defined(_LINUX) || defined(_MACOSX)
+// MacOS X detection
+#if defined(__APPLE__)
+	#include <TargetConditionals.h>
+
+	#if TARGET_OS_IPHONE
+		#define _IPHONE
+	#else
+		#define _MACOSX
+	#endif
+#endif
+
+#if defined(__linux__) || defined(__APPLE__) || defined(ANDROID)
 	#define _UNIX
+#endif
+
+#if defined(__linux__)
+	#ifndef _LINUX
+		#define _LINUX
+	#endif
 #endif
 
 #if defined(_XBOX) || defined (_X360)
@@ -65,7 +93,9 @@
 
 // WIN32
 #elif defined(_WIN32)
-	#define WIN32_LEAN_AND_MEAN
+	#ifndef WIN32_LEAN_AND_MEAN
+		#define WIN32_LEAN_AND_MEAN
+	#endif
 	#include <windows.h>
 	#include <limits.h>
 	#include <time.h>
@@ -78,6 +108,10 @@
 	
 	#if (_MSC_VER > 1300)
 		#define itoa(v, s, r) _itoa(v, s, r)
+	#endif
+
+	#ifndef WIN32
+		#define WIN32
 	#endif
 // PS2
 #elif defined(_PS2)
@@ -172,7 +206,7 @@
 	#include <nitroWiFi.h>
 	#include <extras.h>  // mwerks
     #include <limits.h>
-	
+	#include <time.h>
 	// Raw sockets are undefined on Nitro
 	#define SB_NO_ICMP_SUPPORT
 
@@ -195,9 +229,21 @@
 	#include <utility\utility_common.h>
 	#include <utility\utility_netconf.h>
 	#include <utility\utility_module.h>
+	#include <utility\utility_sysparam.h>
+
+// Sony PSP2
+#elif defined(_PSP2) || TARGET_VITA
+#include <scetypes.h>
+#include <stdlib.h>
+#include <time.h>
+#include <rtc.h>
+#include <net.h>
+#include <limits.h>
+#include <kernel.h>
+
 // PS3
 #elif defined(_PS3)
-#include <netex/errno.h>
+	#include <netex/errno.h>
 	#include <sys/process.h>
 	#include <sys/time.h>
 	#include <sys/types.h>	
@@ -215,13 +261,18 @@
 	#include <limits.h>
 	#include <time.h>
 
+	#include <sysutil/sysutil_common.h>
+	#include <sysutil/sysutil_sysparam.h>
+
 // Nintendo Wii
 #elif defined(_REVOLUTION)
 	#include <revolution.h>
 	#include <revolution/soex.h>
 	#include <revolution/ncd.h>	
     #include <limits.h>
+    #include <time.h>
 
+    #define GSI_DOMAIN_NAME "gs.nintendowifi.net"
 	// Raw sockets are undefined on Revolution
 	#define SB_NO_ICMP_SUPPORT
 
@@ -240,9 +291,16 @@
 	#define GS_STATIC_CALLBACK
 #endif
 
+//---------- __declspec for dll ----------
+#ifdef GAMESPYDLL_EXPORTS //(returntype)
+	#define COMMON_API __declspec(dllexport)
+#else
+	#define COMMON_API
+#endif
+
 
 //---------- Handle Endianess ----------------------
-#if defined(_PS3) || defined(_REVOLUTION) || defined(_X360) //defined(_MACOSX)
+#if defined(_PS3) || defined(_REVOLUTION) || defined(_X360) //defined(_MACOSX) || defined (_IPHONE)
 	#define GSI_BIG_ENDIAN
 #endif
 #ifndef GSI_BIG_ENDIAN
@@ -253,17 +311,17 @@
 
 #include <ctype.h>
 
-#if defined(_MACOSX)
+#if defined(_MACOSX) || defined (_IPHONE)
 	#undef _T
 #endif
 
 #include <assert.h>
 
-#if defined(GS_NO_FILE) || defined(_PS2) || defined(_PS3) || defined(_NITRO) || defined(_PSP) || defined(_XBOX)
+#if defined(GS_NO_FILE) || defined(_PS2) || defined(_PS3) || defined(_PSP) || defined(_NITRO) || defined(_REVOLUTION) || defined(_XBOX) || defined(ANDROID) || defined(_PSP2)
 	#define NOFILE
 #endif
 
-#if defined(_PSP) || defined(_NITRO)
+#if defined(_PSP) || defined(_PSP2) || defined(_NITRO) || defined(_IPHONE) || defined(ANDROID)
 	#define GS_WIRELESS_DEVICE
 #endif
 
@@ -271,8 +329,25 @@
 	#define GSI_DOMAIN_NAME "gamespy.com"
 #endif
 
+#if !defined(GSI_OPEN_DOMAIN_NAME)
+	#define GSI_OPEN_DOMAIN_NAME_UNI _T("%s.api." GSI_DOMAIN_NAME) // unicode supported string
+	#define GSI_OPEN_DOMAIN_NAME "%s.api." GSI_DOMAIN_NAME
+#endif
 
-///////////////////////////////////////////////////////////////////////////////
+#if !defined(UNISPY_USE_HTTPS)
+	#define GSI_HTTP_PROTOCOL_URL "http://"
+	#define GSI_HTTP_PROTOCOL_URL_UNI _T("http://")
+#else
+	#define GSI_HTTP_PROTOCOL_URL "https://"
+	#define GSI_HTTP_PROTOCOL_URL_UNI _T("https://")
+#endif
+
+//---------- Mac autorelease pool for working with CoreFoundation types ----------------------
+#if defined(_MACOSX) || defined(_IPHONE)
+#include "macosx/macAutoreleasePool.h"
+#endif
+
+///gsi_uint////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 // Define GameSpy types
 
@@ -285,8 +360,14 @@ typedef int               gsi_i32;
 typedef unsigned int      gsi_u32;
 typedef unsigned int      gsi_time;  // must be 32 bits
 
-// decprecated
-typedef gsi_i32           goa_int32;  // 2003.Oct.04.JED - typename deprecated
+#if defined(_WIN64) || defined(__mips64) || defined(__x86_64__) || defined(__ppc64__)
+typedef unsigned long long gsi_ptr;
+#else
+typedef unsigned int       gsi_ptr;
+#endif
+
+// Deprecated
+typedef gsi_i32           goa_int32;  // 2003.Oct.04 - typename deprecated
 typedef gsi_u32           goa_uint32; //  these types will be removed once all SDK's are updated
 
 typedef int               gsi_bool;
@@ -317,6 +398,9 @@ typedef int               gsi_bool;
 #elif defined (_PSP)
 	typedef long long             gsi_i64;
 	typedef unsigned long long    gsi_u64;
+#elif defined (_PSP2)
+	typedef SceInt64              gsi_i64;
+	typedef SceUInt64		      gsi_u64;
 #elif defined (_PS3)
 	typedef int64_t               gsi_i64;
 	typedef uint64_t              gsi_u64;
@@ -328,12 +412,28 @@ typedef int               gsi_bool;
 	typedef unsigned long long    gsi_u64;
 #endif // 64 bit types
 
-#ifndef GSI_UNICODE
-	#define gsi_char  char
+#if defined(__GNUC__)
+#define GSI_FMT64	"ll"
+#elif defined(_MSC_VER)
+#define GSI_FMT64	"I64"
 #else
-	#define gsi_char  unsigned short
-#endif // goa_char
+#define GSI_FMT64	""
+#endif
 
+
+#ifndef GSI_UNICODE	
+	#define gsi_char  char
+	#define GSI_WCHAR (char *)
+#else
+	// is Unicode
+	#define GSI_WCHAR (wchar_t *)
+	
+	#ifdef _UNIX		
+		#define gsi_char  gsi_u32	// for unix/linux, unicode is 4 bytes
+	#else
+		#define gsi_char  gsi_u16	// all other are 2 bytes
+	#endif
+#endif
 
 // expected ranges for integer types
 #define GSI_MIN_I8        CHAR_MIN
@@ -374,26 +474,41 @@ extern "C" {
 #undef _tfopen
 #undef _T
 #undef _tsnprintf
-
+#undef _tremove
+#undef _trename
 #ifdef GSI_UNICODE
 	#define _vftprintf  vfwprintf
 	#define _ftprintf   fwprintf
-	#define _stprintf   swprintf
 	#define _tprintf    wprintf
 	#define _tcscpy     wcscpy
 	#define _tcsncpy(d, s, l)	wcsncpy((wchar_t *)d, (wchar_t *)s, l)
 	#define _tcscat     wcscat
 	#define _tcslen     wcslen
 	#define _tcschr     wcschr
+	#define _tcsrchr   wcsrchr
 	#define _tcscmp(s1, s2)     wcscmp((wchar_t *)s1, (wchar_t *)s2)
 	#define _tfopen     _wfopen
+	#define _tremove _wremove
+    #define _trename _wrename
 	#define _T(a)       L##a
+	#define _STR_CST(a)		(gsi_u16 *)L##a		// string casting for constants
+	#define _STR_CST_VAR(a)	(gsi_u16 *)##a		// string casting for variables
+	#define _WRD_CST(a)		(wchar_t *)L##a
 
-	#if defined(_WIN32) || defined(_PS2)
+	#if defined(_WIN32) || defined(_PS2) || defined(_PSP) || defined(_PSP2)
 		#define _tsnprintf _snwprintf
 	#else
 		#define _tsnprintf swprintf
 	#endif
+
+	#if !defined(_PSP) && !defined(_PSP2)
+		#define _stprintf   swprintf
+		#define _vswprintf  vswprintf
+	#else
+		#define _stprintf   snwprintf
+		#define _vswprintf  vsnwprintf
+	#endif
+
 #else
 	#define _vftprintf  vfprintf
 	#define _ftprintf   fprintf
@@ -410,11 +525,17 @@ extern "C" {
 #else
 	#define _tcschr	    strchr
 #endif
+	#define _tcsrchr	strrchr
 	#define _tcscmp     strcmp
 	#define _tfopen     fopen
+	#define _tremove    remove
+    #define _trename    rename
 #ifndef _T	
 	#define _T(a)       a
 #endif
+	#define _STR_CST(a)		a
+	#define _STR_CST_VAR(a) a
+	#define _WRD_CST(a)		a
 
 	#if defined(_WIN32)
 		#define _tsnprintf _snprintf
@@ -438,7 +559,7 @@ extern "C" {
 #endif
 
 char * goastrdup(const char *src);
-unsigned short * goawstrdup(const unsigned short *src);
+wchar_t* goawstrdup(const wchar_t*src);
 
 
 // ------ Cross Plat Alignment macros ------------
@@ -456,7 +577,7 @@ static char _mempool[MEMPOOL_SIZE]	POST_ALIGN(16);
 #if defined _WIN32
 	#define PRE_ALIGN(x)	__declspec(align(x))	// ignore Win32 directive
 	#define POST_ALIGN(x)	// ignore
-#elif defined  (_PS2) || defined (_PSP) || defined (_PS3) 
+#elif defined  (_PS2) || defined (_PSP) || defined (_PS3) || defined (_PSP2)
 	#define PRE_ALIGN(x)	// ignored this on psp/ps2
 	#define POST_ALIGN(x)	__attribute__((aligned (x)))		// 
 #elif defined (_REVOLUTION)
@@ -476,6 +597,25 @@ extern gsi_u16 gsiByteOrderSwap16(gsi_u16);
 extern gsi_u32 gsiByteOrderSwap32(gsi_u32);
 extern gsi_u64 gsiByteOrderSwap64(gsi_u64);
 
+
+// Wide-string character defines for use in printf
+//
+// Usage:
+//   GS_USTR - for gsi_char string that flips between unicode and ascii depending on GSI_UNICODE define
+//   GS_STR  - for char string that remains as ascii
+//
+#if defined(GSI_UNICODE)
+    #if defined(_PS3)
+        #define GS_STR  _T("%s")
+        #define GS_USTR _T("%ls")
+    #else
+        #define GS_STR  _T("%S")
+        #define GS_USTR _T("%s")
+    #endif
+#else
+    #define GS_STR  _T("%s")
+    #define GS_USTR _T("%s")
+#endif
 
 #ifdef __cplusplus
 }

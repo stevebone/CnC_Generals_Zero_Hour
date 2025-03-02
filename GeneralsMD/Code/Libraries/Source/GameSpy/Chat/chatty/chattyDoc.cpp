@@ -1,5 +1,13 @@
-// chattyDoc.cpp : implementation of the CChattyDoc class
+///////////////////////////////////////////////////////////////////////////////
+// File:	chattyDoc.cpp
+// SDK:		GameSpy Chat SDK
 //
+// Copyright (c) IGN Entertainment, Inc.  All rights reserved.  
+// This software is made available only pursuant to certain license terms offered
+// by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed use or use in a 
+// manner not expressly authorized by IGN or GameSpy is prohibited.
+// ------------------------------------
+// chattyDoc.cpp : implementation of the CChattyDoc class
 
 #include "stdafx.h"
 #include "chatty.h"
@@ -318,7 +326,7 @@ void EnterChannelCallback(CHAT chat, CHATBool success, CHATEnterResult result, c
 		chatEnumUsers(theApp.m_chat, channel, EnumUsersCallback, pDoc, CHATTrue);
 		DWORD after = GetTickCount();
 		char buffer[128];
-		sprintf(buffer, "%dms to enum %d users in %s\n", after - before, pDoc->m_numUsers, pDoc->m_channelName);
+		sprintf(buffer, "%dms to enum %d users in %s\n", after - before, pDoc->m_numUsers, pDoc->m_channelName.GetString());
 		OutputDebugString(buffer);
 	}
 

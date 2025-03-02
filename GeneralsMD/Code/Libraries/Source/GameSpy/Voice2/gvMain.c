@@ -19,7 +19,7 @@ http://gamespy.net
 		#include "gvDirectSound.h"
 	#elif defined(_PS2)
 		#include "gvPS2Audio.h"
-	#elif defined(_MACOSX)
+	#elif defined(__APPLE__)
 		#include "gvOSXAudio.h"
 	#elif defined(_PSP)
 		#include "gvPSPAudio.h"
@@ -148,8 +148,8 @@ GVBool gvIsDeviceStarted(GVDevice device, GVDeviceType type)
 
 void gvSetDeviceVolume(GVDevice device, GVDeviceType type, GVScalar volume)
 {
-	volume = max(volume, 0.0);
-	volume = min(volume, 1.0);
+	volume = GSI_MAX(volume, 0.0);
+	volume = GSI_MIN(volume, 1.0);
 
 	device->m_methods.m_setDeviceVolume(device, type, volume);
 }
@@ -198,7 +198,7 @@ GVScalar gvGetCaptureThreshold(GVDevice device)
 void gvSetCaptureMode(GVDevice device, GVCaptureMode captureMode)
 {
 	//This only works with Capture devices.
-	assert(device->m_types & GV_CAPTURE);
+	GS_ASSERT(device->m_types & GV_CAPTURE);
 
 	//See if we are switching from Threshold to PTT.
 	if ((device->m_captureMode == GVCaptureModeThreshold) && (captureMode == GVCaptureModePushToTalk))

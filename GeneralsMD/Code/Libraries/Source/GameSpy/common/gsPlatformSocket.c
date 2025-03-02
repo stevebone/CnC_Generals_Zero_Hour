@@ -1,12 +1,16 @@
 ///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
+// File:	gsPlatformSocket.c
+// SDK:		GameSpy Common
+//
+// Copyright (c) 2012 GameSpy Technology & IGN Entertainment, Inc.  All rights 
+// reserved. This software is made available only pursuant to certain license 
+// terms offered by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed
+// use or use in a manner not expressly authorized by IGN or GameSpy Technology
+// is prohibited.
+
 #include "gsPlatformSocket.h"
 #include "gsPlatformUtil.h"
 #include "gsMemory.h"
-
-// mj-ToDo: remove these and include the files int the linker instead. 
-// removing reference to other platforms.
-// remove all plat specific code from here, move it to the platspecific files.
 
 // Include platform separated functions
 #if defined(_X360)
@@ -28,20 +32,16 @@
 	#include <sys/select.h>
 #elif defined(_PSP)
 	#include "psp/gsSocketPSP.c"
+#elif defined(_PSP2)
+	//#include "psp2/gsSocketPSP2.c"
 #elif defined(_REVOLUTION)
 	#include "revolution/gsSocketRevolution.c"
+#elif defined(_IPHONE)
+	#import <net/if.h>
+	#import <ifaddrs.h>
 #else
 	#error "Missing or unsupported platform"
 #endif
-
-
-// Disable compiler warnings for issues that are unavoidable.
-/////////////////////////////////////////////////////////////
-#if defined(_MSC_VER) // DevStudio
-	// Level4, "conditional expression is constant". 
-	// Occurs with use of the MS provided macro FD_SET
-	#pragma warning ( disable: 4127 )
-#endif // _MSC_VER
 
 
 
@@ -111,6 +111,8 @@ int SetSockBlocking(SOCKET sock, int isblocking)
 		#endif
 	#elif defined(_PSP)
 		rcode = setsockopt(sock, SCE_NET_INET_SOL_SOCKET, SCE_NET_INET_SO_NBIO, &argp, sizeof(argp));
+	#elif defined(_PSP2)
+		rcode = setsockopt(sock, SCE_NET_SOL_SOCKET, SCE_NET_SO_NBIO, &argp, sizeof(argp));
 	#elif defined(_PS3)
 		rcode = setsockopt(sock, SOL_SOCKET, SO_NBIO, &argp, sizeof(argp));
 	#else
@@ -179,9 +181,7 @@ int DisableNagle(SOCKET sock)
 	{
 		int rcode;
 		int size;
-		int len;
-
-		len = sizeof(size);
+		socklen_t len = sizeof(size);
 
 		rcode = getsockopt(sock, SOL_SOCKET, SO_RCVBUF, (char *)&size, &len);
 
@@ -195,9 +195,7 @@ int DisableNagle(SOCKET sock)
 	{
 		int rcode;
 		int size;
-		int len;
-
-		len = sizeof(size);
+		socklen_t len = sizeof(size);
 
 		rcode = getsockopt(sock, SOL_SOCKET, SO_SNDBUF, (char *)&size, &len);
 
@@ -219,6 +217,10 @@ int DisableNagle(SOCKET sock)
 #if !defined(_NITRO) && !defined(INSOCK) && !defined(_REVOLUTION)
 	int GSISocketSelect(SOCKET theSocket, int* theReadFlag, int* theWriteFlag, int* theExceptFlag)
 	{
+#if defined(_PSP2)
+		// psp vita has no select, created a select like function that mimics gamespy's simple select, so just call it.		
+		return vitaSocketselect(theSocket, theReadFlag, theWriteFlag, theExceptFlag);
+#else
 		fd_set aReadSet;
 		fd_set aWriteSet;
 		fd_set aExceptSet;
@@ -226,7 +228,7 @@ int DisableNagle(SOCKET sock)
 		fd_set * aWriteFds  = NULL;
 		fd_set * aExceptFds = NULL;
 		int aResult;
-// 04-13-2005, Saad Nader
+// 04-13-2005:
 // Added case for SN Systems that would 
 // handle errors after performing selects.
 #ifdef SN_SYSTEMS
@@ -235,8 +237,7 @@ int DisableNagle(SOCKET sock)
 		
 		struct timeval aTimeout = { 0, 0 };
 
-		if (theSocket == INVALID_SOCKET)
-			return -1;
+		GS_ASSERT(theSocket != INVALID_SOCKET);
 
 		// Setup the parameters.
 		////////////////////////
@@ -255,7 +256,9 @@ int DisableNagle(SOCKET sock)
 		if(theExceptFlag != NULL)
 		{
 			FD_ZERO(&aExceptSet);
+		#if !defined(_PSP2)
 			FD_SET(theSocket, &aExceptSet);
+		#endif
 			aExceptFds = &aExceptSet;
 		}
 #ifdef _PS3
@@ -269,7 +272,7 @@ int DisableNagle(SOCKET sock)
 	if(gsiSocketIsError(aResult))
 		return -1;
 
-// 04-13-2005, Saad Nader
+// 04-13-2005:
 // Added case for SN Systems that would 
 // handle errors after performing selects.
 #ifdef SN_SYSTEMS
@@ -303,6 +306,7 @@ int DisableNagle(SOCKET sock)
 				*theExceptFlag = 0;
 		}
 		return aResult; // 0 or 1 at this point
+#endif // _PSP2
 	}
 #endif // !nitro && !revolution && !insock
 	
@@ -330,7 +334,7 @@ int CanSendOnSocket(SOCKET sock)
 }
 
 
-#if defined(_PS3) || defined (_PSP)
+#if defined(_PS3) || defined (_PSP) || defined (_PSP2)
 
 #else
 
@@ -565,6 +569,50 @@ HOSTENT * getlocalhost(void)
 	return NULL;
 
 
+#elif defined(_IPHONE)
+	static HOSTENT localhost;
+	static char * ipPtrs[2];
+	static unsigned int ips[5];
+	char hostname[256] = "";
+	struct ifaddrs *address, *addresses;
+	int error = getifaddrs(&addresses);
+	
+	if (error == 0) {
+		address = addresses;
+		while (address != NULL)
+		{
+			if ((address->ifa_addr->sa_family == AF_INET) &&
+				(strcmp(address->ifa_name, "lo0") != 0))
+			{
+				struct sockaddr_in* inet_address =
+				(struct sockaddr_in*)address->ifa_addr;
+				
+				// get the local host's name
+				gethostname(hostname, sizeof(hostname));
+				
+				localhost.h_name = hostname;
+				localhost.h_aliases = NULL;
+				localhost.h_addrtype = AF_INET;
+				localhost.h_length =
+				(gsi_u16)sizeof(IN_ADDR);
+				
+				memcpy(&ips[0],
+					   &inet_address->sin_addr.s_addr, sizeof(inet_address->sin_addr.s_addr));
+				ipPtrs[0] = (char *)&ips[0];
+				ipPtrs[1] = NULL;
+				localhost.h_addr_list = (gsi_i8
+										 **)ipPtrs;
+				
+				//ipPtrs[0] = inet_address->sin_addr.s_addr;
+				//ipPtrs[1] = NULL;
+				
+				break;
+			}
+			address = address->ifa_next;
+		}
+	}
+	freeifaddrs(addresses);
+       return &localhost;
 #else
 	char hostname[256] = "";
 
@@ -676,10 +724,3 @@ gsi_u32 gsiGetBroadcastIP(void)
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
-
-// Re-enable previously disabled compiler warnings
-///////////////////////////////////////////////////
-#if defined(_MSC_VER)
-#pragma warning ( default: 4127 )
-#endif // _MSC_VER
-

@@ -1,27 +1,21 @@
-/*
-gpiBuffer.h
-GameSpy Presence SDK 
-Dan "Mr. Pants" Schoenblum
-
-Copyright 1999-2007 GameSpy Industries, Inc
-
-devsupport@gamespy.com
-
-***********************************************************************
-Please see the GameSpy Presence SDK documentation for more information
-**********************************************************************/
+///////////////////////////////////////////////////////////////////////////////
+// File:	gpiBuffer.h
+// SDK:		GameSpy Presence and Messaging SDK
+//
+// Copyright (c) 2012 GameSpy Technology & IGN Entertainment, Inc. All rights
+// reserved. This software is made available only pursuant to certain license
+// terms offered by IGN or its subsidiary GameSpy Industries, Inc. Unlicensed
+// use or use in a manner not expressly authorized by IGN or GameSpy Technology
+// is prohibited.
 
 #ifndef _GPIBUFFER_H_
 #define _GPIBUFFER_H_
 
 //INCLUDES
-//////////
 #include "gpi.h"
 
 //TYPES
-///////
 // A buffer.
-////////////
 typedef struct
 {
 	char * buffer;
@@ -33,7 +27,6 @@ typedef struct
 typedef struct GPIPeer_s * GPIPeer_st;
 
 //FUNCTIONS
-///////////
 GPResult
 gpiAppendCharToBuffer(
   GPConnection * connection,

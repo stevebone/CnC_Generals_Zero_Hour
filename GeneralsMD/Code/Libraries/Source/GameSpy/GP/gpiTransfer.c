@@ -1,18 +1,14 @@
-/*
-gpiTransfer.c
-GameSpy Presence SDK 
-Dan "Mr. Pants" Schoenblum
-
-Copyright 1999-2007 GameSpy Industries, Inc
-
-devsupport@gamespy.com
-
-***********************************************************************
-Please see the GameSpy Presence SDK documentation for more information
-**********************************************************************/
+///////////////////////////////////////////////////////////////////////////////
+// File:	gpiTransfer.c
+// SDK:		GameSpy Presence and Messaging SDK
+//
+// Copyright (c) 2012 GameSpy Technology & IGN Entertainment, Inc. All rights
+// reserved. This software is made available only pursuant to certain license
+// terms offered by IGN or its subsidiary GameSpy Industries, Inc. Unlicensed
+// use or use in a manner not expressly authorized by IGN or GameSpy Technology
+// is prohibited.
 
 //INCLUDES
-//////////
 #include <stdlib.h>
 #ifdef _WIN32
 #include <sys/stat.h>
@@ -23,13 +19,9 @@ Please see the GameSpy Presence SDK documentation for more information
 #define GPI_TRANSFER_VERSION      1
 #define GPI_PEER_TIMEOUT_TIME     (1 * 60000)
 #define GPI_KEEPALIVE_TIME        (4 * 60000)
-
-//#define GPI_ACKNOWLEDGED_WINDOW   (100000 * 1024)
 #define GPI_DATA_SIZE             (1 * 1024)
-//#define GPI_CONFIRM_FILES
 
 //FUNCTIONS
-///////////
 #ifndef NOFILE
 static void gpiTransferFree(void * elem)
 {
@@ -48,7 +40,7 @@ static void gpiTransferFree(void * elem)
 	}
 }
 
-static int gpiTransferCompare(const void * elem1, const void * elem2)
+static int GS_STATIC_CALLBACK gpiTransferCompare(const void * elem1, const void * elem2)
 {
 	GPITransfer * transfer1 = (GPITransfer *)elem1;
 	GPITransfer * transfer2 = (GPITransfer *)elem2;
@@ -103,7 +95,6 @@ void gpiCleanupTransfers(
 	GPIConnection * iconnection = (GPIConnection*)*connection;
 
 	// Free the transfers.
-	//////////////////////
 	if(iconnection->transfers)
 	{
 		ArrayFree(iconnection->transfers);
@@ -123,7 +114,6 @@ static GPResult gpiNewTransfer
 	GPITransfer transferTemp;
 
 	// Fill in the object.
-	//////////////////////
 	memset(&transferTemp, 0, sizeof(GPITransfer));
 	transferTemp.files = ArrayNew(sizeof(GPIFile), 0, gpiFreeFile);
 	if(!transferTemp.files)
@@ -135,11 +125,9 @@ static GPResult gpiNewTransfer
 	transferTemp.currentFile = -1;
 
 	// Add it.
-	//////////
 	ArrayAppend(iconnection->transfers, &transferTemp);
 
 	// Get it.
-	//////////
 	*transfer = (GPITransfer *)ArrayNth(iconnection->transfers, ArrayLength(iconnection->transfers) - 1);
 
 	return GP_NO_ERROR;
@@ -206,14 +194,12 @@ void gpiFreeTransfer
 	int pos;
 
 	// Find the transfer.
-	/////////////////////
 	pos = ArraySearch(iconnection->transfers, transfer, gpiTransferCompare, 0, 0);
-	assert(pos != NOT_FOUND);
+	GS_ASSERT(pos != NOT_FOUND);
 	if(pos == NOT_FOUND)
 		return;
 
 	// Remove it.
-	/////////////
 	ArrayDeleteAt(iconnection->transfers, pos);
 }
 
@@ -224,15 +210,12 @@ void gpiCancelTransfer
 )
 {
 	// Send the cancel message.
-	///////////////////////////
 	if(transfer->peer)
 	{
 		// Start the message.
-		/////////////////////
 		if(gpiPeerStartTransferMessage(connection, transfer->peer, GPI_BM_FILE_TRANSFER_CANCEL, (GPITransferID_st)&transfer->transferID) == GP_NO_ERROR)
 		{
 			// Finish the message.
-			//////////////////////
 			gpiFinishTransferMessage(connection, transfer, NULL, 0);
 		}
 	}
@@ -248,7 +231,6 @@ void gpiTransferError
 	GPIConnection * iconnection = (GPIConnection*)*connection;
 
 	// Call the callback.
-	/////////////////////
 	arg = (GPTransferCallbackArg *)gsimalloc(sizeof(GPTransferCallbackArg));
 	if(arg)
 	{
@@ -269,12 +251,11 @@ GPIFile * gpiAddFileToTransfer
 	GPIFile file;
 	char * str;
 
-	assert(name && name[0]);
+	GS_ASSERT(name && name[0]);
 
 	memset(&file, 0, sizeof(GPIFile));
 
 	// Copy the path.
-	/////////////////
 	if(path)
 	{
 		file.path = goastrdup(path);
@@ -283,7 +264,6 @@ GPIFile * gpiAddFileToTransfer
 	}
 
 	// Copy the name.
-	/////////////////
 	file.name = goastrdup(name);
 	if(!file.name)
 	{
@@ -292,31 +272,26 @@ GPIFile * gpiAddFileToTransfer
 	}
 
 	// Change all slashes to backslashes.
-	/////////////////////////////////////
 	while((str = strchr(file.name, '\\')) != NULL)
 		*str = '/';
 
 	// Check for a directory.
-	/////////////////////////
 	if(name[strlen(name) - 1] == '/')
 		file.flags = GPI_FILE_DIRECTORY;
 
 	// No size yet.
-	///////////////
 	file.size = -1;
 
 	// Add it to the list of files.
-	///////////////////////////////
 	ArrayAppend(transfer->files, &file);
 
 #ifdef GSI_UNICODE
-	// Copy the unicode versions
-	file.name_W = UTF8ToUCS2StringAlloc(file.name);
-	file.path_W = UTF8ToUCS2StringAlloc(file.path);
+	// Copy the unicode versions.
+	file.name_W = UTF8ToUCSStringAlloc(file.name);
+	file.path_W = UTF8ToUCSStringAlloc(file.path);
 #endif
 
 	// Return the file.
-	///////////////////
 	return (GPIFile *)ArrayNth(transfer->files, ArrayLength(transfer->files) - 1);
 }
 
@@ -332,15 +307,12 @@ static GPResult gpiSendTransferRequest
 	int num;
 
 	// Get the number of files.
-	///////////////////////////
 	num = ArrayLength(transfer->files);
 
 	// Start the message.
-	/////////////////////
 	CHECK_RESULT(gpiPeerStartTransferMessage(connection, transfer->peer, GPI_BM_FILE_SEND_REQUEST, (GPITransferID_st)&transfer->transferID));
 
 	// Add the rest of the headers.
-	///////////////////////////////
 	sprintf(buffer, "\\version\\%d\\num\\%d", GPI_TRANSFER_VERSION, num);
 	CHECK_RESULT(gpiSendOrBufferString(connection, transfer->peer, buffer));
 	for(i = 0 ; i < num ; i++)
@@ -361,7 +333,6 @@ static GPResult gpiSendTransferRequest
 	}
 
 	// Finish the message.
-	//////////////////////
 	CHECK_RESULT(gpiFinishTransferMessage(connection, transfer, transfer->message, -1));
 
 	return GP_NO_ERROR;
@@ -422,13 +393,13 @@ int gpiGetTransferLocalIDByIndex
 	int num;
 
 	num = ArrayLength(iconnection->transfers);
-	assert(index >= 0);
-	assert(index < num);
+	GS_ASSERT(index >= 0);
+	GS_ASSERT(index < num);
 	if((index < 0) || (index >= num))
 		return -1;
 
 	transfer = (GPITransfer *)ArrayNth(iconnection->transfers, index);
-	assert(transfer);
+	GS_ASSERT(transfer);
 	if(!transfer)
 		return -1;
 
@@ -491,12 +462,10 @@ static GPIBool gpiHandleSendRequest
 	int totalSize = 0;
 
 	// If we don't have a callback, we're not accepting requests.
-	/////////////////////////////////////////////////////////////
 	if(!iconnection->callbacks[GPI_TRANSFER_CALLBACK].callback)
 		return GPIFalse;
 
 	// Check the version.
-	/////////////////////
 	if(!gpiValueForKey(headers, "\\version\\", intValue, sizeof(intValue)))
 		return GPIFalse;
 	version = atoi(intValue);
@@ -504,7 +473,6 @@ static GPIBool gpiHandleSendRequest
 		return GPIFalse;
 
 	// Get the number of files.
-	///////////////////////////
 	if(!gpiValueForKey(headers, "\\num\\", intValue, sizeof(intValue)))
 		return GPIFalse;
 	numFiles = atoi(intValue);
@@ -512,16 +480,13 @@ static GPIBool gpiHandleSendRequest
 		return GPIFalse;
 
 	// Create the transfer object.
-	//////////////////////////////
 	if(gpiNewReceiverTransfer(connection, &transfer, peer->profile, transferID) != GP_NO_ERROR)
 		return GPIFalse;
 
 	// Set the peer.
-	////////////////
 	transfer->peer = peer;
 
 	// Parse the file list.
-	///////////////////////
 	for(i = 0 ; i < numFiles ; i++)
 	{
 		sprintf(key, "\\name%d\\", i);
@@ -531,7 +496,8 @@ static GPIBool gpiHandleSendRequest
 			return GPIFalse;
 		}
 		len = strlen(name);
-		if(strstr(name, "//") || strstr(name, "./") || (name[len - 1] == '.') || (name[0] == '/') || (strcspn(name, ":*?\"<>|\n") != len))
+		if(((len != 0) && (strstr(name, "//") || strstr(name, "./") || (name[len - 1] == '.') || (name[0] == '/'))) ||
+			 (strcspn(name, ":*?\"<>|\n") != len))
 		{
 			gpiFreeTransfer(connection, transfer);
 			return GPIFalse;
@@ -570,7 +536,6 @@ static GPIBool gpiHandleSendRequest
 	}
 
 	// Call the callback.
-	/////////////////////
 	arg = (GPTransferCallbackArg *)gsimalloc(sizeof(GPTransferCallbackArg));
 	if(!arg)
 	{
@@ -584,7 +549,7 @@ static GPIBool gpiHandleSendRequest
 #ifndef GSI_UNICODE
 	arg->message = goastrdup(buffer);
 #else
-	arg->message = UTF8ToUCS2StringAlloc(buffer);
+	arg->message = UTF8ToUCSStringAlloc(buffer);
 #endif
 	{
 		GPResult aResult = gpiAddCallback(connection, iconnection->callbacks[GPI_TRANSFER_CALLBACK], arg, NULL, GPI_ADD_TRANSFER_CALLBACK);
@@ -593,12 +558,11 @@ static GPIBool gpiHandleSendRequest
 	}
 
 	// Store the total size.
-	////////////////////////
 	transfer->totalSize = totalSize;
-
-	return GPITrue;
 	
 	GSI_UNUSED(bufferLen);
+
+	return GPITrue;
 }
 
 static GPIBool gpiHandleSendReply
@@ -620,7 +584,6 @@ static GPIBool gpiHandleSendReply
 		return GPIFalse;
 
 	// Check the version.
-	////////////////////
 	if(!gpiValueForKey(headers, "\\version\\", intValue, sizeof(intValue)))
 		return GPIFalse;
 	version = atoi(intValue);
@@ -628,13 +591,11 @@ static GPIBool gpiHandleSendReply
 		return GPIFalse;
 
 	// Get the result.
-	//////////////////
 	if(!gpiValueForKey(headers, "\\result\\", intValue, sizeof(intValue)))
 		return GPIFalse;
 	result = atoi(intValue);
 
 	// Call the callback.
-	/////////////////////
 	arg = (GPTransferCallbackArg *)gsimalloc(sizeof(GPTransferCallbackArg));
 	if(arg)
 	{
@@ -650,22 +611,21 @@ static GPIBool gpiHandleSendReply
 #ifndef GSI_UNICODE
 		arg->message = goastrdup(buffer);
 #else
-		arg->message = UTF8ToUCS2StringAlloc(buffer);
+		arg->message = UTF8ToUCSStringAlloc(buffer);
 #endif
 		gpiAddCallback(connection, iconnection->callbacks[GPI_TRANSFER_CALLBACK], arg, NULL, GPI_ADD_TRANSFER_CALLBACK);
 	}
 
 	// Update transfer state if accepted.
-	/////////////////////////////////////
 	if(result == GPI_ACCEPTED)
 	{
 		transfer->state = GPITransferTransferring;
 		transfer->currentFile = 0;
 	}
 
-	return GPITrue;
-
 	GSI_UNUSED(bufferLen);
+
+	return GPITrue;
 }
 
 static GPIBool gpiHandleBegin
@@ -689,7 +649,6 @@ static GPIBool gpiHandleBegin
 		return GPIFalse;
 
 	// Get the file.
-	////////////////
 	if(!gpiValueForKey(headers, "\\file\\", intValue, sizeof(intValue)))
 		return GPIFalse;
 	fileIndex = atoi(intValue);
@@ -700,12 +659,10 @@ static GPIBool gpiHandleBegin
 	file = (GPIFile *)ArrayNth(transfer->files, fileIndex);
 
 	// Is this a directory?
-	///////////////////////
 	if(file->flags & GPI_FILE_DIRECTORY)
 		return GPIFalse;
 
 	// Get the size.
-	////////////////
 	if(!gpiValueForKey(headers, "\\size\\", intValue, sizeof(intValue)))
 		return GPIFalse;
 	size = atoi(intValue);
@@ -713,35 +670,30 @@ static GPIBool gpiHandleBegin
 		return GPIFalse;
 
 	// Update the total size.
-	/////////////////////////
 	transfer->totalSize -= file->size;
 	transfer->totalSize += size;
 
 	// Get the mod time.
-	////////////////////
 	if(!gpiValueForKey(headers, "\\mtime\\", intValue, sizeof(intValue)))
 		return GPIFalse;
 	mtime = (unsigned int)strtoul(intValue, NULL, 10);
 
 	// Set file stuff.
-	//////////////////
-	MD5Init(&file->md5);
+	GSMD5Init(&file->md5);
 	file->modTime = mtime;
 	file->size = size;
 
 	// Setup the temp path.
-	///////////////////////
 	count = 0;
 	do
 	{
 		sprintf(buffer, "%sgpt_%d_%d_%d.gpt", transfer->baseDirectory, transfer->localID, fileIndex, rand());
-		file->file = fopen(buffer, "wb");
+		file->file = gsifopen(buffer, "wb");
 		count++;
 	}
 	while(!file->file && (count < 5));
 
 	// Copy off the path.
-	/////////////////////
 	if(file->file)
 	{
 		file->path = goastrdup(buffer);
@@ -749,12 +701,11 @@ static GPIBool gpiHandleBegin
 			return GPIFalse;
 
 #ifdef GSI_UNICODE
-		file->path_W = UTF8ToUCS2StringAlloc(file->path);
+		file->path_W = UTF8ToUCSStringAlloc(file->path);
 #endif
 	}
 
 	// Call the callback.
-	/////////////////////
 	arg = (GPTransferCallbackArg *)gsimalloc(sizeof(GPTransferCallbackArg));
 	if(arg)
 	{
@@ -774,7 +725,6 @@ static GPIBool gpiHandleBegin
 	}
 
 	// Did it fail?
-	///////////////
 	if(!file->file)
 	{
 		gpiSkipCurrentFile(connection, transfer, GPI_SKIP_WRITE_ERROR);
@@ -806,7 +756,6 @@ static GPIBool gpiHandleEnd
 		return GPIFalse;
 
 	// Check the file index.
-	////////////////////////
 	if(!gpiValueForKey(headers, "\\file\\", intValue, sizeof(intValue)))
 		return GPIFalse;
 	fileIndex = atoi(intValue);
@@ -816,20 +765,16 @@ static GPIBool gpiHandleEnd
 		return GPITrue;
 
 	// Get the current file.
-	////////////////////////
 	file = (GPIFile *)ArrayNth(transfer->files, transfer->currentFile);
 
 	// Sender?
-	//////////
 	if(transfer->sender)
 	{
 #ifdef GPI_CONFIRM_FILES
 		// We should be waiting for confirmation.
-		/////////////////////////////////////////
-		assert(file->flags & GPI_FILE_CONFIRMING);
+		GS_ASSERT(file->flags & GPI_FILE_CONFIRMING);
 
 		// Call the callback.
-		/////////////////////
 		arg = (GPTransferCallbackArg *)gsimalloc(sizeof(GPTransferCallbackArg));
 		if(arg)
 		{
@@ -841,7 +786,6 @@ static GPIBool gpiHandleEnd
 		}
 
 		// Done with the file.
-		//////////////////////
 		file->flags &= ~GPI_FILE_CONFIRMING;
 		file->flags |= GPI_FILE_COMPLETED;
 		transfer->currentFile++;
@@ -850,37 +794,30 @@ static GPIBool gpiHandleEnd
 	}
 
 	// Is this a directory?
-	///////////////////////
 	if(file->flags & GPI_FILE_DIRECTORY)
 	{
 		// Directory completed.
-		///////////////////////
 		file->flags |= GPI_FILE_COMPLETED;
 	}
 	else
 	{
 		// Check the file.
-		//////////////////
-		assert(file->file);
+		GS_ASSERT(file->file);
 		if(!file->file)
 			return GPIFalse;
 
 		// Get the remote md5.
-		//////////////////////
 		if(!gpiValueForKey(headers, "\\md5\\", remoteMD5, sizeof(remoteMD5)))
 			return GPIFalse;
 
 		// Get the local md5.
-		/////////////////////
-		MD5Final(rawMD5, &file->md5);
-		MD5Print(rawMD5, localMD5);
+		GSMD5Final(rawMD5, &file->md5);
+		GSMD5Print(rawMD5, localMD5);
 
 		// Check the md5.
-		/////////////////
 		md5Failed = (memcmp(localMD5, remoteMD5, 32) != 0) ? GPITrue:GPIFalse;
 
 		// Set the state.
-		/////////////////
 		if(md5Failed)
 		{
 			file->flags |= GPI_FILE_FAILED;
@@ -890,18 +827,15 @@ static GPIBool gpiHandleEnd
 			file->flags |= GPI_FILE_COMPLETED;
 
 		// Close the file.
-		//////////////////
 		fclose(file->file);
 		file->file = NULL;
 
 		// If the md5 failed, remove the file.
-		//////////////////////////////////////
 		if(md5Failed)
 			remove(file->path);
 
 #ifdef GPI_CONFIRM_FILES
 		// Send a confirmation.
-		///////////////////////
 		if(gpiPeerStartTransferMessage(connection, transfer->peer, GPI_BM_FILE_END, (GPITransferID_st)&transfer->transferID) != GP_NO_ERROR)
 			return GPIFalse;
 		gpiFinishTransferMessage(connection, transfer, NULL, 0);
@@ -909,7 +843,6 @@ static GPIBool gpiHandleEnd
 	}
 
 	// Call the callback.
-	/////////////////////
 	arg = (GPTransferCallbackArg *)gsimalloc(sizeof(GPTransferCallbackArg));
 	if(arg)
 	{
@@ -933,19 +866,15 @@ static GPIBool gpiHandleEnd
 	}
 
 	// Next file.
-	/////////////
 	transfer->currentFile++;
 
 	// Done?
-	////////
 	if(transfer->currentFile == ArrayLength(transfer->files))
 	{
 		// The transfer is complete.
-		////////////////////////////
 		transfer->state = GPITransferComplete;
 
 		// Call the callback.
-		/////////////////////
 		arg = (GPTransferCallbackArg *)gsimalloc(sizeof(GPTransferCallbackArg));
 		if(arg)
 		{
@@ -979,7 +908,6 @@ static GPIBool gpiHandleData
 		return GPIFalse;
 
 	// Check the file index.
-	////////////////////////
 	if(!gpiValueForKey(headers, "\\file\\", intValue, sizeof(intValue)))
 		return GPIFalse;
 	fileIndex = atoi(intValue);
@@ -989,23 +917,19 @@ static GPIBool gpiHandleData
 		return GPITrue;
 
 	// Get the current file.
-	////////////////////////
 	file = (GPIFile *)ArrayNth(transfer->files, transfer->currentFile);
 
 	// Is this a directory?
-	///////////////////////
 	if(file->flags & GPI_FILE_DIRECTORY)
 		return GPIFalse;
 
 #ifdef GPI_ACKNOWLEDGED_WINDOW
 	// Sender?
-	//////////
 	if(transfer->sender)
 	{
 		char intValue[16];
 
 		// Get the progress.
-		////////////////////
 		if(!gpiValueForKey(headers, "\\pro\\", intValue, sizeof(intValue)))
 			return GPIFalse;
 		file->acknowledged = atoi(intValue);
@@ -1015,8 +939,7 @@ static GPIBool gpiHandleData
 #endif
 
 	// Check the file.
-	//////////////////
-	assert(file->file);
+	GS_ASSERT(file->file);
 	if(!file->file)
 		return GPIFalse;
 
@@ -1024,17 +947,14 @@ static GPIBool gpiHandleData
 		"HNDLDATA(PT): %d\n", bufferLen);
 
 	// Write the data.
-	//////////////////
 	writeFailed = (GPIBool)(fwrite(buffer, 1, bufferLen, file->file) != (size_t)bufferLen);
 	if(writeFailed)
 	{
 		// Flag the errors.
-		///////////////////
 		file->flags |= GPI_FILE_FAILED;
 		file->reason = GP_FILE_WRITE_ERROR;
 
 		// Remove the file.
-		///////////////////
 		fclose(file->file);
 		file->file = NULL;
 		remove(file->path);
@@ -1042,17 +962,14 @@ static GPIBool gpiHandleData
 	else
 	{
 		// Update the  MD5.
-		///////////////////
-		MD5Update(&file->md5, (unsigned char *)buffer, bufferLen);
+		GSMD5Update(&file->md5, (unsigned char *)buffer, bufferLen);
 
 		// Update the progress.
-		///////////////////////
 		file->progress += bufferLen;
 		transfer->progress += bufferLen;
 
 #ifdef GPI_ACKNOWLEDGED_WINDOW
 		// Send an acknowledgment.
-		//////////////////////////
 		if(gpiPeerStartTransferMessage(connection, transfer->peer, GPI_BM_FILE_DATA, (GPITransferID_st)&transfer->transferID) != GP_NO_ERROR)
 			return GPIFalse;
 		gpiSendOrBufferString(connection, transfer->peer, "\\pro\\");
@@ -1062,7 +979,6 @@ static GPIBool gpiHandleData
 	}
 
 	// Call the callback.
-	/////////////////////
 	arg = (GPTransferCallbackArg *)gsimalloc(sizeof(GPTransferCallbackArg));
 	if(arg)
 	{
@@ -1083,11 +999,9 @@ static GPIBool gpiHandleData
 	}
 
 	// Did it fail?
-	///////////////
 	if(writeFailed)
 	{
 		// Skip the file.
-		/////////////////
 		gpiSkipCurrentFile(connection, transfer, GPI_SKIP_WRITE_ERROR);
 	}
 
@@ -1109,7 +1023,6 @@ static GPIBool gpiHandleSkip
 	int reason;
 
 	// Get the file.
-	////////////////
 	if(!gpiValueForKey(headers, "\\file\\", intValue, sizeof(intValue)))
 		return GPIFalse;
 	fileIndex = atoi(intValue);
@@ -1118,22 +1031,18 @@ static GPIBool gpiHandleSkip
 	file = (GPIFile *)ArrayNth(transfer->files, fileIndex);
 
 	// Get the reason.
-	//////////////////
 	if(!gpiValueForKey(headers, "\\reason\\", intValue, sizeof(intValue)))
 		return GPIFalse;
 	reason = atoi(intValue);
 
 	// Is it not the current file?
-	//////////////////////////////
 	if(fileIndex != transfer->currentFile)
 	{
 		// Check if we already finished this file.
-		//////////////////////////////////////////
 		if(fileIndex < transfer->currentFile)
 			return GPIFalse;
 
 		// Mark it for skipping later.
-		//////////////////////////////
 		if(reason == GPI_SKIP_USER_SKIP)
 		{
 			file->flags |= GPI_FILE_SKIP;
@@ -1151,7 +1060,6 @@ static GPIBool gpiHandleSkip
 	}
 
 	// Delete the file if its already opened.
-	/////////////////////////////////////////
 	if(!transfer->sender && file->file)
 	{
 		fclose(file->file);
@@ -1160,11 +1068,9 @@ static GPIBool gpiHandleSkip
 	}
 
 	// Next file.
-	/////////////
 	transfer->currentFile++;
 
 	// Call the callback.
-	/////////////////////
 	arg = (GPTransferCallbackArg *)gsimalloc(sizeof(GPTransferCallbackArg));
 	if(arg)
 	{
@@ -1202,17 +1108,14 @@ static GPIBool gpiHandleTransferThrottle
 	GPTransferCallbackArg * arg;
 
 	// Get the throttle.
-	////////////////////
 	if(!gpiValueForKey(headers, "\\rate\\", intValue, sizeof(intValue)))
 		return GPIFalse;
 	throttle = atoi(intValue);
 
 	// Store the throttle.
-	//////////////////////
 	transfer->throttle = throttle;
 
 	// If we're the sender, send this back.
-	///////////////////////////////////////
 	if(transfer->sender)
 	{
 		if(gpiPeerStartTransferMessage(connection, transfer->peer, GPI_BM_FILE_TRANSFER_THROTTLE, (GPITransferID_st)&transfer->transferID) != GP_NO_ERROR)
@@ -1223,7 +1126,6 @@ static GPIBool gpiHandleTransferThrottle
 	}
 
 	// Call the callback.
-	/////////////////////
 	arg = (GPTransferCallbackArg *)gsimalloc(sizeof(GPTransferCallbackArg));
 	if(arg)
 	{
@@ -1246,15 +1148,10 @@ static GPIBool gpiHandleTransferCancel
 	GPIConnection * iconnection = (GPIConnection*)*connection;
 	GPTransferCallbackArg * arg;
 
-//	if(transfer->sender)
-//		return GPIFalse;
-
 	// Mark the transfer cancelled.
-	///////////////////////////////
 	transfer->state = GPITransferCancelled;
 
 	// Call the callback.
-	/////////////////////
 	arg = (GPTransferCallbackArg *)gsimalloc(sizeof(GPTransferCallbackArg));
 	if(arg)
 	{
@@ -1277,7 +1174,6 @@ static GPIBool gpiHandleTransferKeepalive
 	GSI_UNUSED(transfer);
 
 	// Ignore keep-alive.
-	/////////////////////
 	return GPITrue;
 }
 
@@ -1291,24 +1187,20 @@ static GPResult gpiSendFileEnd
 	CHECK_RESULT(gpiPeerStartTransferMessage(connection, transfer->peer, GPI_BM_FILE_END, (GPITransferID_st)&transfer->transferID));
 
 	// Add the file index.
-	//////////////////////
 	gpiSendOrBufferStringLenToPeer(connection, transfer->peer, "\\file\\", 6);
 	gpiSendOrBufferInt(connection, transfer->peer, transfer->currentFile);
 
 	// Only add the MD5 for files.
-	//////////////////////////////
 	if(!(file->flags & GPI_FILE_DIRECTORY))
 	{
 		unsigned char md5Raw[16];
 		char md5[33];
 
 		// Get the MD5.
-		///////////////
-		MD5Final(md5Raw, &file->md5);
-		MD5Print(md5Raw, md5);
+		GSMD5Final(md5Raw, &file->md5);
+		GSMD5Print(md5Raw, md5);
 
 		// Add it.
-		//////////
 		gpiSendOrBufferString(connection, transfer->peer, "\\md5\\");
 		gpiSendOrBufferString(connection, transfer->peer, md5);
 	}
@@ -1328,7 +1220,6 @@ static GPResult gpiSendFileBegin
 	char buffer[64];
 
 	// Get the file info.
-	/////////////////////
 	if(!gpiGetTransferFileInfo(file->file, &file->size, &file->modTime))
 		Error(connection, GP_PARAMETER_ERROR, "Can't get info on file.");
 
@@ -1351,11 +1242,12 @@ static GPResult gpiSendFileData
 	CHECK_RESULT(gpiPeerStartTransferMessage(connection, transfer->peer, GPI_BM_FILE_DATA, (GPITransferID_st)&transfer->transferID));
 
 	// Add the file index.
-	//////////////////////
 	gpiSendOrBufferStringLenToPeer(connection, transfer->peer, "\\file\\", 6);
 	gpiSendOrBufferInt(connection, transfer->peer, transfer->currentFile);
 
-	gpiFinishTransferMessage(connection, transfer, (char *)data, len);
+	GS_ASSERT(len <= INT_MAX);
+
+	gpiFinishTransferMessage(connection, transfer, (char *)data, (int)len);
 
 	return GP_NO_ERROR;
 }
@@ -1373,32 +1265,27 @@ GPResult gpiProcessCurrentFile
 	int i;
 	int total;
 
-	assert(transfer->currentFile >= 0);
-	assert(transfer->currentFile < ArrayLength(transfer->files));
+	GS_ASSERT(transfer->currentFile >= 0);
+	GS_ASSERT(transfer->currentFile < ArrayLength(transfer->files));
 
 	// Get the current file.
-	////////////////////////
 	file = (GPIFile *)ArrayNth(transfer->files, transfer->currentFile);
 
-	assert(!(file->flags & GPI_FILE_FAILED));
+	GS_ASSERT(!(file->flags & GPI_FILE_FAILED));
 
 #ifdef GPI_CONFIRM_FILES
 	// If it's being confirmed, just wait.
-	//////////////////////////////////////
 	if(file->flags & GPI_FILE_CONFIRMING)
 		return GP_NO_ERROR;
 #endif
 
 	// Check if its been marked for skipping.
-	/////////////////////////////////////////
 	if(file->flags & GPI_FILE_SKIP)
 	{
 		// Skip it.
-		///////////
 		gpiSkipCurrentFile(connection, transfer, GPI_SKIP_USER_SKIP);
 
 		// Call the callback.
-		/////////////////////
 		arg = (GPTransferCallbackArg *)gsimalloc(sizeof(GPTransferCallbackArg));
 		if(arg)
 		{
@@ -1412,11 +1299,9 @@ GPResult gpiProcessCurrentFile
 	else
 	{
 		// Is this a directory?
-		///////////////////////
 		if(file->flags & GPI_FILE_DIRECTORY)
 		{
 			// Call the callback.
-			/////////////////////
 			arg = (GPTransferCallbackArg *)gsimalloc(sizeof(GPTransferCallbackArg));
 			if(arg)
 			{
@@ -1428,7 +1313,6 @@ GPResult gpiProcessCurrentFile
 			}
 
 			// Send the end.
-			////////////////
 			gpiSendFileEnd(connection, transfer, file);
 			file->flags |= GPI_FILE_COMPLETED;
 			transfer->currentFile++;
@@ -1438,24 +1322,19 @@ GPResult gpiProcessCurrentFile
 			static char buffer[GPI_DATA_SIZE];
 
 			// Open the file if we need to.
-			///////////////////////////////
 			if(!file->file)
 			{
 				// Open it.
-				///////////
-				file->file = fopen(file->path, "rb");
+				file->file = gsifopen(file->path, "rb");
 				if(file->file)
 				{
 					// Send the begin.
-					//////////////////
 					CHECK_RESULT(gpiSendFileBegin(connection, transfer, file));
 
 					// Init the md5.
-					////////////////
-					MD5Init(&file->md5);
+					GSMD5Init(&file->md5);
 
 					// Call the callback.
-					/////////////////////
 					arg = (GPTransferCallbackArg *)gsimalloc(sizeof(GPTransferCallbackArg));
 					if(arg)
 					{
@@ -1469,7 +1348,6 @@ GPResult gpiProcessCurrentFile
 				else
 				{
 					// Call the callback.
-					/////////////////////
 					arg = (GPTransferCallbackArg *)gsimalloc(sizeof(GPTransferCallbackArg));
 					if(arg)
 					{
@@ -1482,7 +1360,6 @@ GPResult gpiProcessCurrentFile
 					}
 
 					// Failed to open.
-					//////////////////
 					gpiSkipCurrentFile(connection, transfer, GPI_SKIP_READ_ERROR);
 					file->flags |= GPI_FILE_FAILED;
 					file->reason = GP_FILE_READ_ERROR;
@@ -1494,38 +1371,31 @@ GPResult gpiProcessCurrentFile
 			// TODO: THROTTLING
 
 			// Send until done, and while messages are actually being sent.
-			///////////////////////////////////////////////////////////////
 			total = 0;
 			for(i = 0 ; (file->progress < file->size) && !transfer->peer->outputBuffer.len /*&& (i < 20)*/ ; i++)
 			{
 #ifdef GPI_ACKNOWLEDGED_WINDOW
 				// Don't get too far ahead.
-				///////////////////////////
 				if((file->acknowledged + GPI_ACKNOWLEDGED_WINDOW) < file->progress)
 					break;
 #endif
 
 				// Read data.
-				/////////////
 				num = fread(buffer, 1, sizeof(buffer), file->file);
 				if(num)
 				{
 					// Update the md5.
-					//////////////////
-					MD5Update(&file->md5, (unsigned char*)buffer, num);
+					GSMD5Update(&file->md5, (unsigned char*)buffer, num);
 
 					// Send the data.
-					/////////////////
 					CHECK_RESULT(gpiSendFileData(connection, transfer, (unsigned char*)buffer, num));
 
 					// Update progress.
-					///////////////////
 					transfer->progress += num;
 					file->progress += num;
 					total += num;
 
 					// Call the callback.
-					/////////////////////
 					arg = (GPTransferCallbackArg *)gsimalloc(sizeof(GPTransferCallbackArg));
 					if(arg)
 					{
@@ -1539,11 +1409,9 @@ GPResult gpiProcessCurrentFile
 				}
 
 				// Did we not get to the end?
-				/////////////////////////////
 				if((num < sizeof(buffer)) && (file->progress != file->size))
 				{
 					// Failed reading.
-					//////////////////
 					gpiSkipCurrentFile(connection, transfer, GPI_SKIP_READ_ERROR);
 					file->flags |= GPI_FILE_FAILED;
 					file->reason = GP_FILE_READ_ERROR;
@@ -1559,25 +1427,20 @@ GPResult gpiProcessCurrentFile
 			}
 
 			// Did we finish the file?
-			//////////////////////////
 			if(file->progress == file->size)
 			{
 				// Close the file.
-				//////////////////
 				fclose(file->file);
 				file->file = NULL;
 
 				// Send the end.
-				////////////////
 				gpiSendFileEnd(connection, transfer, file);
 
 #ifdef GPI_CONFIRM_FILES
 				// Wait for the confirmation.
-				/////////////////////////////
 				file->flags |= GPI_FILE_CONFIRMING;
 #else
 				// Call the callback.
-				/////////////////////
 				arg = (GPTransferCallbackArg *)gsimalloc(sizeof(GPTransferCallbackArg));
 				if(arg)
 				{
@@ -1589,7 +1452,6 @@ GPResult gpiProcessCurrentFile
 				}
 
 				// Done with the file.
-				//////////////////////
 				file->flags |= GPI_FILE_COMPLETED;
 				transfer->currentFile++;
 #endif
@@ -1613,42 +1475,36 @@ GPResult gpiProcessTransfer
 	unsigned long now;
 
 	// We only process sending transfers.
-	/////////////////////////////////////
 	if(!transfer->sender)
 		return GP_NO_ERROR;
 
 	// Is the transfer finished?
-	////////////////////////////
 	if(transfer->state >= GPITransferComplete)
 		return GP_NO_ERROR;
 
 	// Get the time.
-	////////////////
 	now = current_time();
 
 	// Check for no peer connection established.
-	////////////////////////////////////////////
 	if(!transfer->peer)
 	{
 		// If its been too long, the person probably isn't really online.
-		/////////////////////////////////////////////////////////////////
 		if((now - transfer->lastSend) > GPI_PEER_TIMEOUT_TIME)
 		{
-			GPTransferCallbackArg * arg;
+			GPTransferCallbackArg * arg2;
 
 			// We couldn't connect.
 			///////////////////////
 			transfer->state = GPITransferNoConnection;
 
 			// Call the callback.
-			/////////////////////
-			arg = (GPTransferCallbackArg *)gsimalloc(sizeof(GPTransferCallbackArg));
-			if(arg)
+			arg2 = (GPTransferCallbackArg *)gsimalloc(sizeof(GPTransferCallbackArg));
+			if(arg2)
 			{
-				memset(arg, 0, sizeof(GPTransferCallbackArg));
-				arg->transfer = transfer->localID;
-				arg->type = GP_TRANSFER_NO_CONNECTION;
-				gpiAddCallback(connection, iconnection->callbacks[GPI_TRANSFER_CALLBACK], arg, NULL, GPI_ADD_TRANSFER_CALLBACK);
+				memset(arg2, 0, sizeof(GPTransferCallbackArg));
+				arg2->transfer = transfer->localID;
+				arg2->type = GP_TRANSFER_NO_CONNECTION;
+				gpiAddCallback(connection, iconnection->callbacks[GPI_TRANSFER_CALLBACK], arg2, NULL, GPI_ADD_TRANSFER_CALLBACK);
 			}
 
 			return GP_NO_ERROR;
@@ -1657,33 +1513,27 @@ GPResult gpiProcessTransfer
 	else
 	{
 		// Check for inactivity.
-		////////////////////////
 		if((now - transfer->lastSend) > GPI_KEEPALIVE_TIME)
 		{
 			// Send a keepalive.
-			////////////////////
 			CHECK_RESULT(gpiPeerStartTransferMessage(connection, transfer->peer, GPI_BM_FILE_TRANSFER_KEEPALIVE, (GPITransferID_st)&transfer->transferID));
 			gpiFinishTransferMessage(connection, transfer, NULL, 0);
 		}
 	}
 
 	// If we're paused, there's nothing else to do.
-	///////////////////////////////////////////////
 	if(transfer->throttle == 0)
 		return GP_NO_ERROR;
 
-	// Don't send files if we're not transfering yet.
-	//////////////////////////////////////////////////
+	// Don't send files if we're not transferring yet.
 	if(transfer->state < GPITransferTransferring)
 		return GP_NO_ERROR;
 
 	// Don't send files if we have regular messages pending.
-	////////////////////////////////////////////////////////
 	if(ArrayLength(transfer->peer->messages))
 		return GP_NO_ERROR;
 
 	// Process the current file.
-	////////////////////////////
 	len = ArrayLength(transfer->files);
 	while(transfer->currentFile < len)
 	{
@@ -1694,11 +1544,9 @@ GPResult gpiProcessTransfer
 	}
 
 	// Did we finish?
-	/////////////////
 	if(transfer->currentFile == len)
 	{
 		// Call the callback.
-		/////////////////////
 		arg = (GPTransferCallbackArg *)gsimalloc(sizeof(GPTransferCallbackArg));
 		if(arg)
 		{
@@ -1709,7 +1557,6 @@ GPResult gpiProcessTransfer
 		}
 
 		// Mark it as complete.
-		///////////////////////
 		transfer->state = GPITransferComplete;
 	}
 
@@ -1727,16 +1574,13 @@ GPResult gpiProcessTransfers
 	GPITransfer * transfer;
 
 	// Go through each transfer.
-	////////////////////////////
 	len = ArrayLength(iconnection->transfers);
 	for(i = 0 ; i < len ; i++)
 	{
 		// Get the transfer.
-		////////////////////
 		transfer = (GPITransfer *)ArrayNth(iconnection->transfers, i);
 
 		// Process it.
-		//////////////
 		gpiProcessTransfer(connection, transfer);
 	}
 
@@ -1787,7 +1631,6 @@ void gpiTransferPeerDestroyed
 	int len;
 
 	// Search for transfers that use this peer.
-	///////////////////////////////////////////
 	len = ArrayLength(iconnection->transfers);
 	for(i = 0 ; i < len ; i++)
 	{
@@ -1796,7 +1639,6 @@ void gpiTransferPeerDestroyed
 		if (transfer->peer == peer)
 		{
 			// Call the callback.
-			/////////////////////
 			arg = (GPTransferCallbackArg *)gsimalloc(sizeof(GPTransferCallbackArg));
 			if(arg)
 			{
@@ -1807,7 +1649,6 @@ void gpiTransferPeerDestroyed
 			}
 		
 			// So long tranfer.
-			///////////////////
 			transfer->state = GPITransferNoConnection;
 		}
 	}
@@ -1827,31 +1668,25 @@ void gpiTransfersHandlePong
 	int len;
 
 	// Go through all the transfers.
-	////////////////////////////////
 	len = ArrayLength(iconnection->transfers);
 	for(i = 0 ; i < len ; i++)
 	{
 		// Get this transfer.
-		/////////////////////
 		transfer = (GPITransfer *)ArrayNth(iconnection->transfers, i);
-		assert(transfer);
+		GS_ASSERT(transfer);
 
 		// Is it waiting on a pong from this profile?
-		/////////////////////////////////////////////
 		if((transfer->state == GPITransferPinging) && (transfer->profile == profile))
 		{
 			// Did we not get a connection?
-			///////////////////////////////
 			if(!peer)
 			{
 				GPTransferCallbackArg * arg;
 
 				// We couldn't connect.
-				///////////////////////
 				transfer->state = GPITransferNoConnection;
 
 				// Call the callback.
-				/////////////////////
 				arg = (GPTransferCallbackArg *)gsimalloc(sizeof(GPTransferCallbackArg));
 				if(arg)
 				{
@@ -1864,15 +1699,12 @@ void gpiTransfersHandlePong
 			else
 			{
 				// Store the peer we're connected on.
-				/////////////////////////////////////
 				transfer->peer = peer;
 
 				// We're connected, so send our request.
-				////////////////////////////////////////
 				gpiSendTransferRequest(connection, transfer);
 
 				// Waiting for a response.
-				//////////////////////////
 				transfer->state = GPITransferWaiting;
 			}
 		}
@@ -1895,16 +1727,13 @@ GPResult gpiSendTransferReply
 		msg = "";
 
 	// Start the message.
-	/////////////////////
 	CHECK_RESULT(gpiPeerStartTransferMessage(connection, peer, GPI_BM_FILE_SEND_REPLY, transferID));
 
 	// Add the rest of the headers.
-	///////////////////////////////
 	sprintf(buffer, "\\version\\%d\\result\\%d", GPI_TRANSFER_VERSION, result);
 	CHECK_RESULT(gpiSendOrBufferString(connection, peer, buffer));
 
 	// Finish the message.
-	//////////////////////
 	CHECK_RESULT(gpiPeerFinishTransferMessage(connection, peer, msg, -1));
 
 	return GP_NO_ERROR;
@@ -1928,7 +1757,6 @@ void gpiHandleTransferMessage
 #endif
 
 	// Get the transfer ID.
-	///////////////////////
 	if(!gpiValueForKey(headers, "\\xfer\\", value, sizeof(value)))
 		return;
 	if(sscanf(value, "%d %u %u", &transferID.profileid, &transferID.count, &transferID.time) != 3)
@@ -1939,11 +1767,9 @@ void gpiHandleTransferMessage
 #else
 
 	// Send request messages don't yet have a transfer object.
-	//////////////////////////////////////////////////////////
 	if(type == GPI_BM_FILE_SEND_REQUEST)
 	{
 		// Check for not accepting connections.
-		///////////////////////////////////////
 		if(!gpiHandleSendRequest(connection, peer, &transferID, headers, buffer, len))
 			gpiSendTransferReply(connection, &transferID, peer, GPI_NOT_ACCEPTING, NULL);
 
@@ -1951,13 +1777,11 @@ void gpiHandleTransferMessage
 	}
 
 	// Find the transfer based on the ID.
-	/////////////////////////////////////
 	transfer = gpiFindTransferByTransferID(connection, &transferID);
 	if(!transfer || (transfer->peer != peer))
 		return;
 
 	// Handle it based on the type.
-	///////////////////////////////
 	switch(type)
 	{
 		case GPI_BM_FILE_SEND_REPLY:
@@ -1989,7 +1813,6 @@ void gpiHandleTransferMessage
 	}
 
 	// Check if there was a transfer error.
-	///////////////////////////////////////
 	if(!success)
 		gpiTransferError(connection, transfer);
 #endif

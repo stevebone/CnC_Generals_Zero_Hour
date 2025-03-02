@@ -1,12 +1,12 @@
-/*
-GameSpy GT2 SDK
-Dan "Mr. Pants" Schoenblum
-dan@gamespy.com
-
-Copyright 2002 GameSpy Industries, Inc
-
-devsupport@gamespy.com
-*/
+///////////////////////////////////////////////////////////////////////////////
+// File:	gt2Main.c
+// SDK:		GameSpy Transport 2 SDK
+//
+// Copyright (c) 2012 GameSpy Technology & IGN Entertainment, Inc.  All rights 
+// reserved. This software is made available only pursuant to certain license 
+// terms offered by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed
+// use or use in a manner not expressly authorized by IGN or GameSpy Technology
+// is prohibited.
 
 #include "gt2Main.h"
 #include "gt2Socket.h"
@@ -65,24 +65,24 @@ GT2Result gt2CreateAdHocSocket
 
 void gt2CloseSocket(GT2Socket socket)
 {
-	// hard close the connections
+	// Hard close the connections.
 	gt2CloseAllConnectionsHard(socket);
 
-	// close the socket
+	// Close the socket.
 	gti2CloseSocket(socket);
 }
 
 void gt2Think(GT2Socket socket)
 {
-	// check for incoming messages
+	// Check for incoming messages.
 	if(!gti2ReceiveMessages(socket))
 		return;
 
-	// let the connections think
+	// Let the connections think.
 	if(!gti2SocketConnectionsThink(socket))
 		return;
 	
-	// free closed connections
+	// Free closed connections.
 	gti2FreeClosedConnections(socket);
 }
 
@@ -97,19 +97,19 @@ GT2Result gt2SendRawUDP
 	unsigned int ip;
 	unsigned short port;
 
-	// get the ip and port
+	// Get the ip and port.
 	if(!gt2StringToAddress(remoteAddress, &ip, &port) || !port)
 		return GT2AddressError;
 
-	// check for invalid IP ranges
-	// class D (224-239.*, multicast) and class E (240-255.*, experimental)
+	// Check for invalid IP ranges.
+	// class D (224-239.*, multicast) and class E (240-255.*, experimental).
 	if((ntohl(ip) & GTI2_INVALID_IP_MASK) == GTI2_INVALID_IP_MASK)
 		return GT2AddressError;
 
-	// check if this is for broadcast
+	// Check to see if this is for broadcast.
 	if(!ip)
 	{
-		// check if broadcast is enable
+		// Check to see if broadcast is enabled.
 		if(!socket->broadcastEnabled)
 		{
 			if(!SetSockBroadcast(socket->socket))
@@ -117,11 +117,11 @@ GT2Result gt2SendRawUDP
 			socket->broadcastEnabled = GT2True;
 		}
 
-		// set the broadcast ip
+		// Set the broadcast ip.
 		ip = gsiGetBroadcastIP();
 	}
 
-	// send the datagram
+	// Send the datagram.
 	gti2SocketSend(socket, ip, port, message, len);
 
 	return GT2Success;
@@ -169,25 +169,25 @@ GT2Result gt2Connect
 	unsigned short port;
 
 	{
-		// get the ip and port
+		// Get the ip and port.
 		if(!gt2StringToAddress(remoteAddress, &ip, &port) || !ip || !port)
 			return GT2AddressError;
 	}
 
-	// check for invalid IP ranges
-	// class D (224-239.*, multicast) and class E (240-255.*, experimental)
+	// Check for invalid IP ranges.
+	// class D (224-239.*, multicast) and class E (240-255.*, experimental).
 	if((ntohl(ip) & GTI2_INVALID_IP_MASK) == GTI2_INVALID_IP_MASK)
 		return GT2AddressError;
 
-	// create the connection object
+	// Create the connection object.
 	result = gti2NewOutgoingConnection(socket, &connectionTemp, ip, port);
 	if(result)
 		return result;
 
-	// save the timeout value
+	// Save the timeout value.
 	connectionTemp->timeout = (unsigned int)timeout;
 
-	// initiate the connection attempt
+	// Initiate the connection attempt.
 	result = gti2StartConnectionAttempt(connectionTemp, message, len, callbacks);
 	if(result)
 	{
@@ -195,7 +195,7 @@ GT2Result gt2Connect
 		return result;
 	}
 
-	// if not blocking, return now
+	// If not blocking, return now.
 	if(!blocking)
 	{
 		if(connection)
@@ -203,28 +203,28 @@ GT2Result gt2Connect
 		return GT2Success;
 	}
 
-	// we're not really in a callback, but this will prevent the connection
+	// We're not really in a callback, but this will prevent the connection
 	// from being freed before the loop finishes.
 	connectionTemp->callbackLevel++;
 
-	// if blocking, loop until the connect attempt is done
+	// If blocking, loop until the connect attempt is done.
 	do
 	{
-		// think
+		// Think.
 		gt2Think(socket);
 
-		// check if we're done
+		// Check to see if we're done.
 		done = (connectionTemp->state >= GTI2Connected);
 
-		// if we're not done, take a rest
+		// If we're not done, take a rest.
 		if(!done)
 			msleep(1);
 	} while(!done);
 
-	// bring the callback level back down
+	// Bring the callback level back down
 	connectionTemp->callbackLevel--;
 
-	// is it success?
+	// Is the connection successful?
 	if(connectionTemp->state == GTI2Connected)
 		*connection = connectionTemp;
 
@@ -239,25 +239,25 @@ GT2Result gt2Send
 	GT2Bool reliable
 )
 {
-	// used to check for voice data in reliable messages
+	// This is used to check for voice data in reliable messages.
 	unsigned short vdpDataLength;
 	
-	// can't send a message if not connected
+	// We can't send a message if we're not connected.
 	if(connection->state != GTI2Connected)
 		return GT2InvalidConnection;
 
-	// check the message and len
+	// Check the message and len.
 	gti2MessageCheck(&message, &len);
 	
 	if (reliable && connection->socket->protocolType == GTI2VdpProtocol)
 	{
 		memcpy(&vdpDataLength, message, sizeof(unsigned short));
-		assert(vdpDataLength + connection->socket->protocolOffset == len);
+		GS_ASSERT(vdpDataLength + connection->socket->protocolOffset == len);
 		if (vdpDataLength + connection->socket->protocolOffset != len)
 			return GT2InvalidMessage;
 	}
 		
-	// do we need to filter it?
+	// Do we need to filter the connection?
 	if(ArrayLength(connection->sendFilters))
 	{
 		gti2SendFilterCallback(connection, 0, message, len, reliable);
@@ -436,28 +436,28 @@ void gt2SetUnrecognizedMessageCallback(GT2Socket socket, gt2UnrecognizedMessageC
 
 void gt2SetSocketData(GT2Socket socket, void * data)
 {
-	assert(socket);
+	GS_ASSERT(socket);
 
 	socket->data = data;
 }
 
 void * gt2GetSocketData(GT2Socket socket)
 {
-	assert(socket);
+	GS_ASSERT(socket);
 
 	return socket->data;
 }
 
 void gt2SetConnectionData(GT2Connection connection, void * data)
 {
-	assert(connection);
+	GS_ASSERT(connection);
 
 	connection->data = data;
 }
 
 void * gt2GetConnectionData(GT2Connection connection)
 {
-	assert(connection);
+	GS_ASSERT(connection);
 
 	return connection->data;
 }

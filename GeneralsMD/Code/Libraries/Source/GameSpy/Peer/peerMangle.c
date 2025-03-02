@@ -1,28 +1,24 @@
-/*
-GameSpy Peer SDK 
-Dan "Mr. Pants" Schoenblum
-dan@gamespy.com
-
-Copyright 1999-2007 GameSpy Industries, Inc
-
-devsupport@gamespy.com
-*/
-
-/*
-**
-** Title Room
-**   #GSP!<gamename>
-**
-** Group Room
-**   #GPG!<groupid>
-**
-** Staging Room
-**   #GSP!<gamename>!X<encoded public IP><encoded public port><encoded private IP><encoded private port>X
-**
-** User
-**   X<encoded public IP>X|<profile ID>
-**
-*/
+///////////////////////////////////////////////////////////////////////////////
+// File:	peerMangle.c
+// SDK:		GameSpy Peer SDK
+//
+// Copyright (c) IGN Entertainment, Inc.  All rights reserved.  
+// This software is made available only pursuant to certain license terms offered
+// by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed use or use in a 
+// manner not expressly authorized by IGN or GameSpy is prohibited.
+// ------------------------------------
+// Title Room
+//   #GSP!<gamename>
+//
+// Group Room
+//   #GPG!<groupid>
+//
+// Staging Room
+//   #GSP!<gamename>!X<encoded public IP><encoded public port><encoded private IP><encoded private port>X
+//
+// User
+//   X<encoded public IP>X|<profile ID>
+//
 
 /*************
 ** INCLUDES **
@@ -49,7 +45,7 @@ static char cryptbuffer[32];
 /**************
 ** FUNCTIONS **
 **************/
-//originally ripped from Aphex's ipencode.h
+// Originally from Aphex's ipencode.h.
 static const char * EncodeIP(unsigned int ip, char * buffer, PEERBool newCrypt)
 {
 	const char * crypt = newCrypt?new_digits_crypt:digits_crypt;
@@ -67,7 +63,7 @@ static const char * EncodeIP(unsigned int ip, char * buffer, PEERBool newCrypt)
 	for(i = 0 ; i < 8 ; i++)
 	{
 		str = strchr(digits_hex, cryptbuffer[i]);
-		digit_idx = (str - digits_hex);
+		digit_idx = (int)(str - digits_hex);
 
 		if((digit_idx < 0) || (digit_idx > 15)) // sanity check
 		{
@@ -87,7 +83,7 @@ static const char * EncodeIP(unsigned int ip, char * buffer, PEERBool newCrypt)
 	return cryptbuffer;
 }
 
-//originally ripped from Aphex's ipencode.h
+// Originally from Aphex's ipencode.h.
 static unsigned int DecodeIP(const char * buffer, PEERBool newCrypt)
 {
 	const char * crypt = newCrypt?new_digits_crypt:digits_crypt;
@@ -103,7 +99,10 @@ static unsigned int DecodeIP(const char * buffer, PEERBool newCrypt)
 	for(i = 0 ; i < 8 ; i++)
 	{
 		str = strchr(crypt, buffer[i]);
-		digit_idx = (str - crypt);
+
+		GS_ASSERT(str - crypt <= INT_MAX);
+
+		digit_idx = (int)(str - crypt);
 
 		if((digit_idx < 0) || (digit_idx > 15))
 			return 0;
@@ -143,9 +142,9 @@ void piMangleTitleRoom
 	const char * title
 )
 {
-	assert(buffer);
-	assert(title);
-	assert(title[0]);
+	GS_ASSERT(buffer);
+	GS_ASSERT(title);
+	GS_ASSERT(title[0]);
 
 	sprintf(buffer, "#GSP" PI_SEPERATOR "%s",
 		title);
@@ -157,8 +156,8 @@ void piMangleGroupRoom
 	int groupID
 )
 {
-	assert(buffer);
-	assert(groupID);
+	GS_ASSERT(buffer);
+	GS_ASSERT(groupID);
 
 	sprintf(buffer, "#GPG" PI_SEPERATOR "%d", groupID);
 }
@@ -175,9 +174,9 @@ void piMangleStagingRoom
 	char encodeBuffer[9];
 	int borderChar;
 
-	assert(buffer);
-	assert(title);
-	assert(title[0]);
+	GS_ASSERT(buffer);
+	GS_ASSERT(title);
+	GS_ASSERT(title[0]);
 
 	if(piOldMangleStagingRooms)
 	{
@@ -200,9 +199,9 @@ void piMangleUser
 	int profileID
 )
 {
-	assert(buffer);
-	assert(IP != 0);
-	assert(profileID >= 0);
+	GS_ASSERT(buffer);
+	GS_ASSERT(IP != 0);
+	GS_ASSERT(profileID >= 0);
 
 	sprintf(buffer, "X%sX|%d",
 		EncodeIP(IP, NULL, PEERFalse),
@@ -219,7 +218,7 @@ PEERBool piDemangleUser
 	unsigned int decodedIP;
 	int scannedProfileID;
 
-	assert(buffer);
+	GS_ASSERT(buffer);
 	if(buffer == NULL)
 		return PEERFalse;
 
@@ -265,8 +264,8 @@ void piMangleIP
 	unsigned int IP
 )
 {
-	assert(buffer);
-	assert(IP != 0);
+	GS_ASSERT(buffer);
+	GS_ASSERT(IP != 0);
 
 	EncodeIP(IP, buffer + 1, PEERFalse);
 	buffer[0] = 'X';
@@ -279,7 +278,7 @@ unsigned int piDemangleIP
 	const char buffer[11]
 )
 {
-	assert(buffer);
+	GS_ASSERT(buffer);
 	if(!buffer)
 		return 0;
 

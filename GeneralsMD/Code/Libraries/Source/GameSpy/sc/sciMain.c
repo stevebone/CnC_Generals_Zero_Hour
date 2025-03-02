@@ -1,10 +1,17 @@
 ///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
+// File:	sciMain.c
+// SDK:		GameSpy ATLAS Competition SDK
+//
+// Copyright (c) IGN Entertainment, Inc.  All rights reserved.  
+// This software is made available only pursuant to certain license terms offered
+// by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed use or use in a 
+// manner not expressly authorized by IGN or GameSpy is prohibited.
+
 #include "sci.h"
 #include "sciInterface.h"
 #include "sciReport.h"
 
-#include "../md5.h"
+#include "../common/md5.h"
 #include "../common/gsRC4.h"
 
 /* PUBLIC INTERFACE FUNCTIONS - SCINTERFACE.C CONTAINS PRIVATE INTERFACE */
@@ -12,7 +19,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
-SCResult SC_CALL scInitialize(int theGameId, SCInterfacePtr* theInterfaceOut)
+SCResult SC_CALL scInitialize(int gameId, SCInterfacePtr* theInterfaceOut)
 {
 	SCInterface* anInterface  = NULL;
 	SCResult     anInitResult = SCResult_NO_ERROR;
@@ -40,7 +47,7 @@ SCResult SC_CALL scInitialize(int theGameId, SCInterfacePtr* theInterfaceOut)
 		return anInitResult;
 	}
 
-	anInterface->mGameId = (gsi_u32)theGameId;
+	anInterface->mGameId = (gsi_u32)gameId;
 	//anInterface->mOptionsFlags = (gsi_u32)theOptionsFlags;
 
 	// Set the out parameter and return
@@ -128,45 +135,69 @@ SCResult SC_CALL scSetSessionId(const SCInterfacePtr theInterface, const gsi_u8 
 	return SCResult_NO_ERROR;
 }
 
+SCResult SC_CALL scCheckBanList(SCInterfacePtr             theInterface,
+							    const GSLoginCertificate * certificate,
+							    const GSLoginPrivateData * privateData,
+							    gsi_u32                    hostProfileId,
+								SCPlatform   			   hostPlatform,
+								SCCheckBanListCallback     callback,
+							    gsi_time                   timeoutMs,
+							    void *                     userData)
+{
+	SCInterface * anInterface = (SCInterface*)theInterface;
+	GS_ASSERT(theInterface != NULL);
+	GS_ASSERT(certificate != NULL || (certificate==NULL && privateData==NULL));
+	
+	if (!wsLoginCertIsValid(certificate))
+		return SCResult_INVALID_PARAMETERS;
+
+	return sciWsCheckBanList(hostProfileId, hostPlatform, &anInterface->mWebServices, anInterface->mGameId, certificate, privateData, callback, timeoutMs, userData);
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 // The certificate and private data may be NULL if the local client
 // is an unauthenticated dedicated server
 SCResult SC_CALL scCreateSession(SCInterfacePtr             theInterface,
-							     const GSLoginCertificate * theCertificate,
-							     const GSLoginPrivateData * thePrivateData,
-							     SCCreateSessionCallback    theCallback,
-							     gsi_time                   theTimeoutMs,
-								 void *                     theUserData)
+							     const GSLoginCertificate * certificate,
+							     const GSLoginPrivateData * privateData,
+							     SCCreateSessionCallback    callback,
+							     gsi_time                   timeoutMs,
+								 void *                     userData)
 {
 	SCInterface * anInterface = (SCInterface*)theInterface;
+	gsi_u16 platformId = SCPlatform_Unknown;
 	GS_ASSERT(theInterface != NULL);
-	GS_ASSERT(theCertificate != NULL || (theCertificate==NULL && thePrivateData==NULL));
+	GS_ASSERT(certificate != NULL || (certificate==NULL && privateData==NULL));
 	
-	if (!wsLoginCertIsValid(theCertificate))
+	if (!wsLoginCertIsValid(certificate))
 		return SCResult_INVALID_PARAMETERS;
 
-	return sciWsCreateSession(&anInterface->mWebServices, anInterface->mGameId, theCertificate, thePrivateData, theCallback, theTimeoutMs, theUserData);
+	platformId = sciGetPlatformId();
+
+	return sciWsCreateSession(&anInterface->mWebServices, anInterface->mGameId, platformId, certificate, privateData, callback, timeoutMs, userData);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 SCResult SC_CALL scCreateMatchlessSession(SCInterfacePtr    theInterface,
-								 const GSLoginCertificate * theCertificate,
-								 const GSLoginPrivateData * thePrivateData,
-								 SCCreateSessionCallback    theCallback,
-								 gsi_time                   theTimeoutMs,
-								 void *                     theUserData)
+								 const GSLoginCertificate * certificate,
+								 const GSLoginPrivateData * privateData,
+								 SCCreateSessionCallback    callback,
+								 gsi_time                   timeoutMs,
+								 void *                     userData)
 {
 	SCInterface * anInterface = (SCInterface*)theInterface;
+	gsi_u16 platformId = SCPlatform_Unknown;
 	GS_ASSERT(theInterface != NULL);
-	GS_ASSERT(theCertificate != NULL || (theCertificate==NULL && thePrivateData==NULL));
+	GS_ASSERT(certificate != NULL || (certificate==NULL && privateData==NULL));
 
-	if (!wsLoginCertIsValid(theCertificate))
+	if (!wsLoginCertIsValid(certificate))
 		return SCResult_INVALID_PARAMETERS;
 
-	return sciWsCreateMatchlessSession(&anInterface->mWebServices, anInterface->mGameId, theCertificate, thePrivateData, theCallback, theTimeoutMs, theUserData);
+	platformId = sciGetPlatformId();
+
+	return sciWsCreateMatchlessSession(&anInterface->mWebServices, anInterface->mGameId, platformId, certificate, privateData, callback, timeoutMs, userData);
 }
 
 
@@ -193,11 +224,11 @@ SCResult SC_CALL scJoinSession(SCInterfacePtr     theInterface,
 SCResult SC_CALL scSetReportIntention(const SCInterfacePtr         theInterface,
 									  const gsi_u8                 theConnectionId[SC_CONNECTION_GUID_SIZE],
 									  gsi_bool                     isAuthoritative,
-									  const GSLoginCertificate *   theCertificate,
-									  const GSLoginPrivateData *   thePrivateData,
-									  SCSetReportIntentionCallback theCallback,
-									  gsi_time                     theTimeoutMs,
-									  void *                 theUserData)
+									  const GSLoginCertificate *   certificate,
+									  const GSLoginPrivateData *   privateData,
+									  SCSetReportIntentionCallback callback,
+									  gsi_time                     timeoutMs,
+									  void *                 userData)
 {
 	SCInterface* anInterface = (SCInterface*)theInterface;
 
@@ -206,11 +237,11 @@ SCResult SC_CALL scSetReportIntention(const SCInterfacePtr         theInterface,
 	{
 		return SCResult_INVALID_PARAMETERS;
 	}
-	if (!theCertificate)
+	if (!certificate)
 	{
 		return SCResult_INVALID_PARAMETERS;
 	}
-	if (!thePrivateData)
+	if (!privateData)
 	{
 		return SCResult_INVALID_PARAMETERS;
 	}
@@ -223,7 +254,7 @@ SCResult SC_CALL scSetReportIntention(const SCInterfacePtr         theInterface,
 	// Call web service
 	return sciWsSetReportIntention(&anInterface->mWebServices, anInterface->mGameId,
 		(char *)anInterface->mSessionId, (char *)anInterface->mConnectionId, isAuthoritative,
-		theCertificate, thePrivateData, theCallback, theTimeoutMs, theUserData);
+		certificate, privateData, callback, timeoutMs, userData);
 }
 
 									 
@@ -232,11 +263,11 @@ SCResult SC_CALL scSetReportIntention(const SCInterfacePtr         theInterface,
 SCResult SC_CALL scSubmitReport(const SCInterfacePtr  theInterface,
 								const SCReportPtr      theReport,
 								gsi_bool              isAuthoritative,
-								const GSLoginCertificate * theCertificate,
-								const GSLoginPrivateData * thePrivateData,
-								SCSubmitReportCallback theCallback,
-								gsi_time               theTimeoutMs,
-								void *           theUserData)
+								const GSLoginCertificate * certificate,
+								const GSLoginPrivateData * privateData,
+								SCSubmitReportCallback callback,
+								gsi_time               timeoutMs,
+								void *           userData)
 {
 	SCInterface* anInterface = (SCInterface*)theInterface;
 	SCIReport *aReport = (SCIReport *)theReport;
@@ -260,20 +291,20 @@ SCResult SC_CALL scSubmitReport(const SCInterfacePtr  theInterface,
 	// Prepare the report hash
 	{
 		SCIReportHeader * header = (SCIReportHeader*)aReport->mBuffer.mData;
-		MD5_CTX md5;
+		GSMD5_CTX md5;
 		// Clear out the checksum portion of the header so that the 
 		// MD5 hash is calculated on the entire report without a checksum
 		memset(header->mChecksum, 0, sizeof(header->mChecksum));
 		
-		MD5Init(&md5);
-		MD5Update(&md5, (unsigned char *)aReport->mBuffer.mData, aReport->mBuffer.mPos);
-		MD5Final(header->mChecksum, &md5);	
+		GSMD5Init(&md5);
+		GSMD5Update(&md5, (unsigned char *)aReport->mBuffer.mData, aReport->mBuffer.mPos);
+		GSMD5Final(header->mChecksum, &md5);	
 	}
 	
 	// Call web service
 	return sciWsSubmitReport(&anInterface->mWebServices, anInterface->mGameId,
 		(char *)anInterface->mSessionId, (char *)anInterface->mConnectionId, aReport, isAuthoritative,
-		theCertificate, thePrivateData, theCallback, theTimeoutMs, theUserData);
+		certificate, privateData, callback, timeoutMs, userData);
 
 }
 
@@ -384,9 +415,9 @@ SCResult SC_CALL scReportSetPlayerData(SCReportPtr theReport,
 								       gsi_u32 thePlayerIndex,
 								       const gsi_u8  thePlayerConnectionId[SC_CONNECTION_GUID_SIZE],
 								       gsi_u32 thePlayerTeamId,
-								       SCGameResult theResult,
+								       SCGameResult result,
 								       gsi_u32 theProfileId,
-								       const GSLoginCertificate * theCertificate,
+								       const GSLoginCertificate * certificate,
 								       const gsi_u8  theAuthHash[16])
 {
 	SCIReport * aReport = NULL;
@@ -395,7 +426,7 @@ SCResult SC_CALL scReportSetPlayerData(SCReportPtr theReport,
 	gsi_bool isNewTeam = gsi_true;
 
 	GS_ASSERT(theReport != NULL);
-	GS_ASSERT(theCertificate != NULL);
+	GS_ASSERT(certificate != NULL);
 	GSI_UNUSED(theProfileId);
 	aReport = (SCIReport*)theReport;
 	
@@ -426,8 +457,8 @@ SCResult SC_CALL scReportSetPlayerData(SCReportPtr theReport,
 
 	if (aResult == SCResult_NO_ERROR) aResult = sciReportSetPlayerConnectionId(aReport, thePlayerIndex, thePlayerConnectionId);
 	if (aResult == SCResult_NO_ERROR) aResult = sciReportSetPlayerTeamIndex   (aReport, thePlayerIndex, thePlayerTeamId);
-	if (aResult == SCResult_NO_ERROR) aResult = sciReportSetPlayerGameResult  (aReport, thePlayerIndex, theResult);
-	if (aResult == SCResult_NO_ERROR) aResult = sciReportSetPlayerAuthInfo    (aReport, thePlayerIndex, theCertificate, theAuthHash);
+	if (aResult == SCResult_NO_ERROR) aResult = sciReportSetPlayerGameResult  (aReport, thePlayerIndex, result);
+	if (aResult == SCResult_NO_ERROR) aResult = sciReportSetPlayerAuthInfo    (aReport, thePlayerIndex, certificate, theAuthHash);
 
 	return aResult;
 }
@@ -437,13 +468,13 @@ SCResult SC_CALL scReportSetPlayerData(SCReportPtr theReport,
 ///////////////////////////////////////////////////////////////////////////////
 SCResult SC_CALL scReportSetTeamData(const SCReportPtr theReport,
 									 gsi_u32     theTeamId,
-									 SCGameResult theResult)
+									 SCGameResult result)
 {
 	SCIReport * aReport = NULL;
 	gsi_u32 i;
 	gsi_i32 aTeamIndex = -1;
 	GS_ASSERT(theReport != NULL);
-	GS_ASSERT(theResult < SCGameResultMax);
+	GS_ASSERT(result < SCGameResultMax);
 
 	aReport = (SCIReport*)theReport;
 
@@ -465,7 +496,7 @@ SCResult SC_CALL scReportSetTeamData(const SCReportPtr theReport,
 		return SCResult_INVALID_PARAMETERS;
 	
 	// the teamindex reported here needs to be 0 based, which is why we subtract 1
-	return sciReportSetTeamGameResult(aReport, (gsi_u32)aTeamIndex, theResult);
+	return sciReportSetTeamGameResult(aReport, (gsi_u32)aTeamIndex, result);
 }
 
 
@@ -586,7 +617,7 @@ SCResult SC_CALL scPeerCipherInit(const GSLoginCertificate * theLocalCert, SCPee
 	//     3) Repeat 1-2 for every 16 bytes of key block needed
 	unsigned char randBytes[32];
 	int i=0;
-	MD5_CTX md5;
+	GSMD5_CTX md5;
 
 	GS_ASSERT(theCipher != NULL);
 	//CANNOT assert on constant expressions, they are meaningless.
@@ -602,16 +633,16 @@ SCResult SC_CALL scPeerCipherInit(const GSLoginCertificate * theLocalCert, SCPee
 		randBytes[i] = (unsigned char)Util_RandInt(0x00, 0xFF);
 
 	// Calc the first half, bytes 0-15
-	MD5Init(&md5);
-	MD5Update(&md5, randBytes, 16);
-	MD5Update(&md5, (unsigned char*)theLocalCert->mPeerPublicKey.modulus.mData, 16); // first 16 bytes of the key
-	MD5Final(&theCipher->mKey[0], &md5);
+	GSMD5Init(&md5);
+	GSMD5Update(&md5, randBytes, 16);
+	GSMD5Update(&md5, (unsigned char*)theLocalCert->mPeerPublicKey.modulus.mData, 16); // first 16 bytes of the key
+	GSMD5Final(&theCipher->mKey[0], &md5);
 
 	// Calc the second half, bytes 16-31
-	MD5Init(&md5);
-	MD5Update(&md5, &randBytes[16], 16);
-	MD5Update(&md5, (unsigned char*)&theLocalCert->mPeerPublicKey.modulus.mData[16], 16); // last 16 bytes of the key
-	MD5Final(&theCipher->mKey[16], &md5);
+	GSMD5Init(&md5);
+	GSMD5Update(&md5, &randBytes[16], 16);
+	GSMD5Update(&md5, (unsigned char*)&theLocalCert->mPeerPublicKey.modulus.mData[16], 16); // last 16 bytes of the key
+	GSMD5Final(&theCipher->mKey[16], &md5);
 
 	theCipher->mKeyLen = 32;
 
@@ -661,17 +692,17 @@ SCResult SC_CALL scPeerCipherParseKeyExchangeMsg (const GSLoginCertificate * the
 SCResult SC_CALL scPeerCipherEncryptBufferIV(SCPeerCipher * theCipher, gsi_u32 theMessageNum, gsi_u8 * theData, gsi_u32 theLen)
 {
 	RC4Context rc4;
-	MD5_CTX md5;
+	GSMD5_CTX md5;
 	char tempHash[16];
 
 	GS_ASSERT(gsi_is_true(theCipher->mInitialized));
 
 	// Construct a new key for this message
 	//    - Using the same key for all messages would be extremely unsafe
-	MD5Init(&md5);
-	MD5Update(&md5, theCipher->mKey, theCipher->mKeyLen);
-	MD5Update(&md5, (unsigned char*)&theMessageNum, sizeof(theMessageNum));
-	MD5Final((unsigned char *)tempHash, &md5);
+	GSMD5Init(&md5);
+	GSMD5Update(&md5, theCipher->mKey, theCipher->mKeyLen);
+	GSMD5Update(&md5, (unsigned char*)&theMessageNum, sizeof(theMessageNum));
+	GSMD5Final((unsigned char *)tempHash, &md5);
 
 	RC4Init(&rc4, (unsigned char *)tempHash, GS_CRYPT_MD5_HASHSIZE);
 	RC4Encrypt(&rc4, (const unsigned char*)theData, theData, (int)theLen);

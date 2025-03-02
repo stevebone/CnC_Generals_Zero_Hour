@@ -176,9 +176,12 @@ void CSetupDlg::StartSelPlaybackDevice()
  
 static GVBool gMute = GVFalse;
 
-void CSetupDlg::OnTimer(UINT nIDEvent) 
+void CSetupDlg::OnTimer(UINT_PTR nIDEvent) 
 {
 	gvThink();
+
+	if (m_SetupInfo->m_CaptureDevice)
+	{
 
 	// Check for voice data, play as local echo
 	int aBytesAvailable = gvGetAvailableCaptureBytes(m_SetupInfo->m_CaptureDevice);
@@ -202,6 +205,8 @@ void CSetupDlg::OnTimer(UINT nIDEvent)
 
 		// Display the volume level
 		m_VoiceLevelCtrl.SetPos( (int)(aVolume*100) );
+	}
+
 	}
 	
 

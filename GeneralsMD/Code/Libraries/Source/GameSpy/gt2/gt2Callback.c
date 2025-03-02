@@ -1,12 +1,12 @@
-/*
-GameSpy GT2 SDK
-Dan "Mr. Pants" Schoenblum
-dan@gamespy.com
-
-Copyright 2002 GameSpy Industries, Inc
-
-devsupport@gamespy.com
-*/
+///////////////////////////////////////////////////////////////////////////////
+// File:	gt2Callback.c
+// SDK:		GameSpy Transport 2 SDK
+//
+// Copyright (c) 2012 GameSpy Technology & IGN Entertainment, Inc.  All rights 
+// reserved. This software is made available only pursuant to certain license 
+// terms offered by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed
+// use or use in a manner not expressly authorized by IGN or GameSpy Technology
+// is prohibited.
 
 #include "gt2Callback.h"
 #include "gt2Socket.h"
@@ -20,7 +20,7 @@ GT2Bool gti2SocketErrorCallback
 	GT2Socket socket
 )
 {
-	assert(socket);
+	GS_ASSERT(socket);
 	if(!socket)
 		return GT2True;
 
@@ -33,7 +33,7 @@ GT2Bool gti2SocketErrorCallback
 
 	socket->callbackLevel--;
 
-	// check if the socket should be closed
+	// Check to see if the socket should be closed.
 	if(socket->close && !socket->callbackLevel)
 	{
 		gti2CloseSocket(socket);
@@ -54,14 +54,14 @@ GT2Bool gti2ConnectAttemptCallback
 	int len
 )
 {
-	assert(socket && connection);
+	GS_ASSERT(socket && connection);
 	if(!socket || !connection)
 		return GT2True;
 
 	if(!socket->connectAttemptCallback)
 		return GT2True;
 
-	// check for an empty message
+	// Check for an empty message..
 	if(!len || !message)
 	{
 		message = NULL;
@@ -76,7 +76,7 @@ GT2Bool gti2ConnectAttemptCallback
 	socket->callbackLevel--;
 	connection->callbackLevel--;
 
-	// check if the socket should be closed
+	// Check to see if the socket should be closed.
 	if(socket->close && !socket->callbackLevel)
 	{
 		gti2CloseSocket(socket);
@@ -98,17 +98,17 @@ GT2Bool gti2ConnectedCallback
 	int len
 )
 {
-	assert(connection);
+	GS_ASSERT(connection);
 	if(!connection)
 		return GT2True;
 	
-	// store the result
+	// Store the result.
 	connection->connectionResult = result;
 
 	if(!connection->callbacks.connected)
 		return GT2True;
 
-	// check for an empty message
+	// Check for an empty message..
 	if(!len || !message)
 	{
 		message = NULL;
@@ -123,7 +123,7 @@ GT2Bool gti2ConnectedCallback
 	connection->callbackLevel--;
 	connection->socket->callbackLevel--;
 
-	// check if the socket should be closed
+	// Check to see if the socket should be closed.
 	if(connection->socket->close && !connection->socket->callbackLevel)
 	{
 		gti2CloseSocket(connection->socket);
@@ -141,14 +141,14 @@ GT2Bool gti2ReceivedCallback
 	GT2Bool reliable
 )
 {
-	assert(connection);
+	GS_ASSERT(connection);
 	if(!connection)
 		return GT2True;
 
 	if(!connection->callbacks.received)
 		return GT2True;
 
-	// check for an empty message
+	// Check for an empty message.
 	if(!len || !message)
 	{
 		message = NULL;
@@ -163,7 +163,7 @@ GT2Bool gti2ReceivedCallback
 	connection->callbackLevel--;
 	connection->socket->callbackLevel--;
 
-	// check if the socket should be closed
+	// Check to see if the socket should be closed.
 	if(connection->socket->close && !connection->socket->callbackLevel)
 	{
 		gti2CloseSocket(connection->socket);
@@ -179,7 +179,7 @@ GT2Bool gti2ClosedCallback
 	GT2CloseReason reason
 )
 {
-	assert(connection);
+	GS_ASSERT(connection);
 	if(!connection)
 		return GT2True;
 
@@ -194,7 +194,7 @@ GT2Bool gti2ClosedCallback
 	connection->callbackLevel--;
 	connection->socket->callbackLevel--;
 
-	// check if the socket should be closed
+	// Check to see if the socket should be closed.
 	if(connection->socket->close && !connection->socket->callbackLevel)
 	{
 		gti2CloseSocket(connection->socket);
@@ -210,7 +210,7 @@ GT2Bool gti2PingCallback
 	int latency
 )
 {
-	assert(connection);
+	GS_ASSERT(connection);
 	if(!connection)
 		return GT2True;
 
@@ -225,7 +225,7 @@ GT2Bool gti2PingCallback
 	connection->callbackLevel--;
 	connection->socket->callbackLevel--;
 
-	// check if the socket should be closed
+	// Check to see if the socket should be closed.
 	if(connection->socket->close && !connection->socket->callbackLevel)
 	{
 		gti2CloseSocket(connection->socket);
@@ -250,7 +250,7 @@ GT2Bool gti2SendFilterCallback
 {
 	gt2SendFilterCallback * callback;
 
-	assert(connection);
+	GS_ASSERT(connection);
 	if(!connection)
 		return GT2True;
 
@@ -258,7 +258,7 @@ GT2Bool gti2SendFilterCallback
 	if(!callback)
 		return GT2True;
 
-	// check for an empty message
+	// Check for an empty message.
 	if(!len || !message)
 	{
 		message = NULL;
@@ -273,7 +273,7 @@ GT2Bool gti2SendFilterCallback
 	connection->callbackLevel--;
 	connection->socket->callbackLevel--;
 
-	// check if the socket should be closed
+	// Check to see if the socket should be closed.
 	if(connection->socket->close && !connection->socket->callbackLevel)
 	{
 		gti2CloseSocket(connection->socket);
@@ -294,7 +294,7 @@ GT2Bool gti2ReceiveFilterCallback
 {
 	gt2ReceiveFilterCallback * callback;
 
-	assert(connection);
+	GS_ASSERT(connection);
 	if(!connection)
 		return GT2True;
 
@@ -302,7 +302,7 @@ GT2Bool gti2ReceiveFilterCallback
 	if(!callback)
 		return GT2True;
 
-	// check for an empty message
+	// Check for an empty message.
 	if(!len || !message)
 	{
 		message = NULL;
@@ -317,7 +317,7 @@ GT2Bool gti2ReceiveFilterCallback
 	connection->callbackLevel--;
 	connection->socket->callbackLevel--;
 
-	// check if the socket should be closed
+	// Check to see if the socket should be closed.
 	if(connection->socket->close && !connection->socket->callbackLevel)
 	{
 		gti2CloseSocket(connection->socket);
@@ -345,7 +345,7 @@ GT2Bool gti2DumpCallback
 {
 	gt2DumpCallback callback;
 
-	assert(socket);
+	GS_ASSERT(socket);
 	if(!socket)
 		return GT2True;
 
@@ -357,7 +357,7 @@ GT2Bool gti2DumpCallback
 	if(!callback)
 		return GT2True;
 
-	// check for an empty message
+	// Check for an empty message.
 	if(!len || !message)
 	{
 		message = NULL;
@@ -374,7 +374,7 @@ GT2Bool gti2DumpCallback
 	if(connection)
 		connection->callbackLevel--;
 
-	// check if the socket should be closed
+	// Check to see if the socket should be closed.
 	if(socket->close && !socket->callbackLevel)
 	{
 		gti2CloseSocket(socket);
@@ -400,14 +400,14 @@ GT2Bool gti2UnrecognizedMessageCallback
 {
 	*handled = GT2False;
 
-	assert(socket);
+	GS_ASSERT(socket);
 	if(!socket)
 		return GT2True;
 
 	if(!socket->unrecognizedMessageCallback)
 		return GT2True;
 
-	// check for an empty message
+	// Check for an empty message.
 	if(!len || !message)
 	{
 		message = NULL;
@@ -420,7 +420,7 @@ GT2Bool gti2UnrecognizedMessageCallback
 
 	socket->callbackLevel--;
 
-	// check if the socket should be closed
+	// Check to see if the socket should be closed.
 	if(socket->close && !socket->callbackLevel)
 	{
 		gti2CloseSocket(socket);

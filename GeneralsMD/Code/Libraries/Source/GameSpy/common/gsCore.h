@@ -1,14 +1,20 @@
 ///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
-#ifndef __CORE_H__
-#define __CORE_H__
+// File:	gsCore.h
+// SDK:		GameSpy Common
+//
+// Copyright (c) 2012 GameSpy Technology & IGN Entertainment, Inc.  All rights 
+// reserved. This software is made available only pursuant to certain license 
+// terms offered by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed
+// use or use in a manner not expressly authorized by IGN or GameSpy Technology
+// is prohibited.
+// ------------------------------------
+// Core task/callback manager.
 
+#ifndef __GSCORE_H__
+#define __GSCORE_H__
 
-///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
-// Core task/callback manager
 #include "gsCommon.h"
-#include "../darray.h"
+#include "darray.h"
 
 #if defined(__cplusplus)
 extern "C"
@@ -20,6 +26,18 @@ extern "C"
 ///////////////////////////////////////////////////////////////////////////////
 #define GSICORE_DYNAMIC_TASK_LIST
 #define GSICORE_MAXTASKS       40
+#define SESSIONTOKEN_LENGTH    37
+#define SESSIONTOKEN_HEADER    "SessionToken:"
+#define AUTHERROR_LENGTH       100
+#define AUTHERROR_HEADER       "Error:"
+#define AUTHERRORCODE_LENGTH   3
+#define AUTHERRORCODE_HEADER   "ErrorCode:"
+#define GAMEID_LENGTH          10
+#define GAMEID_HEADER          "GameID:"
+#define PROFILEID_LENGTH       20
+#define PROFILEID_HEADER       "ProfileID:"
+#define HEADERS_LENGTH         300
+#define ACCESSKEY_HEADER  "AccessKey:"
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -43,6 +61,15 @@ typedef enum
 	GSTaskResult_Finished
 } GSTaskResult;
 
+typedef enum
+{
+	GSAuthErrorCode_None,
+	GSAuthErrorCode_InvalidGameID,
+	GSAuthErrorCode_InvalidAccessKey,
+	GSAuthErrorCode_InvalidSessionToken,
+	GSAuthErrorCode_SessionTokenExpired,
+	GSAuthErrorCode_Unknown
+} GSAuthErrorCode;
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -88,6 +115,13 @@ typedef struct
 {
 	gsi_u32  mRefCount;
 
+	// these are retrieved from the response headers after apigee verfies the api key
+	char sessionToken[SESSIONTOKEN_LENGTH];
+	char authError[AUTHERROR_LENGTH];
+	GSAuthErrorCode authErrorCode;
+	char gameId[GAMEID_LENGTH];
+	char profileId[PROFILEID_LENGTH];
+
 	gsi_bool volatile mIsStaticInitComplete;  // once per application init
 	gsi_bool volatile mIsInitialized;  // gsi_true when ready to use
 	gsi_bool volatile mIsShuttingDown; // gsi_true when shutting down
@@ -103,15 +137,25 @@ typedef struct
 
 
 ///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
-void gsCoreInitialize       (void);
-void gsCoreThink            (gsi_time theMS);
-void gsCoreShutdown         (void);
-GSCoreValue gsCoreIsShutdown(void);
+/////////////////////////////////////////////////////////////////////////////// 
+COMMON_API void gsCoreInitialize       (void);
+void gsiCoreSetProfileId(const char profileId[PROFILEID_LENGTH]);
+gsi_bool gsiCoreGetProfileId(char profileId[PROFILEID_LENGTH]);
+void gsiCoreSetGameId(const char gameId[GAMEID_LENGTH]);
+gsi_bool gsiCoreGetGameId(char gameId[GAMEID_LENGTH]);
+void gsiCoreSetAuthError(const char* authError);
+gsi_bool gsiCoreGetAuthError(char authError[AUTHERROR_LENGTH]);
+void gsiCoreSetAuthErrorCode(GSAuthErrorCode authErrorCode);
+GSAuthErrorCode gsiCoreGetAuthErrorCode();
+gsi_bool gsiCoreGetSessionToken(char sessionToken[SESSIONTOKEN_LENGTH]);
+void gsiCoreSetSessionToken (const char sessionToken[SESSIONTOKEN_LENGTH]);
+COMMON_API void gsCoreThink            (gsi_time theMS);
+COMMON_API void gsCoreShutdown         (void);
+COMMON_API GSCoreValue gsCoreIsShutdown(void);
 
 GSTaskResult gsCoreTaskThink(GSTask* theTask);
 void gsiCoreExecuteTask     (GSTask* theTask, gsi_time theTimeoutMs);
-void gsiCoreCancelTask      (GSTask* theTask);
+COMMON_API void gsiCoreCancelTask      (GSTask* theTask);
 
 GSTask* gsiCoreCreateTask(void);
 
@@ -125,4 +169,4 @@ GSTask* gsiCoreCreateTask(void);
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
-#endif // __CORE_H__
+#endif // __GSCORE_H__

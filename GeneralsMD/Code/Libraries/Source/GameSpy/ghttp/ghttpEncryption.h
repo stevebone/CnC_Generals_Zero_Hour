@@ -1,13 +1,15 @@
 ///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
+// File:	ghttpEncryption.h
+// SDK:		GameSpy HTTP SDK
+//
+// Copyright (c) 2012 GameSpy Technology & IGN Entertainment, Inc. All rights
+// reserved. This software is made available only pursuant to certain license 
+// terms offered by IGN or its subsidiary GameSpy Industries, Inc. Unlicensed 
+// use or use in a  manner not expressly authorized by IGN or GameSpy 
+// Technology is prohibited.
+
 #ifndef __GHTTPENCRYPTION_H__
 #define __GHTTPENCRYPTION_H__
-
-
-///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
-//#include "ghttpCommon.h"
-
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -95,6 +97,9 @@ typedef struct GHIEncryptor
 	GHTTPEncryptorStartFunc     mStartFunc;  // start the handshake process
 	GHTTPEncryptorEncryptFunc   mEncryptFunc;
 	GHTTPEncryptorDecryptFunc   mDecryptFunc;
+#if defined(TWLSSL) && defined(_NITRO)	
+	gsi_bool  mNotInCloseSocket; // This is special when TWLSSL & NITRO
+#endif
 } GHIEncryptor;
 
 
@@ -131,6 +136,8 @@ GHIEncryptionResult ghiEncryptorSslDecryptRecv(struct GHIConnection * connection
                                  char * theDecryptedBuffer,
                                  int * theDecryptedLength);
                                  
+GHTTPBool ghiEncyptorSetRootCAList( char *url, void *theRootCAList);
+GHTTPBool ghiEncyptorCleanupRootCAList( char *url);
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////

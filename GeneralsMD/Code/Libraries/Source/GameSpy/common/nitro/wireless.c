@@ -4,6 +4,7 @@
 #include "menu.h"
 #include "backup.h"
 #include "touch.h"
+#include <nitroWiFi/iw2wcm.h>
 
 #define USE_DHCP
 #define SUPPORT_SAVED_CONFIGS
@@ -569,7 +570,7 @@ static void IW_Callback(IWNotice * arg)
 
 static gsi_bool IW_CheckResult(int result, const char * funcName)
 {
-	assert(funcName);
+	GS_ASSERT(funcName != NULL);
 
 	OS_Printf("%s: %s\n", funcName, IWResultToString(result));
 	switch(result)
@@ -594,7 +595,7 @@ static gsi_bool IW_Poll(int polling, int success, const char * funcName, gsi_boo
 {
 	int phase;
 
-	assert(funcName);
+	GS_ASSERT(funcName != NULL);
 
 	phase = IW_GetPhase();
 	if(phase == polling)
@@ -638,7 +639,7 @@ static void LoadSettings(void)
 	if(memcmp(SavedSettings.magic, MagicString, MagicStringLen) != 0)
 		SavedSettings.numConfigs = 0;
 
-	SavedSettings.numConfigs = (u8)min(SavedSettings.numConfigs, MAX_SAVED_CONFIGS);
+	SavedSettings.numConfigs = (u8)GSI_MIN(SavedSettings.numConfigs, MAX_SAVED_CONFIGS);
 }
 
 static void SaveSettings(void)
@@ -953,7 +954,7 @@ static void SearchingForNetworksThink(void)
 
 	// get a count
 	count = IW_CountBssDesc();
-	count = min(count, APLIST_COUNT);
+	count = GSI_MIN(count, APLIST_COUNT);
 
 	// copy the access points
 	for(i = 0 ; i < count ; i++)

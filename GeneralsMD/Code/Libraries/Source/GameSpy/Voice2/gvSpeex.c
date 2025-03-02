@@ -1,5 +1,12 @@
+///////////////////////////////////////////////////////////////////////////////
+// File:	gvSpeex.c
+// SDK:		GameSpy Voice 2 SDK
+//
+// Copyright Notice: This file is part of the GameSpy SDK designed and 
+// developed by GameSpy Industries. Copyright (c) 2004-2009 GameSpy Industries, Inc.
+
 #include "gvSpeex.h"
-#include <speex.h>
+#include <speex/speex.h>
 #include "gvCodec.h"
 
 
@@ -17,18 +24,21 @@ GVBool gviSpeexInitialize(int quality, GVRate sampleRate)
 	int rate;
 	int bitsPerFrame;
 	int samplesPerSecond;
-	
+	const SpeexMode* speexMode;
+
 	// we shouldn't already be initialized
 	if(gviSpeexInitialized)
 		return GVFalse;
 
 	// create a new encoder state
 	if (sampleRate == GVRate_8KHz)
-		gviSpeexEncoderState = speex_encoder_init(&speex_nb_mode);
+		speexMode = speex_lib_get_mode(SPEEX_MODEID_NB);
 	else if (sampleRate == GVRate_16KHz)
-		gviSpeexEncoderState = speex_encoder_init(&speex_wb_mode);
+		speexMode = speex_lib_get_mode(SPEEX_MODEID_WB);
 	else
 		return GVFalse;
+
+	gviSpeexEncoderState = speex_encoder_init(speexMode);
 
 	if(!gviSpeexEncoderState)
 		return GVFalse;
@@ -100,14 +110,18 @@ GVBool gviSpeexNewDecoder(GVDecoderData * data)
 {
 	void * decoder;
 	int perceptualEnhancement = 1;
+	const SpeexMode* speexMode;
 	
 	// create a new decoder state
+
 	if (gviGetSampleRate() == GVRate_8KHz)
-		decoder = speex_decoder_init(&speex_nb_mode);
+		speexMode = speex_lib_get_mode(SPEEX_MODEID_NB);
 	else if (gviGetSampleRate() == GVRate_16KHz)
-		decoder = speex_decoder_init(&speex_wb_mode);
+		speexMode = speex_lib_get_mode(SPEEX_MODEID_WB);
 	else
 		return GVFalse;
+
+	decoder = speex_decoder_init(speexMode);
 
 	if(!decoder)
 		return GVFalse;
@@ -142,7 +156,7 @@ void gviSpeexEncode(GVByte * out, const GVSample * in)
 
 	// write the bits to the output
 	bytesWritten = speex_bits_write(&gviSpeexBits, (char *)out, gviSpeexEncodedFrameSize);
-	assert(bytesWritten == gviSpeexEncodedFrameSize);
+	GS_ASSERT(bytesWritten == gviSpeexEncodedFrameSize);
 }
 
 void gviSpeexDecodeAdd(GVSample * out, const GVByte * in, GVDecoderData data)
@@ -155,7 +169,7 @@ void gviSpeexDecodeAdd(GVSample * out, const GVByte * in, GVDecoderData data)
 
 	// decode it
 	rcode = speex_decode((void *)data, &gviSpeexBits, gviSpeexBuffer);
-	assert(rcode == 0);
+	GS_ASSERT(rcode == 0);
 
 	// convert the output from floats
 	for(i = 0 ; i < gviSpeexSamplesPerFrame ; i++)
@@ -173,7 +187,7 @@ void gviSpeexDecodeSet(GVSample * out, const GVByte * in, GVDecoderData data)
 
 	// decode it
 	rcode = speex_decode((void *)data, &gviSpeexBits, gviSpeexBuffer);
-	assert(rcode == 0);
+	GS_ASSERT(rcode == 0);
 
 	// convert the output from floats
 	for(i = 0 ; i < gviSpeexSamplesPerFrame ; i++)

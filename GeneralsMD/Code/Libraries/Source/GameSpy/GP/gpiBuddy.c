@@ -1,34 +1,28 @@
-/*
-gpiBuddy.c
-GameSpy Presence SDK 
-Dan "Mr. Pants" Schoenblum
-
-Copyright 1999-2007 GameSpy Industries, Inc
-
-devsupport@gamespy.com
-
-***********************************************************************
-Please see the GameSpy Presence SDK documentation for more information
-**********************************************************************/
+///////////////////////////////////////////////////////////////////////////////
+// File:	gpiBuddy.c
+// SDK:		GameSpy Presence and Messaging SDK
+//
+// Copyright (c) 2012 GameSpy Technology & IGN Entertainment, Inc. All rights
+// reserved. This software is made available only pursuant to certain license
+// terms offered by IGN or its subsidiary GameSpy Industries, Inc. Unlicensed
+// use or use in a manner not expressly authorized by IGN or GameSpy Technology
+// is prohibited.
 
 //INCLUDES
 //////////
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include "gpi.h"
 
 //FUNCTIONS
-///////////
-static GPResult
-gpiSendAuthBuddyRequest(
-  GPConnection * connection,
-  GPIProfile * profile
-)
+GPResult gpiSendAuthBuddyRequest(GPConnection * connection,
+								 GPIProfile * profile,
+								 GPIBool autoSync)
 {
 	GPIConnection * iconnection = (GPIConnection*)*connection;
 
 	// Send the auth.
-	/////////////////
 	gpiAppendStringToBuffer(connection, &iconnection->outputBuffer, "\\authadd\\");
 	gpiAppendStringToBuffer(connection, &iconnection->outputBuffer, "\\sesskey\\");
 	gpiAppendIntToBuffer(connection, &iconnection->outputBuffer, iconnection->sessKey);
@@ -36,10 +30,50 @@ gpiSendAuthBuddyRequest(
 	gpiAppendIntToBuffer(connection, &iconnection->outputBuffer, profile->profileId);
 	gpiAppendStringToBuffer(connection, &iconnection->outputBuffer, "\\sig\\");
 	gpiAppendStringToBuffer(connection, &iconnection->outputBuffer, profile->authSig);
+	gpiAppendStringToBuffer(connection, &iconnection->outputBuffer, "\\autoSync\\");
+	gpiAppendStringToBuffer(connection, &iconnection->outputBuffer, autoSync ? "true" : "false");
 	gpiAppendStringToBuffer(connection, &iconnection->outputBuffer, "\\final\\");
 
 	return GP_NO_ERROR;
 }
+
+GPResult gpiSendAddBuddyRequest(GPConnection *connection, 
+								GPProfile profile,
+								const char reason[GP_REASON_LEN],
+								GPIBool buddySync)
+{
+	GPIConnection *iconnection = (GPIConnection *)*connection;
+	// Signature in the raw consists of from profile id, new profile id, 
+	char hashProfileInfo[10 + 10 + GP_PASSWORD_LEN];
+	char signature[33];
+
+	// Send the request.
+	////////////////////
+	gpiAppendStringToBuffer(connection, &iconnection->outputBuffer, "\\addbuddy\\");
+	gpiAppendStringToBuffer(connection, &iconnection->outputBuffer, "\\sesskey\\");
+	gpiAppendIntToBuffer(connection, &iconnection->outputBuffer, iconnection->sessKey);
+	gpiAppendStringToBuffer(connection, &iconnection->outputBuffer, "\\newprofileid\\");
+	gpiAppendIntToBuffer(connection, &iconnection->outputBuffer, profile);
+	gpiAppendStringToBuffer(connection, &iconnection->outputBuffer, "\\reason\\");
+	if (reason)
+		gpiAppendStringToBuffer(connection, &iconnection->outputBuffer, reason);
+		
+	// Added a sync requested value that tells the backend to automatically add me and my friend 
+	// to each other's buddy lists. NOTE: a signature is required to do this!
+	if (buddySync)
+	{
+		memset(&hashProfileInfo, 0, sizeof(hashProfileInfo));
+		sprintf(hashProfileInfo, "%d%d", iconnection->profileid, profile);
+		GSMD5Digest((unsigned char*)hashProfileInfo, strlen(hashProfileInfo), signature);
+		gpiAppendStringToBuffer(connection, &iconnection->outputBuffer, "\\syncrequested\\");
+		gpiAppendStringToBuffer(connection, &iconnection->outputBuffer, signature);
+	}
+
+	gpiAppendStringToBuffer(connection, &iconnection->outputBuffer, "\\final\\");
+	return GP_NO_ERROR;
+}
+
+
 
 GPResult
 gpiProcessRecvBuddyMessage(
@@ -59,34 +93,29 @@ gpiProcessRecvBuddyMessage(
 	unsigned short port;
 	int productID;
 	GPIConnection * iconnection = (GPIConnection*)*connection;
-	char strTemp[max(GP_STATUS_STRING_LEN, GP_LOCATION_STRING_LEN)];
+	char strTemp[GS_MAX(GP_STATUS_STRING_LEN, GP_LOCATION_STRING_LEN)];
 
 	// Check the type of bm.
-	////////////////////////
 	if(!gpiValueForKey(input, "\\bm\\", buffer, sizeof(buffer)))
 		CallbackFatalError(connection, GP_NETWORK_ERROR, GP_PARSE, "Unexpected data was received from the server.");
 	type = atoi(buffer);
 
 	// Get the profile this is from.
-	////////////////////////////////
 	if(!gpiValueForKey(input, "\\f\\", buffer, sizeof(buffer)))
 		CallbackFatalError(connection, GP_NETWORK_ERROR, GP_PARSE, "Unexpected data was received from the server.");
 	profileid = atoi(buffer);
 
 	// Get the time.
-	////////////////
 	if(!gpiValueForKey(input, "\\date\\", buffer, sizeof(buffer)))
 		date = time(NULL);
 	else
 		date = atoi(buffer);
 
 	// What type of message is this?
-	////////////////////////////////
 	switch(type)
 	{
 	case GPI_BM_MESSAGE:
 		// Call the callback.
-		/////////////////////
 		callback = iconnection->callbacks[GPI_RECV_BUDDY_MESSAGE];
 		if(callback.callback != NULL)
 		{
@@ -105,10 +134,10 @@ gpiProcessRecvBuddyMessage(
 			arg->profile = (GPProfile)profileid;
 			arg->date = (unsigned int)date;
 #else
-			arg->message = (unsigned short*)gsimalloc(strlen(buffer)*2+2);
+			arg->message = (gsi_char *) gsimalloc( (1 + strlen(buffer) ) * sizeof(gsi_char) );
 			if(arg->message == NULL)
 				Error(connection, GP_MEMORY_ERROR, "Out of memory.");
-			UTF8ToUCS2String(buffer, arg->message);
+			UTF8ToUCSString(buffer, arg->message);
 			arg->profile = (GPProfile)profileid;
 			arg->date = (unsigned int)date;
 #endif
@@ -117,7 +146,6 @@ gpiProcessRecvBuddyMessage(
 		break;
 	case GPI_BM_UTM:
 		// Call the callback.
-		/////////////////////
 		callback = iconnection->callbacks[GPI_RECV_BUDDY_UTM];
 		if(callback.callback != NULL)
 		{
@@ -136,10 +164,10 @@ gpiProcessRecvBuddyMessage(
 			arg->profile = (GPProfile)profileid;
 			arg->date = (unsigned int)date;
 #else
-			arg->message = (unsigned short*)gsimalloc(strlen(buffer)*2+2);
+			arg->message = (gsi_char*)gsimalloc( (1 + strlen(buffer) ) * sizeof(gsi_char) );
 			if(arg->message == NULL)
 				Error(connection, GP_MEMORY_ERROR, "Out of memory.");
-			UTF8ToUCS2String(buffer, arg->message);
+			UTF8ToUCSString(buffer, arg->message);
 			arg->profile = (GPProfile)profileid;
 			arg->date = (unsigned int)date;
 #endif
@@ -149,24 +177,20 @@ gpiProcessRecvBuddyMessage(
 
 	case GPI_BM_REQUEST:
 		// Get the profile, adding if needed.
-		/////////////////////////////////////
 		profile = gpiProfileListAdd(connection, profileid);
 		if(!profile)
 			Error(connection, GP_MEMORY_ERROR, "Out of memory.");
 
 		// Get the reason.
-		//////////////////
 		if(!gpiValueForKey(input, "\\msg\\", buffer, sizeof(buffer)))
 			CallbackFatalError(connection, GP_NETWORK_ERROR, GP_PARSE, "Unexpected data was received from the server.");
 
 		// Find where the sig starts.
-		/////////////////////////////
 		str = strstr(buffer, "|signed|");
 		if(str == NULL)
 			CallbackFatalError(connection, GP_NETWORK_ERROR, GP_PARSE, "Unexpected data was received from the server.");
 
 		// Get the sig out of the message.
-		//////////////////////////////////
 		*str = '\0';
 		str += 8;
 		if(strlen(str) != 32)
@@ -176,7 +200,6 @@ gpiProcessRecvBuddyMessage(
 		profile->requestCount++;
 
 		// Call the callback.
-		/////////////////////
 		callback = iconnection->callbacks[GPI_RECV_BUDDY_REQUEST];
 		if(callback.callback != NULL)
 		{
@@ -187,7 +210,7 @@ gpiProcessRecvBuddyMessage(
 #ifndef GSI_UNICODE
 			strzcpy(arg->reason, buffer, GP_REASON_LEN);
 #else
-			UTF8ToUCS2String(buffer, arg->reason);
+			UTF8ToUCSString(buffer, arg->reason);
 #endif
 			arg->profile = (GPProfile)profileid;
 			arg->date = (unsigned int)date;
@@ -213,7 +236,7 @@ gpiProcessRecvBuddyMessage(
 		break;
 
 	case GPI_BM_REVOKE:
-		// call the callback
+		// Call the callback.
 		callback = iconnection->callbacks[GPI_RECV_BUDDY_REVOKE];
 		if(callback.callback != NULL)
 		{
@@ -231,18 +254,33 @@ gpiProcessRecvBuddyMessage(
 		
 
 	case GPI_BM_STATUS:
+
+
 		// Get the profile, adding if needed.
-		/////////////////////////////////////
 		profile = gpiProfileListAdd(connection, profileid);
 		if(!profile)
 			Error(connection, GP_MEMORY_ERROR, "Out of memory.");
 
-        // Make sure profile wasn't blocked prior to getting the status update
-        //////////////////////////////////////////////////////////////////////
+		// First check if we are connected, (i.e., the complete buddy list
+		// exists), then check if have this buddy in the local buddy list.
+		/////////////////////////////////////
+		if ((iconnection->connectState == GPI_CONNECTED) &&
+			 profile->deletedLocally)
+		{
+			// This buddy is not in our local buddy list. We got this 
+			// message because of a race condition we must have been 
+			// deleting. Ignore this buddy status message.
+
+			gsDebugFormat(GSIDebugCat_GP, GSIDebugType_Misc, GSIDebugLevel_WarmError,
+				"Deliberately ignoring Buddy Message Status update from profile id [%i], \
+				because could not be found in the local buddy list. It must have been removed \n", 
+				profileid);
+			break;
+		}
+		// Make sure profile wasn't blocked prior to getting the status update.
         if (!profile->blocked)
         {
 		    // This is a buddy.
-		    ///////////////////
 		    if(!profile->buddyStatus)
 		    {
 			    profile->buddyStatus = (GPIBuddyStatus *)gsimalloc(sizeof(GPIBuddyStatus));
@@ -260,16 +298,13 @@ gpiProcessRecvBuddyMessage(
 		    }
 
 		    // Get the buddy status.
-		    ////////////////////////
 		    buddyStatus = profile->buddyStatus;
 
 		    // Get the msg.
-		    ///////////////
 		    if(!gpiValueForKey(input, "\\msg\\", buffer, sizeof(buffer)))
 			    CallbackFatalError(connection, GP_NETWORK_ERROR, GP_PARSE, "Unexpected data was received from the server.");
 
 		    // Get the status.
-		    //////////////////
 		    if(!gpiValueForKey(buffer, "|s|", intValue, sizeof(intValue)))
 		    {
 			    CallbackFatalError(connection, GP_NETWORK_ERROR, GP_PARSE, "Unexpected data was received from the server.");
@@ -279,7 +314,6 @@ gpiProcessRecvBuddyMessage(
 			    buddyStatus->status = (GPEnum)atoi(intValue);
 		    }
 		    // Get the status string.
-		    /////////////////////////
 		    freeclear(buddyStatus->statusString);
 		    if(!gpiValueForKey(buffer, "|ss|", strTemp, GP_STATUS_STRING_LEN))
 			    strTemp[0] = '\0';
@@ -288,7 +322,6 @@ gpiProcessRecvBuddyMessage(
 			    Error(connection, GP_MEMORY_ERROR, "Out of memory.");
 
 		    // Get the location string.
-		    ///////////////////////////
 		    freeclear(buddyStatus->locationString);
 		    if(!gpiValueForKey(buffer, "|ls|", strTemp, GP_LOCATION_STRING_LEN))
 			    strTemp[0] = '\0';
@@ -297,14 +330,12 @@ gpiProcessRecvBuddyMessage(
 			    Error(connection, GP_MEMORY_ERROR, "Out of memory.");
 
 		    // Get the ip.
-		    //////////////
 		    if(!gpiValueForKey(buffer, "|ip|", intValue, sizeof(intValue)))
 			    buddyStatus->ip = 0;
 		    else
 			    buddyStatus->ip = htonl((unsigned int)atoi(intValue));
 
 		    // Get the port.
-		    ////////////////
 		    if(!gpiValueForKey(buffer, "|p|", intValue, sizeof(intValue)))
 			    buddyStatus->port = 0;
 		    else
@@ -314,14 +345,12 @@ gpiProcessRecvBuddyMessage(
 		    }
 
 		    // Get the quiet mode flags.
-		    ////////////////////////////
 		    if(!gpiValueForKey(buffer, "|qm|", intValue, sizeof(intValue)))
 			    buddyStatus->quietModeFlags = GP_SILENCE_NONE;
 		    else
 			    buddyStatus->quietModeFlags = (GPEnum)atoi(intValue);
 
 		    // Call the callback.
-		    /////////////////////
 		    callback = iconnection->callbacks[GPI_RECV_BUDDY_STATUS];
 		    if(callback.callback != NULL)		
 		    {
@@ -341,35 +370,30 @@ gpiProcessRecvBuddyMessage(
 
 	case GPI_BM_INVITE:
 		// Get the msg.
-		///////////////
 		if(!gpiValueForKey(input, "\\msg\\", buffer, sizeof(buffer)))
 			CallbackFatalError(connection, GP_NETWORK_ERROR, GP_PARSE, "Unexpected data was received from the server.");
 
 		// Find the productid.
-		//////////////////////
 		str = strstr(buffer, "|p|");
 		if(str == NULL)
 			CallbackFatalError(connection, GP_NETWORK_ERROR, GP_PARSE, "Unexpected data was received from the server.");
 
 		// Skip the |p|.
-		////////////////
 		str += 3;
 		if(str[0] == '\0')
 			CallbackFatalError(connection, GP_NETWORK_ERROR, GP_PARSE, "Unexpected data was received from the server.");
 
 		// Get the productid.
-		/////////////////////
 		productID = atoi(str);
 
-		// Find the location string (optional - older versions won't have)
+		// Find the location string (optional - older versions won't have this).
 		str = strstr(buffer, "|l|");
 		if(str != NULL)
 			strzcpy(strTemp, (str+3), sizeof(strTemp));
 		else
-			strTemp[0] = '\0'; // no location, set to empty string
+			strTemp[0] = '\0'; // No location, set to empty string.
 		
 		// Call the callback.
-		/////////////////////
 		callback = iconnection->callbacks[GPI_RECV_GAME_INVITE];
 		if(callback.callback != NULL)
 		{
@@ -381,9 +405,9 @@ gpiProcessRecvBuddyMessage(
 			arg->profile = (GPProfile)profileid;
 			arg->productID = productID;
 #ifdef GSI_UNICODE
-			AsciiToUCS2String(strTemp, arg->location);
+			AsciiToUCSString(strTemp, arg->location);
 #else
-			strcpy(arg->location, strTemp);
+			gsiSafeStrcpyA(arg->location, strTemp, sizeof(arg->location));
 #endif
 
 			CHECK_RESULT(gpiAddCallback(connection, callback, arg, NULL, 0));
@@ -392,12 +416,10 @@ gpiProcessRecvBuddyMessage(
 
 	case GPI_BM_PING:
 		// Get the msg.
-		///////////////
 		if(!gpiValueForKey(input, "\\msg\\", buffer, sizeof(buffer)))
 			CallbackFatalError(connection, GP_NETWORK_ERROR, GP_PARSE, "Unexpected data was received from the server.");
 
 		// Send back a pong.
-		////////////////////
 		gpiSendBuddyMessage(connection, profileid, GPI_BM_PONG, "1", 0, NULL);
 
 		break;
@@ -405,7 +427,6 @@ gpiProcessRecvBuddyMessage(
 #ifndef NOFILE
 	case GPI_BM_PONG:
 		// Lets the transfers handle this.
-		//////////////////////////////////
 		gpiTransfersHandlePong(connection, profileid, NULL);
 
 		break;
@@ -425,31 +446,27 @@ GPResult gpiProcessRecvBuddyStatusInfo(GPConnection *connection, const char *inp
 	GPIBuddyStatusInfo * buddyStatusInfo;
 	GPIConnection * iconnection = (GPIConnection*)*connection;
 
-	// This is what the message should look like.  Its broken up for easy viewing.
+	// This is what the message should look like. It's broken up for easy viewing.
 	//
 	// "\bsi\\state\\profile\\bip\\bport\\hostip\\hprivip\"
 	// "\qport\\hport\\sessflags\\rstatus\\gameType\"
 	// "\gameVnt\\gameMn\\product\\qmodeflags\"
-	////////////////////////////////
 	date = time(NULL);
 	// Get the buddy's profile
-	////////////////////////////////
 	if(!gpiValueForKey(input, "\\profile\\", buffer, sizeof(buffer)))
 		CallbackFatalError(connection, GP_NETWORK_ERROR, GP_PARSE, "Unexpected data was received from the server.");
 	profileid = atoi(buffer);
 
 	// Get the profile from the SDK's list, adding it if needed.
-	/////////////////////////////////////
 	profile = gpiProfileListAdd(connection, profileid);
 	if(!profile)
 		Error(connection, GP_MEMORY_ERROR, "Out of memory.");
 
-    // Make sure profile wasn't blocked prior to getting the status update
-    //////////////////////////////////////////////////////////////////////
-    if (!profile->blocked)
+    // Make sure profile wasn't blocked prior to getting the status update or 
+	// deleted from the local buddy list.
+    if (!profile->blocked && !profile->deletedLocally)
     {
 	    // This is a buddy.
-	    ///////////////////
 	    if(!profile->buddyStatusInfo)
 	    {
 		    profile->buddyStatusInfo = (GPIBuddyStatusInfo *)gsimalloc(sizeof(GPIBuddyStatusInfo));
@@ -469,9 +486,8 @@ GPResult gpiProcessRecvBuddyStatusInfo(GPConnection *connection, const char *inp
 			    Error(connection, GP_MEMORY_ERROR, "Out of memory.");
 	    }
 
-	    // extract the buddy status information and 
-	    // fill in appropriate information.
-	    /////////////////////////////////////////////
+	    // Extract the buddy status information and fill in the appropriate 
+		// information.
 	    buddyStatusInfo = profile->buddyStatusInfo;
     	
 	    if (!gpiValueForKey(input, "\\state\\", buffer, sizeof(buffer)))
@@ -559,18 +575,18 @@ gpiProcessRecvBuddyList(
   const char * input
 )
 {
-    int i=0, j=0;
+    int i=0;
+    unsigned int j=0;
     int num = 0;
     int index = 0;
     char c;
-    char *str = NULL;
+    const char *str = NULL;
     char buffer[512];
     GPIProfile * profile;
     GPProfile profileid;
     GPIConnection * iconnection = (GPIConnection*)*connection;
 
     // Check for an error.
-    //////////////////////
     if(gpiCheckForError(connection, input, GPITrue))
         return GP_SERVER_ERROR;
 
@@ -583,14 +599,12 @@ gpiProcessRecvBuddyList(
         CallbackFatalError(connection, GP_NETWORK_ERROR, GP_PARSE, "Unexpected data was received from the server.");
     num = atoi(buffer);
 
-    // Check to make sure list is there 
-    ///////////////////////////////////
+    // Check to make sure list is there.
     str = strstr(input, "\\list\\");
     if (str == NULL)
         CallbackFatalError(connection, GP_NETWORK_ERROR, GP_PARSE, "Unexpected data was received from the server.");
 
-    // Then increment index to get ready for parsing
-    ////////////////////////////////////////////////
+    // Then increment index to get ready for parsing.
     str += 6;
     index += 6;
 
@@ -598,8 +612,7 @@ gpiProcessRecvBuddyList(
     {     
         if (i==0)
         {
-            // Manually grab first profile in list - comma delimiter
-            ////////////////////////////////////////////////////////
+            // Manually grab first profile in list - comma delimiter.
             for(j=0 ; (j < sizeof(buffer)) && ((c = str[j]) != '\0') && (c != ',') ; j++)
             {
                 buffer[j] = c;
@@ -616,15 +629,13 @@ gpiProcessRecvBuddyList(
         profileid = atoi(buffer);
 
         // Get the profile, adding if needed.
-        /////////////////////////////////////
         profile = gpiProfileListAdd(connection, profileid);
         if(!profile)
             Error(connection, GP_MEMORY_ERROR, "Out of memory.");
 
-        // Mark as offline buddy for now until we get the real status
-        /////////////////////////////////////////////////////////////
+        // Mark as offline buddy for now until we get the real status.
 #ifdef GP_NEW_STATUS_INFO
-        // Use new status info as placeholder
+        // Use new status info as placeholder.
         profile->buddyStatusInfo = (GPIBuddyStatusInfo *)gsimalloc(sizeof(GPIBuddyStatusInfo));
         if(!profile->buddyStatusInfo)
             Error(connection, GP_MEMORY_ERROR, "Out of memory.");
@@ -637,18 +648,54 @@ gpiProcessRecvBuddyList(
         profile->buddyStatusInfo->buddyIndex = iconnection->profileList.numBuddies++;
         profile->buddyStatusInfo->statusState = GP_OFFLINE; 
 #else
-        // Use buddy status as placeholder
+        // Use buddy status as placeholder.
         profile->buddyStatus = (GPIBuddyStatus *)gsimalloc(sizeof(GPIBuddyStatus));
         if(!profile->buddyStatus)
             Error(connection, GP_MEMORY_ERROR, "Out of memory.");
         memset(profile->buddyStatus, 0, sizeof(GPIBuddyStatus));
         profile->buddyStatus->buddyIndex = iconnection->profileList.numBuddies++;
         profile->buddyStatus->status = GP_OFFLINE; 
+
 #endif
     }
 
     return GP_NO_ERROR;
 }
+
+GPResult gpiProcessRecvAddBuddyResponse(GPConnection *connection, 
+										const char *input)
+{
+	char buffer[128];
+	int newProfile; // the profile that we're about to add.
+	GPIConnection * iconnection = (GPIConnection*)*connection;
+	GPIProfile *newProfileInfo;
+	// Check for an error.
+	//////////////////////
+	if(gpiCheckForError(connection, input, GPIFalse))
+	{
+		// Call the callbacks.
+		//////////////////////
+		CallbackError(connection, GP_SERVER_ERROR, iconnection->errorCode, iconnection->errorString);
+	}
+
+	// We don't need to make these fatal errors since they are for np buddy sync
+	if(!gpiValueForKey(input, "\\newprofileid\\", buffer, sizeof(buffer)))
+		CallbackError(connection, GP_NETWORK_ERROR, GP_PARSE, "Unexpected data was received from the server.");
+	
+	newProfile = atoi(buffer);
+	if (!gpiGetProfile(connection, newProfile, &newProfileInfo))
+		CallbackError(connection, GP_MISC_ERROR, GP_PARSE, "There was an error looking for a profile.");
+
+	if(!gpiValueForKey(input, "\\confirmation\\", buffer, sizeof(buffer)))
+		CallbackError(connection, GP_NETWORK_ERROR, GP_PARSE, "Unexpected data was received from the server.");
+	
+	freeclear(newProfileInfo->authSig);
+	newProfileInfo->authSig = goastrdup(buffer);
+	newProfileInfo->requestCount++;
+
+	return gpiSendAuthBuddyRequest(connection, newProfileInfo, GPITrue);
+}
+
 
 GPResult
 gpiSendServerBuddyMessage(
@@ -662,11 +709,9 @@ gpiSendServerBuddyMessage(
 	GPIConnection * iconnection = (GPIConnection*)*connection;
 
 	// Copy the message into an internal buffer.
-	////////////////////////////////////////////
 	strzcpy(buffer, message, sizeof(buffer));
 
 	// Setup the message.
-	/////////////////////
 	gpiAppendStringToBuffer(connection, &iconnection->outputBuffer, "\\bm\\");
 	gpiAppendIntToBuffer(connection, &iconnection->outputBuffer, type);
 	gpiAppendStringToBuffer(connection, &iconnection->outputBuffer, "\\sesskey\\");
@@ -697,7 +742,6 @@ gpiSendBuddyMessage(
 	if(!peer)
 	{
 		// Check if we should send this through the server.
-		////////////////////////////////////////////////////
 		if(!gpiGetProfile(connection, profileid, &profile) ||
 		   (!profile->buddyStatusInfo || !profile->buddyStatusInfo->buddyPort))
 		{
@@ -707,17 +751,14 @@ gpiSendBuddyMessage(
 		}
 
 		// Create a new peer connection for this message.
-		/////////////////////////////////////////////////
 		peer = gpiAddPeer(connection, profileid, GPITrue);
 		if(!peer)
 			return GP_MEMORY_ERROR;
 
 		// Check if we need a sig.
-		//////////////////////////
 		if(!profile->peerSig)
 		{
 			// Get the sig.
-			///////////////
 			CHECK_RESULT(gpiPeerGetSig(connection, peer));
 		}
 		else
@@ -731,12 +772,12 @@ gpiSendBuddyMessage(
 	{
 		if (gpiGetProfile(connection, profileid, &profile))
 		{
-			// clear the buddy port to prevent future messages from 
-			// being sent via UDP layer
+			// Clear the buddy port to prevent future messages from being sent
+			// via UDP layer.
 			if (profile->buddyStatusInfo)
 				profile->buddyStatusInfo->buddyPort = 0;
 
-			// send the message through the server
+			// Send the message through the server.
 			if (sendOption == GP_DONT_ROUTE)
 				return GP_NETWORK_ERROR;
 			if (type < 100)
@@ -749,7 +790,6 @@ gpiSendBuddyMessage(
 		gpiPeerAddOp(peer, peerOp);
 	}
 	// Copy the message.
-	////////////////////
 	CHECK_RESULT(gpiPeerAddMessage(connection, peer, type, message));
 
 	return GP_NO_ERROR;
@@ -759,11 +799,10 @@ GPResult gpiBuddyHandleKeyRequest(GPConnection *connection, GPIPeer *peer)
 {
 	char *message;
 	
-	// get all the keys and put them in the message part of bm 
-	//////////////////////////////////////////////////////////
+	// Get all the keys and put them in the message part of bm.
 	CHECK_RESULT(gpiSaveKeysToBuffer(connection, &message));
 	
-	// Done in case we haven't set any keys
+	// Done in case we haven't set any keys.
 	if (message == NULL)
 		message = "";
 	
@@ -778,13 +817,12 @@ GPResult gpiBuddyHandleKeyReply(GPConnection *connection, GPIPeer *peer, char *b
 {
 	GPIProfile *pProfile;
 		
-	// Get the profile object to store the keys internally
-	//////////////////////////////////////////////////////
+	// Get the profile object to store the keys internally.
 	
 	if(!gpiGetProfile(connection, peer->profile, &pProfile))
 		Error(connection, GP_PARAMETER_ERROR, "Invalid profile.");
 	
-	// calculate the B64Decoded string len
+	// Calculate the B64Decoded string len.
 	if (strcmp(buffer, "") == 0)
 	{
 		GPIPeerOp *anIterator;
@@ -825,10 +863,10 @@ GPResult gpiBuddyHandleKeyReply(GPConnection *connection, GPIPeer *peer, char *b
 		GPIPeerOp *anIterator;
 		char *checkKey = NULL;
 
-		// start by getting the number of keys 
+		// Start by getting the number of keys.
 		gpiReadKeyAndValue(connection, buffer, &index,  keyName, keyVal);
 		
-		// do not continue further if the header is missing
+		// Do not continue further if the header is missing.
 		if (strcmp(keyName, "keys") != 0)
 			CallbackError(connection, GP_NETWORK_ERROR, GP_PARSE, "Error reading keys reply message");
 		
@@ -836,29 +874,29 @@ GPResult gpiBuddyHandleKeyReply(GPConnection *connection, GPIPeer *peer, char *b
 
 		if (numKeys == 0)
 		{
-			GPIPeerOp *anIterator;
+			GPIPeerOp *anIterator2;
 			
-			for (anIterator = peer->peerOpQueue.first; anIterator != NULL; anIterator = anIterator->next)
-				if (anIterator->type == GPI_BM_KEYS_REQUEST)
+			for (anIterator2 = peer->peerOpQueue.first; anIterator2 != NULL; anIterator2 = anIterator2->next)
+				if (anIterator2->type == GPI_BM_KEYS_REQUEST)
 					break;
 
-			if (!anIterator)
+			if (!anIterator2)
 			{
 				return GP_NO_ERROR;
 			}
-			else if (anIterator->type == GPI_BM_KEYS_REQUEST && anIterator->callback)
+			else if (anIterator2->type == GPI_BM_KEYS_REQUEST && anIterator2->callback)
 			{
 				GPGetBuddyStatusInfoKeysArg *arg = (GPGetBuddyStatusInfoKeysArg *)gsimalloc(sizeof(GPGetBuddyStatusInfoKeysArg));
 				GPICallback callback;
-				callback.callback = anIterator->callback;
-				callback.param = anIterator->userData;
+				callback.callback = anIterator2->callback;
+				callback.param = anIterator2->userData;
 
 				arg->keys = NULL;
 				arg->numKeys = 0;
 				arg->values = NULL;
 				arg->profile = peer->profile;
 				gpiAddCallback(connection, callback, arg, NULL, 0);
-				gpiPeerRemoveOp(peer, anIterator);
+				gpiPeerRemoveOp(peer, anIterator2);
 			}
 		}
 		else
@@ -874,8 +912,8 @@ GPResult gpiBuddyHandleKeyReply(GPConnection *connection, GPIPeer *peer, char *b
 				B64Decode(keyVal, decodeVal, (int)strlen(keyVal), &decodedLen, 2);
 				decodeVal[decodedLen] = '\0';
 	#ifdef GSI_UNICODE
-				keys[i] = UTF8ToUCS2StringAlloc(decodeKey);
-				values[i]= UTF8ToUCS2StringAlloc(decodeVal);
+				keys[i] = UTF8ToUCSStringAlloc(decodeKey);
+				values[i]= UTF8ToUCSStringAlloc(decodeVal);
 	#else
 				keys[i] = goastrdup(decodeKey);
 				values[i] = goastrdup(decodeVal);
@@ -908,7 +946,7 @@ GPResult gpiBuddyHandleKeyReply(GPConnection *connection, GPIPeer *peer, char *b
 				callback.callback = anIterator->callback;
 				callback.param = anIterator->userData;
 				
-				// allocate a key array that points to each extended info key for that player
+				// Allocate a key array that points to each extended info key for that player.
 				arg->numKeys = numKeys;
 
 				arg->keys = keys;
@@ -934,21 +972,17 @@ GPResult gpiAuthBuddyRequest
 	GPIConnection * iconnection = (GPIConnection*)*connection;
 
 	// Get the profile object.
-	//////////////////////////
 	if(!gpiGetProfile(connection, profile, &pProfile))
 		Error(connection, GP_PARAMETER_ERROR, "Invalid profile.");
 
 	// Check for a valid sig.
-	/////////////////////////
 	if(!pProfile->authSig)
 		Error(connection, GP_PARAMETER_ERROR, "Invalid profile.");
 
 	// Send the request.
-	////////////////////
-	CHECK_RESULT(gpiSendAuthBuddyRequest(connection, pProfile));
+	CHECK_RESULT(gpiSendAuthBuddyRequest(connection, pProfile, GPIFalse));
 
 	// freeclear the sig if no more requests.
-	////////////////////////////////////
 	pProfile->requestCount--;
 	if(!iconnection->infoCaching && (pProfile->requestCount <= 0))
 	{
@@ -968,7 +1002,9 @@ gpiFixBuddyIndices(
 )
 {
 #ifndef _PS2
-	int baseIndex = (int)(unsigned long)data;
+	int baseIndex = (int)(intptr_t)data;
+
+	GS_ASSERT((intptr_t)data <= INT_MAX);
 #else
 	int baseIndex = (int)data;
 #endif
@@ -982,11 +1018,9 @@ gpiFixBuddyIndices(
 	return GPITrue;
 }
 
-GPResult
-gpiDeleteBuddy(
-  GPConnection * connection,
-  GPProfile profile,
-  GPIBool sendServerRequest
+GPResult gpiDeleteBuddy(GPConnection * connection,
+						GPProfile profile,
+						GPIBool sendServerRequest
 )
 {
 	GPIProfile * pProfile;
@@ -994,18 +1028,15 @@ gpiDeleteBuddy(
 	int index;
 
 	// Get the profile object.
-	//////////////////////////
 	if(!gpiGetProfile(connection, profile, &pProfile))
 		Error(connection, GP_PARAMETER_ERROR, "Invalid profile.");
 
 	// Check that this is a buddy.
-	//////////////////////////////
 	// Removed - 092404 BED - User could be a buddy even though we don't have the status
 	//if(!pProfile->buddyStatus)
 	//	Error(connection, GP_PARAMETER_ERROR, "Profile not a buddy.");
 
 	// Send the request.
-	////////////////////
 	if (GPITrue == sendServerRequest)
 	{
 		gpiAppendStringToBuffer(connection, &iconnection->outputBuffer, "\\delbuddy\\");
@@ -1017,20 +1048,19 @@ gpiDeleteBuddy(
 	}
 
 	// Need to fix up the buddy indexes.
-	////////////////////////////////////
 	if (pProfile->buddyStatus)
 	{
 		index = pProfile->buddyStatus->buddyIndex;
-		assert(index >= 0);
+		GS_ASSERT(index >= 0);
 		freeclear(pProfile->buddyStatus->statusString);
 		freeclear(pProfile->buddyStatus->locationString);
 		freeclear(pProfile->buddyStatus);
 		if(gpiCanFreeProfile(pProfile))
 			gpiRemoveProfile(connection, pProfile);
 		iconnection->profileList.numBuddies--;
-		assert(iconnection->profileList.numBuddies >= 0);
+		GS_ASSERT(iconnection->profileList.numBuddies >= 0);
 #ifndef _PS2
-		gpiProfileMap(connection, gpiFixBuddyIndices, (void *)(unsigned long)index);
+		gpiProfileMap(connection, gpiFixBuddyIndices, (void *)(intptr_t)index);
 #else
 		gpiProfileMap(connection, gpiFixBuddyIndices, (void *)index);
 #endif
@@ -1038,27 +1068,76 @@ gpiDeleteBuddy(
 	if (pProfile->buddyStatusInfo)
 	{
 		index = pProfile->buddyStatusInfo->buddyIndex;
-		assert(index >= 0);
+		GS_ASSERT(index >= 0);
 		freeclear(pProfile->buddyStatusInfo->richStatus);
 		freeclear(pProfile->buddyStatusInfo->gameType);
 		freeclear(pProfile->buddyStatusInfo->gameVariant);
 		freeclear(pProfile->buddyStatusInfo->gameMapName);
-		freeclear(pProfile->buddyStatusInfo);
 		if (pProfile->buddyStatusInfo->extendedInfoKeys)
 		{
 			ArrayFree(pProfile->buddyStatusInfo->extendedInfoKeys);
 			pProfile->buddyStatusInfo->extendedInfoKeys = NULL;
 		}
+		freeclear(pProfile->buddyStatusInfo);
 
-		if(gpiCanFreeProfile(pProfile))
-			gpiRemoveProfile(connection, pProfile);
+//do not remove the deleted buddy from the list anymore
+// 		if(gpiCanFreeProfile(pProfile))
+//  			gpiRemoveProfile(connection, pProfile);
 		iconnection->profileList.numBuddies--;
-		assert(iconnection->profileList.numBuddies >= 0);
+		GS_ASSERT(iconnection->profileList.numBuddies >= 0);
 #ifndef _PS2
-		gpiProfileMap(connection, gpiFixBuddyIndices, (void *)(unsigned long)index);
+		gpiProfileMap(connection, gpiFixBuddyIndices, (void *)(intptr_t)index);
 #else
 		gpiProfileMap(connection, gpiFixBuddyIndices, (void *)index);
 #endif
 	}
 	return GP_NO_ERROR;
+}
+
+GPResult
+gpiBuddyDeletedLocally
+(
+ GPConnection  *connection,
+ int			id,
+ gsi_bool		isDeleted
+ )
+{
+	// This function modifies the profile.deletedLocally flag
+	// for tracking a list buddies deleted for a session
+	//////////////////////////////////////////////////////////
+	GPIProfile * pProfile;
+
+	assert(id > 0);
+
+	if(id <= 0)
+	{
+		Error(connection, GP_PARAMETER_ERROR, "Invalid profile.");
+	}
+
+	// Check if this id is already in the list.
+	///////////////////////////////////////////
+	if(gpiGetProfile(connection, (GPProfile)id, &pProfile))
+	{
+		pProfile->deletedLocally = isDeleted;
+	}
+	return GP_NO_ERROR;
+}
+
+void gpiRevokeBuddyAuthorization(GPConnection * connection,
+							GPProfile profile)
+{
+	GPIConnection * iconnection = (GPIConnection*)*connection;
+	GS_ASSERT(iconnection);
+	if (iconnection == NULL)
+		return;
+
+	// Send the invite.
+	///////////////////
+	gpiAppendStringToBuffer(connection, &iconnection->outputBuffer, "\\revoke\\");
+	gpiAppendStringToBuffer(connection, &iconnection->outputBuffer, "\\sesskey\\");
+	gpiAppendIntToBuffer(connection, &iconnection->outputBuffer, iconnection->sessKey);
+	gpiAppendStringToBuffer(connection, &iconnection->outputBuffer, "\\profileid\\");
+	gpiAppendIntToBuffer(connection, &iconnection->outputBuffer, profile);
+	gpiAppendStringToBuffer(connection, &iconnection->outputBuffer, "\\final\\");
+
 }

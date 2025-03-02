@@ -1,33 +1,26 @@
-/*
-gpiProfile.h
-GameSpy Presence SDK 
-Dan "Mr. Pants" Schoenblum
-
-Copyright 1999-2007 GameSpy Industries, Inc
-
-devsupport@gamespy.com
-
-***********************************************************************
-Please see the GameSpy Presence SDK documentation for more information
-**********************************************************************/
+///////////////////////////////////////////////////////////////////////////////
+// File:	gpiProfile.h
+// SDK:		GameSpy Presence and Messaging SDK
+//
+// Copyright (c) 2012 GameSpy Technology & IGN Entertainment, Inc. All rights
+// reserved. This software is made available only pursuant to certain license
+// terms offered by IGN or its subsidiary GameSpy Industries, Inc. Unlicensed
+// use or use in a manner not expressly authorized by IGN or GameSpy Technology
+// is prohibited.
 
 #ifndef _GPIPROFILE_H_
 #define _GPIPROFILE_H_
 
 //INCLUDES
-//////////
 #include "gpi.h"
 
 //DEFINES
-/////////
 #define GPI_SIG_LEN      33
 
 //TYPES
-///////
 // The status for a buddy profile.
-//////////////////////////////////
 
-// New Status Info
+// New Status Info.
 typedef struct _GPIBuddyStatusInfo 
 {
 	int buddyIndex;
@@ -45,11 +38,11 @@ typedef struct _GPIBuddyStatusInfo
 	unsigned short hostPort;
 	GPEnum quietModeFlags;
 	int productId;
-	// New Status Info extended info Keys
+	// New Status Info extended info Keys.
 	DArray extendedInfoKeys;
 } GPIBuddyStatusInfo;
 
-// Old status 
+// Old status. 
 typedef struct
 {
 	int buddyIndex;
@@ -62,7 +55,6 @@ typedef struct
 } GPIBuddyStatus;
 
 // Profile data.
-////////////////
 typedef struct GPIProfile
 {
 	int profileId;
@@ -76,10 +68,10 @@ typedef struct GPIProfile
     gsi_bool blocked;
     int blockIndex;
     gsi_bool buddyOrBlockCache;
+	gsi_bool deletedLocally;
 } GPIProfile;
 
 // A list of profiles.
-//////////////////////
 typedef struct
 {
 	HashTable profileTable;
@@ -89,7 +81,6 @@ typedef struct
 } GPIProfileList;
 
 //FUNCTIONS
-///////////
 GPIBool
 gpiInitProfiles(
   GPConnection * connection
@@ -168,7 +159,7 @@ gpiFindProfileByUser(
   GPIProfile ** profile
 );
 
-// return false to stop the mapping
+// return false to stop the mapping.
 typedef GPIBool
 (* gpiProfileMapFunc)(
   GPConnection * connection,

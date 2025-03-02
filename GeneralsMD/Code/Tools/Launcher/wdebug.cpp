@@ -141,3 +141,30 @@ ostream *MsgManager::errorStream(void)
 {
   return(error_ostream);
 }   
+
+// Define static member variables
+int MsgManager::debug_enabled = 0;
+int MsgManager::info_enabled = 0;
+int MsgManager::warn_enabled = 0;
+int MsgManager::error_enabled = 0;
+
+// Define the missing functions
+void MsgManager::enableDebug(int flag)
+{
+    debug_enabled = flag;
+}
+
+void MsgManager::enableInfo(int flag)
+{
+    info_enabled = flag;
+}
+
+void MsgManager::enableWarn(int flag)
+{
+    warn_enabled = flag;
+}
+
+void MsgManager::enableError(int flag)
+{
+    error_enabled = flag;
+}

@@ -1,27 +1,21 @@
-/*
-gpiPeer.h
-GameSpy Presence SDK 
-Dan "Mr. Pants" Schoenblum
-
-Copyright 1999-2007 GameSpy Industries, Inc
-
-devsupport@gamespy.com
-
-***********************************************************************
-Please see the GameSpy Presence SDK documentation for more information
-**********************************************************************/
+///////////////////////////////////////////////////////////////////////////////
+// File:	gpiPeer.h
+// SDK:		GameSpy Presence and Messaging SDK
+//
+// Copyright (c) 2012 GameSpy Technology & IGN Entertainment, Inc. All rights
+// reserved. This software is made available only pursuant to certain license
+// terms offered by IGN or its subsidiary GameSpy Industries, Inc. Unlicensed
+// use or use in a manner not expressly authorized by IGN or GameSpy Technology
+// is prohibited.
 
 #ifndef _GPIPEER_H_
 #define _GPIPEER_H_
 
 //INCLUDES
-//////////
 #include "gpi.h"
 
 //DEFINES
-/////////
 // Peer states.
-///////////////
 #define GPI_PEER_NOT_CONNECTED       100
 #define GPI_PEER_GETTING_SIG         101
 #define GPI_PEER_GOT_SIG             102
@@ -31,11 +25,9 @@ Please see the GameSpy Presence SDK documentation for more information
 #define GPI_PEER_DISCONNECTED        106
 
 // Timeout for a peer connection, in milliseconds.
-/////////////////////////////////////////////
 #define GPI_PEER_TIMEOUT               (10 * 1000)
 
-// Timeout for a peer operation, in milliseconds
-////////////////////////////////////////////
+// Timeout for a peer operation, in milliseconds.
 #define GPI_PEER_OP_TIMEOUT            60000
 
 typedef enum
@@ -48,9 +40,7 @@ typedef enum
 typedef struct GPITransferID_s * GPITransferID_st;
 
 //TYPES
-///////
 // A peer message.
-//////////////////
 typedef struct GPIMessage
 {
 	GPIBuffer buffer;
@@ -76,7 +66,6 @@ typedef struct _GPIPeerOpQueue
 } GPIPeerOpQueue;
 
 // A peer connection.
-/////////////////////
 typedef struct GPIPeer_s
 {
 	int state;
@@ -95,7 +84,6 @@ typedef struct GPIPeer_s
 } GPIPeer;
 
 //FUNCTIONS
-///////////
 GPResult
 gpiProcessPeers(
   GPConnection * connection
@@ -113,11 +101,11 @@ gpiPeerStartConnect(
   GPIPeer * peer
 );
 
-// NOTE: use this function when in a gp function
+// NOTE: use this function when in a gp function.
 GPIPeer * gpiGetPeerByProfile(const GPConnection * connection,
 							  int profileid);
 
-// NOTE: use this function only when in a UDP layer callback
+// NOTE: use this function only when in a UDP layer callback.
 GPIPeer *gpiGetPeerByAddr(const GPConnection *connection,
                           unsigned int ip,
                           unsigned short port);
@@ -183,4 +171,5 @@ void gpiPeerPingReplyCallback(unsigned int ip, unsigned short port, unsigned int
 void gpiPeerAddOp(GPIPeer *peer, GPIPeerOp *operation);
 void gpiPeerRemoveOp(GPIPeer *peer, GPIPeerOp *operation);
 void gpiCheckTimedOutPeerOperations(GPConnection * connection, GPIPeer * peer);
+
 #endif

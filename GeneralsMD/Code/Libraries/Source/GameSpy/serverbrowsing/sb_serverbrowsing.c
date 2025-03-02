@@ -1,3 +1,12 @@
+///////////////////////////////////////////////////////////////////////////////
+// File:	sb_serverbrowsing.c
+// SDK:		GameSpy Server Browsing SDK
+//
+// Copyright (c) IGN Entertainment, Inc.  All rights reserved.  
+// This software is made available only pursuant to certain license terms offered
+// by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed use or use in a 
+// manner not expressly authorized by IGN or GameSpy is prohibited.
+
 #include "sb_internal.h"
 #include "sb_ascii.h"
 #include "../natneg/natneg.h"
@@ -128,9 +137,9 @@ ServerBrowser ServerBrowserNewW(const unsigned short *queryForGamename, const un
 	char fromGameName_A[255];
 	char fromGameKey_A[255];
 
-	assert(queryForGamename != NULL);
-	assert(queryFromGamename != NULL);
-	assert(queryFromKey != NULL);
+	GS_ASSERT(queryForGamename != NULL);
+	GS_ASSERT(queryFromGamename != NULL);
+	GS_ASSERT(queryFromKey != NULL);
 
 	UCS2ToAsciiString(queryForGamename, forGameName_A);
 	UCS2ToAsciiString(queryFromGamename, fromGameName_A);
@@ -143,7 +152,11 @@ void ServerBrowserFree(ServerBrowser sb)
 {
 	SBServerListCleanup(&sb->list);
 	SBEngineCleanup(&sb->engine);
-    NNFreeNegotiateList();
+    
+	// Only free negotiator list if we used ACE
+	if(sb->ConnectCallback)
+		NNFreeNegotiateList();
+	
 	gsifree(sb);
 }
 
@@ -155,6 +168,13 @@ SBError ServerBrowserBeginUpdate2(ServerBrowser sb, SBBool async, SBBool disconn
 	int i;
 	int keylen;
 	SBError err;
+
+	if(numBasicFields > MAX_QUERY_KEYS) 
+	{
+		gsDebugFormat(GSIDebugCat_SB, GSIDebugType_Misc, GSIDebugLevel_WarmError,
+			"numBasicFields passed to ServerBrowserUpdate is too high!\r\n");
+		return sbe_paramerror;
+	}
 
 	sb->disconnectFlag = disconnectOnComplete;
 	//clear this out in case it was already set
@@ -302,40 +322,40 @@ static void NatNegCompletedCallback(NegotiateResult result, SOCKET gamesocket, s
 		sb->ConnectCallback(sb, sbcs_failed, INVALID_SOCKET, NULL, sb->instance);
 	}
 
-	sb->ConnectCallback = NULL;
-
 	GSI_UNUSED(remoteaddr);
 }
 
 SBError ServerBrowserConnectToServer(ServerBrowser sb, SBServer server, SBConnectToServerCallback callback)
 {
-	SBError sbError;
-	NegotiateError nnError;
-	int cookie;
+	return ServerBrowserConnectToServerWithSocket(sb, server, INVALID_SOCKET, callback);
+}
 
-	if((sb == NULL) || (server == NULL) || (callback == NULL))
-		return sbe_paramerror;
+SBError ServerBrowserConnectToServerWithSocket(ServerBrowser sb, SBServer server, SOCKET gamesocket, SBConnectToServerCallback callback)
+{
+    SBError sbError;
+    NegotiateError nnError;
+    int cookie;
 
-	if(sb->ConnectCallback != NULL)
-		return sbe_connecterror;
+    if((sb == NULL) || (server == NULL) || (callback == NULL))
+        return sbe_paramerror;
 
-	// for now, always do natneg
+    // for now, always do natneg
 
-	// send a cookie to the server
-	Util_RandSeed((unsigned long)current_time());
-	cookie = Util_RandInt(GSI_MIN_I32, GSI_MAX_I32);
-	sbError = ServerBrowserSendNatNegotiateCookieToServerA(sb, SBServerGetPublicAddress(server), SBServerGetPublicQueryPort(server), cookie);
-	if(sbError != sbe_noerror)
-		return sbError;
+    // send a cookie to the server
+    Util_RandSeed((unsigned long)current_time());
+    cookie = Util_RandInt(GSI_MIN_I32, GSI_MAX_I32);
+    sbError = ServerBrowserSendNatNegotiateCookieToServerA(sb, SBServerGetPublicAddress(server), SBServerGetPublicQueryPort(server), cookie);
+    if(sbError != sbe_noerror)
+        return sbError;
 
-	// start the nn
-	nnError = NNBeginNegotiation(cookie, 0, NatNegProgressCallback, NatNegCompletedCallback, sb);
-	if(nnError != ne_noerror)
-		return sbe_connecterror;
+    // start the nn
+    nnError = NNInternalBeginNegotiationWithSocket(gamesocket, cookie, 0, gsi_true, NatNegProgressCallback, NatNegCompletedCallback, sb);
+    if(nnError != ne_noerror)
+        return sbe_connecterror;
 
-	sb->ConnectCallback = callback;
+    sb->ConnectCallback = callback;
 
-	return sbe_noerror;
+    return sbe_noerror;
 }
 
 SBError ServerBrowserAuxUpdateIPA(ServerBrowser sb, const char *ip, unsigned short port, SBBool viaMaster, SBBool async, SBBool fullUpdate)
@@ -361,7 +381,8 @@ SBError ServerBrowserAuxUpdateIPA(ServerBrowser sb, const char *ip, unsigned sho
 			server = SBServerListNth(&sb->list, i);
 
 		// Don't overwrite the existing update, otherwise the response for the first update
-		// will be mistaken as the response for the second update.  (Which is bad if they have different update parameters.)
+		// will be mistaken as the response for the second update.  
+		// (Which is bad if they have different update parameters.)
 		if (server->state & (STATE_PENDINGBASICQUERY|STATE_PENDINGFULLQUERY|STATE_PENDINGICMPQUERY))
 			return sbe_duplicateupdateerror;
 		else
@@ -499,36 +520,29 @@ const char *ServerBrowserErrorDescA(ServerBrowser sb, SBError error)
 #ifdef GSI_UNICODE
 const unsigned short *ServerBrowserErrorDescW(ServerBrowser sb, SBError error)
 {
+	GSI_UNUSED(sb);
+
 	switch (error)
 	{
 	case sbe_noerror:
 		return L"None";
-		break;
 	case sbe_socketerror:
 		return L"Socket creation error";
-		break;
 	case sbe_dnserror:
 		return L"DNS lookup error";
-		break;
 	case sbe_connecterror:
 		return L"Connection failed";
-		break;
 	case sbe_dataerror:
 		return L"Data stream error";
-		break;
 	case sbe_allocerror:
 		return L"Memory allocation error";
-		break;
 	case sbe_paramerror:
 		return L"Function parameter error";
-		break;
 	case sbe_duplicateupdateerror:
 		return L"Duplicate update request error";
-		break;
 	}
 	return L"";
-	
-	GSI_UNUSED(sb);
+
 }
 #endif
 
@@ -645,12 +659,12 @@ void ServerBrowserLANSetLocalAddr(ServerBrowser sb, const char* theAddr)
 
 /* SBServerGetConnectionInfo
 ----------------
-Check if Nat Negotiation is requires, based off whether it is a lan game, public ip present and several other facts. 
+Check if NAT Negotiation is requires, based off whether it is a lan game, public ip present and several other facts. 
 Returns an IP string to use for NatNeg, or direct connect if possible
 Work for subsequent connection to this server, One of three results will occur
-i) Lan game, connect using ipstring
+i) LAN game, connect using ipstring
 2) Internet game, connect using ipstring
-3) nat traversal required, perform nat negotiation using Nat SDK and this ipstring before connecting. 
+3) NAT traversal required, perform nat negotiation using Nat SDK and this ipstring before connecting. 
 
 return sb_true if further processing is required... i.e. NAT.   sb_false if not.
 fills an IP string
@@ -669,13 +683,13 @@ SBBool SBServerGetConnectionInfo(ServerBrowser gSB, SBServer server, gsi_u16 Por
 	if ((SBServerDirectConnect(server) == SBTrue )&& (SBServerHasPrivateAddress(server) == SBFalse))
 	{
             //can directly connect to public IP, no negotiation required
-			sprintf(ipstring,"%s:%d", SBServerGetPrivateAddress(server),	PortToConnectTo );
+			sprintf(ipstring,"%s:%d", SBServerGetPublicAddress(server),	SBServerGetPublicQueryPort(server) );
 	}
 	else
 	{
-		//Nat Negotiation required
+		// NAT Negotiation required
 		natneg = SBTrue;
-		sprintf(ipstring,"%s:%d", SBServerGetPublicAddress(server),	SBServerGetPublicQueryPort	(server) );
+		sprintf(ipstring,"%s:%d", SBServerGetPublicAddress(server),	SBServerGetPublicQueryPort(server) );
 	}
 	return natneg;
 }

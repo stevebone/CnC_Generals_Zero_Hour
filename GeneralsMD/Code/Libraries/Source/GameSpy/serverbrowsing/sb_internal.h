@@ -1,3 +1,12 @@
+///////////////////////////////////////////////////////////////////////////////
+// File:	sb_internal.h
+// SDK:		GameSpy Server Browsing SDK
+//
+// Copyright (c) IGN Entertainment, Inc.  All rights reserved.  
+// This software is made available only pursuant to certain license terms offered
+// by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed use or use in a 
+// manner not expressly authorized by IGN or GameSpy is prohibited.
+
 #ifndef _SB_INTERNAL_H_
 #define _SB_INTERNAL_H_
 
@@ -5,8 +14,8 @@
 #include "../common/gsCommon.h"
 #include "../common/gsAvailable.h"
 
-#include "../darray.h"
-#include "../hashtable.h"
+#include "../common/darray.h"
+#include "../common/hashtable.h"
 
 #include "sb_serverbrowsing.h"
 #include "../qr2/qr2regkeys.h"
@@ -116,7 +125,7 @@ typedef enum {sl_lanbrowse, sl_disconnected, sl_connected, sl_mainlist} SBServer
 #define SEARCH_ANY_SUBSTRING	8
 
 //max number of keys for the basic key list
-#define MAX_QUERY_KEYS 20
+#define MAX_QUERY_KEYS 40
 
 //how long to search on the LAN
 #define SL_LAN_SEARCH_TIME 2000
@@ -416,9 +425,6 @@ void SBReleaseStr(SBServerList *slist,const char *str);
 HashTable SBRefStrHash(SBServerList *slist);
 void SBRefStrHashCleanup(SBServerList *slist);
 
-extern char *SBOverrideMasterServer;
-
-
 //query engine functions
 void SBQueryEngineInit(SBQueryEngine *engine, int maxupdates, int queryversion, SBBool lanBrowse, SBEngineCallbackFn callback, void *instance);
 void SBQueryEngineUpdateServer(SBQueryEngine *engine, SBServer server, int addfront, int querytype, SBBool usequerychallenge);
@@ -436,7 +442,7 @@ void SBEngineHaltUpdates(SBQueryEngine *engine);
 SBError ServerBrowserBeginUpdate2(ServerBrowser sb, SBBool async, SBBool disconnectOnComplete, const unsigned char *basicFields, int numBasicFields, const char *serverFilter, int updateOptions, int maxServers);
 
 
-// Ascii versions of functions that should still be available in GSI_UNICODE mode
+// ASCII versions of functions that should still be available in GSI_UNICODE mode
 #ifdef GSI_UNICODE
 const char *SBServerGetStringValueA(SBServer server, const char *keyname, const char *def); // for peer SDK
 int SBServerGetIntValueA(SBServer server, const char *key, int idefault);

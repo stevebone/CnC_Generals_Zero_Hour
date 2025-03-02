@@ -1,11 +1,19 @@
 ///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
+// File:	gsCrypt.c
+// SDK:		GameSpy Common
+//
+// Copyright (c) 2012 GameSpy Technology & IGN Entertainment, Inc.  All rights 
+// reserved. This software is made available only pursuant to certain license 
+// terms offered by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed
+// use or use in a manner not expressly authorized by IGN or GameSpy Technology
+// is prohibited.
+// ------------------------------------
+// Based on PKCS #1 v2.1, RSA Laboratories June 14, 2002.
+// Please refer to gsCrypt.h for public interface functions.
+
 #include "gsCrypt.h"
 #include "gsLargeInt.h"
 #include "gsSHA1.h"
-
-// **Please refer to gsCrypt.h for public interface functions**
-
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -71,7 +79,7 @@
 				seedPlusIter[GS_CRYPT_RSA_DATABLOCKSIZE+1] = 0x00;
 				seedPlusIter[GS_CRYPT_RSA_DATABLOCKSIZE+2] = 0x00;
 				seedPlusIter[GS_CRYPT_RSA_DATABLOCKSIZE+3] = (gsi_u8)(i/GS_CRYPT_HASHSIZE);
-				MD5Digest(seedPlusIter, seedLen+sizeof(gsi_u32), hashHexStr);
+				GSMD5Digest(seedPlusIter, seedLen+sizeof(gsi_u32), hashHexStr);
 
 				// convert from hexstr to integer form
 				for(k=0; k<seedLen+sizeof(gsi_u32))
@@ -84,12 +92,12 @@
 			#elif (GS_CRYPT_HASHSIZE==GS_CRYPT_SHA1_HASHSIZE)
 			{
 				gsi_u8 counter[4] = { 0x00,0x00,0x00,0x00 };
-				SHA1Context sha;
+				GSSHA1Context sha;
 				counter[3] = (gsi_u8)(i/GS_CRYPT_HASHSIZE); // ensure little endian int
-				SHA1Reset(&sha);
-				SHA1Input(&sha, (const unsigned char*)seed, seedLen);
-				SHA1Input(&sha, counter, 4);
-				SHA1Result(&sha, hashValue);
+				GSSHA1Reset(&sha);
+				GSSHA1Input(&sha, (const unsigned char*)seed, seedLen);
+				GSSHA1Input(&sha, counter, 4);
+				GSSHA1Result(&sha, hashValue);
 			}
 			#endif
 

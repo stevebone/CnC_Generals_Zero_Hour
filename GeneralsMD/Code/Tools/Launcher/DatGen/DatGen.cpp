@@ -19,6 +19,9 @@
 // DatGen.cpp : Defines the entry point for the application.
 //
 
+#include <cstdio>
+#include <cstring>
+#include <Debug\DebugPrint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
@@ -32,24 +35,36 @@ void doIt(void)
 {
 	printf("Dat Generator Tool\n\n");
 
-	// Get the passkey input
+	// Get the passkey input safely
 	char passKey[128];
 	printf("Enter pass key: ");
-	gets(passKey);
+	fgets(passKey, sizeof(passKey), stdin);
+	passKey[strcspn(passKey, "\n")] = '\0';  // Remove trailing newline
 
-	// Get the data input
+	// Get the data input safely
 	char dataStr[1024];
 	printf("Enter the data to encode: ");
-	gets(dataStr);
+	fgets(dataStr, sizeof(dataStr), stdin);
+	dataStr[strcspn(dataStr, "\n")] = '\0';  // Remove trailing newline
 
-	// Get the output file
+	printf("\nPasskey: %s\n", passKey);
+	printf("Data: %s\n", dataStr);
+
 	char outputFile[MAX_PATH];
 	printf("Enter output file [Generals.dat]: ");
-	char* result = gets(outputFile);
-	if (result == NULL || strlen(outputFile) == 0)
+
+	if (fgets(outputFile, sizeof(outputFile), stdin) == NULL || outputFile[0] == '\n')
 	{
+		// Use default filename if input is empty
 		strcpy(outputFile, "Generals.dat");
 	}
+	else
+	{
+		// Remove trailing newline
+		outputFile[strcspn(outputFile, "\n")] = '\0';
+	}
+
+	printf("Output file: %s\n", outputFile);
 
 	// Time to crunch the data
 	printf("Encoding data...\n");

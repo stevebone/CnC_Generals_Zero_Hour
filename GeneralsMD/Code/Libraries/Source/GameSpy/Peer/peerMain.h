@@ -1,12 +1,11 @@
-/*
-GameSpy Peer SDK 
-Dan "Mr. Pants" Schoenblum
-dan@gamespy.com
-
-Copyright 1999-2007 GameSpy Industries, Inc
-
-devsupport@gamespy.com
-*/
+///////////////////////////////////////////////////////////////////////////////
+// File:	peerMain.h
+// SDK:		GameSpy Peer SDK
+//
+// Copyright (c) IGN Entertainment, Inc.  All rights reserved.  
+// This software is made available only pursuant to certain license terms offered
+// by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed use or use in a 
+// manner not expressly authorized by IGN or GameSpy is prohibited.
 
 #ifndef _PEERMAIN_H_
 #define _PEERMAIN_H_
@@ -15,8 +14,8 @@ devsupport@gamespy.com
 ** INCLUDES **
 *************/
 #include "peer.h"
-#include "../darray.h"
-#include "../hashtable.h"
+#include "../common/darray.h"
+#include "../common/hashtable.h"
 #include "../pinger/pinger.h"
 #include "../Chat/chatASCII.h"
 
@@ -49,12 +48,12 @@ piConnection * connection;  // This is to fool Visual Assist.
 #endif
 
 #define PEER_CONNECTION           piConnection * connection;\
-                                  assert(peer);\
+                                  GS_ASSERT(peer);\
                                   connection = (piConnection *)peer;\
 								  GSI_UNUSED(connection);
 
-#define ASSERT_ROOMTYPE(type)     assert((type == TitleRoom) || (type == GroupRoom) || (type == StagingRoom))
-#define ASSERT_MESSAGETYPE(type)  assert((type == NormalMessage) || (type == ActionMessage) || (type == NoticeMessage))
+#define ASSERT_ROOMTYPE(type)     GS_ASSERT(((type) == TitleRoom) || ((type) == GroupRoom) || ((type) == StagingRoom))
+#define ASSERT_MESSAGETYPE(type)  GS_ASSERT(((type) == NormalMessage) || ((type) == ActionMessage) || ((type) == NoticeMessage))
 
 #define ROOM                      (connection->rooms[roomType])
 #define ROOM_W					  (connection->rooms_W[roomType])
@@ -66,9 +65,10 @@ piConnection * connection;  // This is to fool Visual Assist.
 #define ENTERING_ROOM             (connection->enteringRoom[roomType])
 
 #define strzcpy(dest, src, len)   { strncpy(dest, src, (len)); (dest)[(len) - 1] = '\0'; }
-#define strzcat(dest, src, len)   { strncat(dest, src, (len) - strlen(dest)); (dest)[(len) - 1] = '\0'; }
+#define strzcat(dest, src, len)   { strncat(dest, src, (len) - 1 - strlen(dest)); (dest)[(len) - 1] = '\0'; }
 
-#if defined(_PS3)
+// int not suitable for 64bit platforms, so if not ANSI use void*
+#if defined(_PS3) || defined(__STDC_VERSION__) || defined(_MSC_VER)
 #define PEERCBType void*       // Note: ANSI function pointers should int rather than void*
 #else
 #define PEERCBType int         // Note: ANSI function pointers should int rather than void*
@@ -204,6 +204,15 @@ typedef struct piConnection
 	char * autoMatchFilter;
 	PEERBool autoMatchSBFailed;
 	PEERBool autoMatchQRFailed;
+
+	unsigned int autoMatchDelay;
+	PEERAutoMatchStatus autoMatchNextStatus;
+	gsi_time amStartTime;
+	gsi_time peerReadyTime;
+	gsi_time joinRoomTime;
+	int hostInRoom;
+	PEERBool waitingForHostFlag;
+	PEERBool amCustomSocket;
 
 	// Misc.
 	////////

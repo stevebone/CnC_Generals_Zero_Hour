@@ -1,25 +1,19 @@
-/*
-gpiSearch.h
-GameSpy Presence SDK 
-Dan "Mr. Pants" Schoenblum
-
-Copyright 1999-2007 GameSpy Industries, Inc
-
-devsupport@gamespy.com
-
-***********************************************************************
-Please see the GameSpy Presence SDK documentation for more information
-**********************************************************************/
+///////////////////////////////////////////////////////////////////////////////
+// File:	gpiSearch.h
+// SDK:		GameSpy Presence and Messaging SDK
+//
+// Copyright (c) IGN Entertainment, Inc.  All rights reserved.  
+// This software is made available only pursuant to certain license terms offered
+// by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed use or use in a 
+// manner not expressly authorized by IGN or GameSpy is prohibited.
 
 #ifndef _GPISEARCH_H_
 #define _GPISEARCH_H_
 
 //INCLUDES
-//////////
 #include "gpi.h"
 
 //TYPES
-///////
 #define GPI_SEARCH_PROFILE			    1
 #define GPI_SEARCH_IS_VALID             2
 #define GPI_SEARCH_NICKS                3
@@ -30,12 +24,12 @@ Please see the GameSpy Presence SDK documentation for more information
 #define GPI_SEARCH_SUGGEST_UNIQUE       8
 #define GPI_SEARCH_OTHERS_BUDDY_LIST    9
 #define GPI_SEARCH_PROFILE_UNIQUENICK  10
+#define GPI_SEARCH_PROFILE_BUDDYLIST   11
 
-// A timeout used to abort searches taking too long
+// A timeout used to abort searches taking too long.
 #define GPI_SEARCH_TIMEOUT 60000
 
 // Profile Search operation data.
-/////////////////////////////////
 typedef struct
 {
 	int type;
@@ -60,10 +54,11 @@ typedef struct
 	gsi_time searchStartTime;
 	int *revBuddyProfileIds;
 	int numOfRevBuddyProfiles;
+	GPProfile profile;
+	int maxResults;
 } GPISearchData;
 
 //FUNCTIONS
-///////////
 GPResult
 gpiProfileSearch(
   GPConnection * connection,
@@ -135,6 +130,15 @@ GPResult gpiNewUser(
   const char email[GP_EMAIL_LEN],
   const char password[GP_PASSWORD_LEN],
   const char cdkey[GP_CDKEY_LEN],
+  GPEnum blocking,
+  GPCallback callback,
+  void * param
+);
+
+GPResult gpiProfileBuddyList(
+  GPConnection * connection,
+  GPProfile profile,
+  int maxBuddies,
   GPEnum blocking,
   GPCallback callback,
   void * param

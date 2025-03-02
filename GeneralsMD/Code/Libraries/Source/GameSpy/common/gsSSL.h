@@ -1,10 +1,18 @@
 ///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
+// File:	gsSSL.h
+// SDK:		GameSpy Common
+//
+// Copyright (c) 2012 GameSpy Technology & IGN Entertainment, Inc.  All rights 
+// reserved. This software is made available only pursuant to certain license 
+// terms offered by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed
+// use or use in a manner not expressly authorized by IGN or GameSpy Technology
+// is prohibited.
+
 #ifndef __GSSSL_H__
 #define __GSSSL_H__
 
-#include "../darray.h"
-#include "../md5.h"
+#include "darray.h"
+#include "md5.h"
 #include "gsCrypt.h"
 #include "gsSHA1.h"
 #include "gsRC4.h"
@@ -14,7 +22,7 @@ extern "C"
 {
 #endif
 
-	// SSL common types and defines.  Used by HTTP SSL encryption engine
+// SSL common types and defines.  Used by HTTP SSL encryption engine
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -112,8 +120,8 @@ typedef struct gsSSL
 
 	// these are unused once the handshake is complete
 	//   todo: dynamically allocate or remove to free space
-	MD5_CTX finishHashMD5;
-	SHA1Context finishHashSHA1;
+	GSMD5_CTX finishHashMD5;
+	GSSHA1Context finishHashSHA1;
 	unsigned char serverRandom[32]; // server random for key generation, sent plain text
 	unsigned char clientRandom[32]; // client random for key generation, sent plain text
 	unsigned char premastersecret[GS_SSL_MASTERSECRET_LEN]; // client random for key generation, sent encrypted with serverpub

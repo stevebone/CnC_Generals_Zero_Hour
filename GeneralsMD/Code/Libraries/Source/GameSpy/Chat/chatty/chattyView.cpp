@@ -1,5 +1,13 @@
-// chattyView.cpp : implementation of the CChattyView class
+///////////////////////////////////////////////////////////////////////////////
+// File:	chattyView.cpp
+// SDK:		GameSpy Chat SDK
 //
+// Copyright (c) IGN Entertainment, Inc.  All rights reserved.  
+// This software is made available only pursuant to certain license terms offered
+// by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed use or use in a 
+// manner not expressly authorized by IGN or GameSpy is prohibited.
+// ------------------------------------
+// Implementation of the CChattyView class.
 
 #include "stdafx.h"
 #include "chatty.h"
@@ -116,7 +124,7 @@ int CChattyView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	return 0;
 }
 
-void CChattyView::OnTimer(UINT nIDEvent) 
+void CChattyView::OnTimer(UINT_PTR nIDEvent) 
 {
 	if(nIDEvent == 100)
 	{

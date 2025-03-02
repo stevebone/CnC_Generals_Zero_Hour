@@ -306,7 +306,7 @@ BOOL CMultiTrackDlg::SetupHosting()
 	{
 		// Use the development system.
 		//////////////////////////////
-		strcpy(StatsServerHostname, "sdkdev.gamespy.com");
+		strcpy(StatsServerHostname, "sdkdev." GSI_DOMAIN_NAME);
 
 		// Set the gamename and secret key.
 		///////////////////////////////////
@@ -443,11 +443,12 @@ void CMultiTrackDlg::UpdateRatingsDisplay()
 
 GHTTPBool PlayerRatingsPageCompleted
 (
-	GHTTPRequest request,
-	GHTTPResult result,
-	char * buffer,
-	__int64 bufferLen,
-	void * param
+	GHTTPRequest request,       // The request.
+	GHTTPResult result,         // The result (success or an error).
+	char* buffer,              // The file's bytes (only valid if ghttpGetFile[Ex] was used).
+	GHTTPByteCount bufferLen,   // The file's length.
+	char* headers,
+	void* param                // User-data.
 )
 {
 	if(result == GHTTPSuccess)
@@ -534,9 +535,9 @@ BOOL CMultiTrackDlg::SetupMatch()
 	}
 
 	CString url;
-	url.Format("http://sdkdev.gamespy.com/games/st_rank/web/playerratings.asp?pid=%d", m_loginDlg.m_profile);
+	url.Format(GSI_HTTP_PROTOCOL_URL "sdkdev." GSI_DOMAIN_NAME "games/st_rank/web/playerratings.asp?pid=%d", m_loginDlg.m_profile);
 	ghttpGet(url, GHTTPFalse, PlayerRatingsPageCompleted, (void *)TRUE);
-	url.Format("http://sdkdev.gamespy.com/games/st_rank/web/playerratings.asp?pid=%d", m_remoteProfile);
+	url.Format(GSI_HTTP_PROTOCOL_URL "sdkdev." GSI_DOMAIN_NAME "/games/st_rank/web/playerratings.asp?pid=%d", m_remoteProfile);
 	ghttpGet(url, GHTTPFalse, PlayerRatingsPageCompleted, (void *)FALSE);
 
 	return result;
@@ -713,7 +714,7 @@ void CMultiTrackDlg::UpdateStats()
 	UpdateRatingsDisplay();
 }
 
-void CMultiTrackDlg::OnTimer(UINT nIDEvent) 
+void CMultiTrackDlg::OnTimer(UINT_PTR nIDEvent) 
 {
 	char buffer[64];
 	int rcode;

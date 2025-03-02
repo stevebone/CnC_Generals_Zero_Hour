@@ -1,3 +1,13 @@
+///////////////////////////////////////////////////////////////////////////////
+// File:	Win32Common.c
+// SDK:		GameSpy Common
+//
+// Copyright (c) 2012 GameSpy Technology & IGN Entertainment, Inc.  All rights 
+// reserved. This software is made available only pursuant to certain license 
+// terms offered by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed
+// use or use in a manner not expressly authorized by IGN or GameSpy Technology
+// is prohibited.
+
 #include "../gsCommon.h"
 #include "../gsMemory.h"
 #include "../gsDebug.h"
@@ -24,10 +34,11 @@
 #endif
 
 #if (_MSC_VER <= 1300)
-	//extern added for vc6 compatability.
+	//extern added for vc6 compatibility.
 	extern void * __cdecl _aligned_malloc(size_t size, size_t boundary);
 	extern void __cdecl _aligned_free(void * memblock);
 #endif
+
 void *  gsiMemManagedInit()
 {
 // Init the GSI memory manager (optional - for limiting GSI mem usage)
@@ -36,11 +47,12 @@ void *  gsiMemManagedInit()
 	char *aMemoryPool = (char *)_aligned_malloc(aMemoryPoolSize,64);
 	if(aMemoryPool == NULL)
 	{
-		printf("Failed to create memory pool - aborting\r\n");
+		gsDebugFormat(GSIDebugCat_Common, GSIDebugType_Memory, GSIDebugLevel_HotError,
+			"Failed to create memory pool - aborting\r\n");
 		return NULL;
 	}
 	{
-		gsMemMgrCreate(gsMemMgrContext_Default, "Default",aMemoryPool, aMemoryPoolSize);	
+		gsMemMgrCreate(gsMemMgrContext_Default, "Default", aMemoryPool, aMemoryPoolSize);	
 	}
 	return aMemoryPool;
 #else
@@ -76,9 +88,8 @@ extern int test_main(int argc, char ** argp);
 // Common entry point
 int __cdecl main(int argc, char** argp)
 {
-	int		ret		= 0;
-	// set up memanager
-	void	*heap	= gsiMemManagedInit();
+	int ret = 0;
+	void *heap = NULL;
 
 	#ifdef GSI_COMMON_DEBUG
 		// Set up debugging
@@ -86,13 +97,12 @@ int __cdecl main(int argc, char** argp)
 		gsSetDebugLevel(GSIDebugCat_All, GSIDebugType_All,    GSIDebugLevel_Verbose);
 	#endif
 
+	// set up memanager
+	heap = gsiMemManagedInit();
+
 	ret = test_main(argc, argp);
 
 	gsiMemManagedClose(heap);
 
 	return ret;
 }
-
-
-
-

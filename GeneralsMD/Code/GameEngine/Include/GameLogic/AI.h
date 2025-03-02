@@ -31,6 +31,7 @@
 #ifndef _AI_H_
 #define _AI_H_
 
+#include "Common/AITypes.h"
 #include "Common/Snapshot.h"
 #include "Common/SubsystemInterface.h"
 #include "Common/GameMemory.h"
@@ -62,8 +63,6 @@ typedef VecObjectID::iterator VecObjectIDIt;
 
 typedef std::list<Object *> ListObjectPtr;
 typedef ListObjectPtr::iterator ListObjectPtrIt;
-
-#include "AITypes.h"
 
 enum 
 {
@@ -301,6 +300,8 @@ extern AI *TheAI;												///< the Artificial Intelligence singleton
 class Waypoint;
 class Team;
 class Weapon;
+
+#undef AI_PASSIVE
 
 // Note - written out in save/load xfer and .map files, don't change these numbers.  
 enum AttitudeType { AI_SLEEP = -2, AI_PASSIVE=-1, AI_NORMAL=0, AI_ALERT=1, AI_AGGRESSIVE=2, AI_INVALID=3 };		///< AI "attitude" behavior modifiers

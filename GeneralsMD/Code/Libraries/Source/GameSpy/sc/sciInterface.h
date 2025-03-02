@@ -1,5 +1,12 @@
 ///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
+// File:	sciInterface.h
+// SDK:		GameSpy ATLAS Competition SDK
+//
+// Copyright (c) IGN Entertainment, Inc.  All rights reserved.  
+// This software is made available only pursuant to certain license terms offered
+// by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed use or use in a 
+// manner not expressly authorized by IGN or GameSpy is prohibited.
+
 #ifndef __SCIINTERFACE_H__
 #define __SCIINTERFACE_H__
 
@@ -27,6 +34,7 @@ typedef struct
 	GSCoreMgr *   mSdkCore;
 	gsi_u8        mSessionId[SC_SESSION_GUID_SIZE];
 	gsi_u8        mConnectionId[SC_CONNECTION_GUID_SIZE];
+	//SCStatsPtr    mStats;
 } SCInterface;
 
 
@@ -39,7 +47,7 @@ void     sciInterfaceDestroy(SCInterface*  theInterface);
 void     sciInterfaceSetSessionId(SCInterface* theInterface, const char * theSessionId);
 void     sciInterfaceSetConnectionId(SCInterface* theInterface, const char * theConnectionId);
 
-
+gsi_u16  sciGetPlatformId(void);
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 #ifdef __cplusplus
@@ -49,4 +57,4 @@ void     sciInterfaceSetConnectionId(SCInterface* theInterface, const char * the
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
-#endif // __SCINTERFACE_H__
+#endif // __SCIINTERFACE_H__

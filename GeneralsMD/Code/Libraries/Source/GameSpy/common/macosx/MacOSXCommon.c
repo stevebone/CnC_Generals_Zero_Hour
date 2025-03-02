@@ -1,3 +1,9 @@
+// Copyright (c) 2012 GameSpy Technology & IGN Entertainment, Inc.  All rights 
+// reserved. This software is made available only pursuant to certain license 
+// terms offered by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed
+// use or use in a manner not expressly authorized by IGN or GameSpy Technology
+// is prohibited.
+
 #include "../gsCommon.h"
 #include "../gsMemory.h"
 #include "../gsDebug.h"
@@ -13,11 +19,6 @@ static void DebugCallback(GSIDebugCategory theCat, GSIDebugType theType,
 
 {
 	GSI_UNUSED(theLevel);
-	{
-		static char    string[256];
-		vsprintf(string, theTokenStr, theParamList); 			
-		printf(string);
-	}
 	printf("[%s][%s] ", 
 		   gGSIDebugCatStrings[theCat], 
 		   gGSIDebugTypeStrings[theType]);

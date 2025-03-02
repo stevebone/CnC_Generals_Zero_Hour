@@ -1,5 +1,12 @@
 ///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
+// File:	sakeRequest.c
+// SDK:		GameSpy Sake Persistent Storage SDK
+//
+// Copyright (c) IGN Entertainment, Inc.  All rights reserved.  
+// This software is made available only pursuant to certain license terms offered
+// by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed use or use in a 
+// manner not expressly authorized by IGN or GameSpy is prohibited.
+
 #include "sakeRequest.h"
 
 
@@ -13,7 +20,13 @@ const char * GSI_SAKE_SERVICE_NAMESPACES[GSI_SAKE_SERVICE_NAMESPACE_COUNT] =
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
-#define SAKEI_SOAP_URL_FORMAT   "http://%s.sake." GSI_DOMAIN_NAME "/SakeStorageServer/StorageServer.asmx"
+
+#ifdef UNISPY_FORCE_IP
+#define SAKEI_SOAP_URL_FORMAT   GSI_HTTP_PROTOCOL_URL "%s/SakeStorageServer/StorageServer.asmx"
+#else
+#define SAKEI_SOAP_URL_FORMAT   GSI_HTTP_PROTOCOL_URL "%s.sake." GSI_DOMAIN_NAME "/SakeStorageServer/StorageServer.asmx"
+#endif
+
 char sakeiSoapUrl[SAKE_MAX_URL_LENGTH] = "";
 
 
@@ -86,6 +99,8 @@ static SAKERequestResult SAKE_CALL sakeiCheckHttpResult(GHTTPResult httpResult)
 		return SAKERequestResult_SUCCESS;
 	case GHTTPOutOfMemory:
 		return SAKERequestResult_OUT_OF_MEMORY;
+	//case GHTTPRequestCancelled:
+	//    return SAKERequestResult_REQUEST_CANCELLED;
 	default:
 		return SAKERequestResult_CONNECTION_ERROR;
 	}
@@ -217,10 +232,19 @@ static SAKEStartRequestResult SAKE_CALL sakeiSetupRequest(SAKERequest request)
 	// store a utility pointer to the info
 	info = request->mInfo;
 
-	// check the input
-	result = info->mValidateInputFunc(request);
-	if(result != SAKEStartRequestResult_SUCCESS)
-		return result;
+    if ((info->mValidateInputFunc != NULL) && (request->mInput != NULL))
+    {
+	    // check the input
+	    result = info->mValidateInputFunc(request);
+	    if(result != SAKEStartRequestResult_SUCCESS)
+        {		
+            if(info->mFreeDataFunc)
+            {
+                    info->mFreeDataFunc(request);
+            }
+		    return result;
+        }
+    }
 
 	// create the xml request stream
 	request->mSoapRequest = gsXmlCreateStreamWriter(GSI_SAKE_SERVICE_NAMESPACES, GSI_SAKE_SERVICE_NAMESPACE_COUNT);
@@ -261,7 +285,11 @@ static void SAKE_CALL sakeiExecuteRequest(SAKERequest request)
 	if(sakeiSoapUrl[0] == '\0')
 	{
 		int rcode;
+#ifndef UNISPY_FORCE_IP
 		rcode = snprintf(sakeiSoapUrl, SAKE_MAX_URL_LENGTH, SAKEI_SOAP_URL_FORMAT, request->mSake->mGameName);
+#else
+		rcode = snprintf(sakeiSoapUrl, SAKE_MAX_URL_LENGTH, SAKEI_SOAP_URL_FORMAT, UNISPY_FORCE_IP);
+#endif
 		GS_ASSERT(rcode >= 0);
 		GSI_UNUSED(rcode);
 	}

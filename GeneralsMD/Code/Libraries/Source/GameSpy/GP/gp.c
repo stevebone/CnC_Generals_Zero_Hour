@@ -1,24 +1,19 @@
-/*
-gp.c
-GameSpy Presence SDK 
-Dan "Mr. Pants" Schoenblum
-
-Copyright 1999-2007 GameSpy Industries, Inc
-
-devsupport@gamespy.com
-
-***********************************************************************
-Please see the GameSpy Presence SDK documentation for more information
-**********************************************************************/
+///////////////////////////////////////////////////////////////////////////////
+// File:	gp.c
+// SDK:		GameSpy Presence and Messaging SDK
+//
+// Copyright (c) 2012 GameSpy Technology & IGN Entertainment, Inc. All rights
+// reserved. This software is made available only pursuant to certain license
+// terms offered by IGN or its subsidiary GameSpy Industries, Inc. Unlicensed
+// use or use in a manner not expressly authorized by IGN or GameSpy Technology
+// is prohibited.
 
 //INCLUDES
-//////////
 #include <stdlib.h>
 #include <string.h>
 #include "gpi.h"
 
 //FUNCTIONS
-///////////
 GPResult gpInitialize(
   GPConnection * connection,
   int productID,
@@ -27,12 +22,10 @@ GPResult gpInitialize(
 )
 {
 	// Check if the backend is available.
-	/////////////////////////////////////
 	if(__GSIACResult != GSIACAvailable)
 		return GP_PARAMETER_ERROR;
 
 	// Error check.
-	///////////////
 	if(connection == NULL)
 		return GP_PARAMETER_ERROR;
 
@@ -44,7 +37,6 @@ void gpDestroy(
 )
 {
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return;
 
@@ -57,7 +49,6 @@ GPResult gpEnable(
 )
 {
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
@@ -70,7 +61,6 @@ GPResult gpDisable(
 )
 {
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
@@ -84,16 +74,13 @@ GPResult gpProcess(
 	GPIConnection * iconnection;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Get the connection object.
-	/////////////////////////////
 	iconnection = (GPIConnection*)*connection;
 
 	// Check for simulation mode.
-	/////////////////////////////
 	if(iconnection->simulation)
 		return GP_NO_ERROR;
 	
@@ -111,22 +98,18 @@ GPResult gpSetCallback(
 	int index;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Get the connection object.
-	/////////////////////////////
 	iconnection = (GPIConnection *)*connection;
 
 	// Find which callback.
-	///////////////////////
 	index = func;
 	if((index < 0) || (index >= GPI_NUM_CALLBACKS))
 		Error(connection, GP_PARAMETER_ERROR, "Invalid func.");
 
 	// Set the info.
-	////////////////
 	iconnection->callbacks[index].callback = callback;
 	iconnection->callbacks[index].param = param;
 
@@ -147,7 +130,6 @@ GPResult gpConnectA(
 	GPIConnection * iconnection;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 	if((nick == NULL) || (nick[0] == '\0'))
@@ -158,12 +140,10 @@ GPResult gpConnectA(
 		return GP_PARAMETER_ERROR;
 
 	// Check for no callback.
-	/////////////////////////
 	if(callback == NULL)
 		Error(connection, GP_PARAMETER_ERROR, "No callback.");
 
 	// Check for simulation mode.
-	/////////////////////////////
 	iconnection = (GPIConnection*)*connection;
 	if(iconnection->simulation)
 	{
@@ -175,28 +155,29 @@ GPResult gpConnectA(
 
 	// Do it.
 	/////////
-	return gpiConnect(connection, nick, "", email, password, "", "", NULL, firewall, GPIFalse, blocking, callback, param);
+	return gpiConnect(connection, nick, "", email, password, "", "", "", NULL, firewall, GPIFalse, blocking, callback, param);
 }
 #ifdef GSI_UNICODE
 GPResult gpConnectW(
-  GPConnection * connection,
-  const unsigned short nick[GP_NICK_LEN],
-  const unsigned short email[GP_EMAIL_LEN],
-  const unsigned short password[GP_PASSWORD_LEN],
-  GPEnum firewall,
-  GPEnum blocking,
-  GPCallback callback,
-  void * param
+			  GPConnection * connection,
+			  const gsi_char nick[GP_NICK_LEN],
+			  const gsi_char email[GP_EMAIL_LEN],
+			  const gsi_char password[GP_PASSWORD_LEN],
+			  GPEnum firewall,
+			  GPEnum blocking,
+			  GPCallback callback,
+			  void * param
 )
 {
 	char nick_A[GP_NICK_LEN];
 	char email_A[GP_EMAIL_LEN];
 	char password_A[GP_PASSWORD_LEN];
 
-	UCS2ToAsciiString(nick, nick_A);
-	UCS2ToAsciiString(email, email_A);
-	UCS2ToAsciiString(password, password_A);
+	UCSToAsciiString(nick, nick_A);
+	UCSToAsciiString(email, email_A);
+	UCSToAsciiString(password, password_A);
 
+// TODO Debug statement printf("connect to nick[%s] email[%s]\n", nick_A, email_A);
 	return gpConnectA(connection, nick_A, email_A, password_A, firewall, blocking, callback, param);
 }
 #endif
@@ -217,7 +198,6 @@ GPResult gpConnectNewUserA(
 	GPIConnection * iconnection;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 	if((nick == NULL) || (nick[0] == '\0'))
@@ -232,32 +212,26 @@ GPResult gpConnectNewUserA(
 		cdkey = NULL;
 
 	// Check for no callback.
-	/////////////////////////
 	if(callback == NULL)
 		Error(connection, GP_PARAMETER_ERROR, "No callback.");
 	
 	// Check the length of the nick.
-	////////////////////////////////
 	if(strlen(nick) >= GP_NICK_LEN)
 		Error(connection, GP_PARAMETER_ERROR, "Nick too long.");
 
 	// Check the length of the uniquenick.
-	//////////////////////////////////////
 	if(strlen(uniquenick) >= GP_UNIQUENICK_LEN)
 		Error(connection, GP_PARAMETER_ERROR, "Uniquenick too long.");
 
 	// Check the length of the email.
-	/////////////////////////////////
 	if(strlen(email) >= GP_EMAIL_LEN)
 		Error(connection, GP_PARAMETER_ERROR, "Email too long.");
 
 	// Check the length of the password.
-	////////////////////////////////////
 	if(strlen(password) >= GP_PASSWORD_LEN)
 		Error(connection, GP_PARAMETER_ERROR, "Password too long.");
 
 	// Check for simulation mode.
-	/////////////////////////////
 	iconnection = (GPIConnection*)*connection;
 	if(iconnection->simulation)
 	{
@@ -267,35 +241,34 @@ GPResult gpConnectNewUserA(
 		return GP_NO_ERROR;
 	}
 
-	// Do it.
-	/////////
-	return gpiConnect(connection, nick, uniquenick, email, password, "", "", cdkey, firewall, GPITrue, blocking, callback, param);
+	// Pass to internal SDK function.
+	return gpiConnect(connection, nick, uniquenick, email, password, "", "", "", cdkey, firewall, GPITrue, blocking, callback, param);
 }
 #ifdef GSI_UNICODE
 GPResult gpConnectNewUserW(
-  GPConnection * connection,
-  const unsigned short nick[GP_NICK_LEN],
-  const unsigned short uniquenick[GP_UNIQUENICK_LEN],
-  const unsigned short email[GP_EMAIL_LEN],
-  const unsigned short password[GP_PASSWORD_LEN],
-  const unsigned short cdkey[GP_CDKEY_LEN],
-  GPEnum firewall,
-  GPEnum blocking,
-  GPCallback callback,
-  void * param
+			  GPConnection * connection,
+			  const gsi_char nick[GP_NICK_LEN],
+			  const gsi_char uniquenick[GP_UNIQUENICK_LEN],
+			  const gsi_char email[GP_EMAIL_LEN],
+			  const gsi_char password[GP_PASSWORD_LEN],
+			  const gsi_char cdkey[GP_CDKEY_LEN],
+			  GPEnum firewall,
+			  GPEnum blocking,
+			  GPCallback callback,
+			  void * param
 )
 {
 	char nick_A[GP_NICK_LEN];
 	char uniquenick_A[GP_UNIQUENICK_LEN];
-	char email_A[GP_NICK_LEN];
-	char password_A[GP_NICK_LEN];
+	char email_A[GP_EMAIL_LEN];
+	char password_A[GP_PASSWORD_LEN];
 	char cdkey_A[GP_CDKEY_LEN];
 
-	UCS2ToAsciiString(nick, nick_A);
-	UCS2ToAsciiString(uniquenick, uniquenick_A);
-	UCS2ToAsciiString(email, email_A);
-	UCS2ToAsciiString(password, password_A);
-	UCS2ToAsciiString(cdkey, cdkey_A);
+	UCSToAsciiString(nick, nick_A);
+	UCSToAsciiString(uniquenick, uniquenick_A);
+	UCSToAsciiString(email, email_A);
+	UCSToAsciiString(password, password_A);
+	UCSToAsciiString(cdkey, cdkey_A);
 
 	return gpConnectNewUserA(connection, nick_A, uniquenick_A, email_A, password_A, cdkey_A, firewall, blocking, callback, param);
 }
@@ -314,7 +287,6 @@ GPResult gpConnectUniqueNickA(
 	GPIConnection * iconnection;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 	if((uniquenick == NULL) || (uniquenick[0] == '\0'))
@@ -323,12 +295,10 @@ GPResult gpConnectUniqueNickA(
 		return GP_PARAMETER_ERROR;
 
 	// Check for no callback.
-	/////////////////////////
 	if(callback == NULL)
 		Error(connection, GP_PARAMETER_ERROR, "No callback.");
 
 	// Check for simulation mode.
-	/////////////////////////////
 	iconnection = (GPIConnection*)*connection;
 	if(iconnection->simulation)
 	{
@@ -338,26 +308,25 @@ GPResult gpConnectUniqueNickA(
 		return GP_NO_ERROR;
 	}
 
-	// Do it.
-	/////////
-	return gpiConnect(connection, "", uniquenick, "", password, "", "", NULL, firewall, GPIFalse, blocking, callback, param);
+	// Pass to internal SDK function.
+	return gpiConnect(connection, "", uniquenick, "", password, "", "", "", NULL, firewall, GPIFalse, blocking, callback, param);
 }
 #ifdef GSI_UNICODE
 GPResult gpConnectUniqueNickW(
-  GPConnection * connection,
-  const unsigned short uniquenick[GP_UNIQUENICK_LEN],
-  const unsigned short password[GP_PASSWORD_LEN],
-  GPEnum firewall,
-  GPEnum blocking,
-  GPCallback callback,
-  void * param
+			  GPConnection * connection,
+			  const gsi_char uniquenick[GP_UNIQUENICK_LEN],
+			  const gsi_char password[GP_PASSWORD_LEN],
+			  GPEnum firewall,
+			  GPEnum blocking,
+			  GPCallback callback,
+			  void * param
 )
 {
 	char uniquenick_A[GP_UNIQUENICK_LEN];
 	char password_A[GP_NICK_LEN];
 
-	UCS2ToAsciiString(uniquenick, uniquenick_A);
-	UCS2ToAsciiString(password, password_A);
+	UCSToAsciiString(uniquenick, uniquenick_A);
+	UCSToAsciiString(password, password_A);
 
 	return gpConnectUniqueNickA(connection, uniquenick_A, password_A, firewall, blocking, callback, param);
 }
@@ -377,7 +346,6 @@ GPResult gpConnectPreAuthenticatedA
 	GPIConnection * iconnection;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 	if((authtoken == NULL) || (authtoken[0] == '\0'))
@@ -386,12 +354,10 @@ GPResult gpConnectPreAuthenticatedA
 		return GP_PARAMETER_ERROR;
 
 	// Check for no callback.
-	/////////////////////////
 	if(callback == NULL)
 		Error(connection, GP_PARAMETER_ERROR, "No callback.");
 
 	// Check for simulation mode.
-	/////////////////////////////
 	iconnection = (GPIConnection*)*connection;
 	if(iconnection->simulation)
 	{
@@ -401,20 +367,19 @@ GPResult gpConnectPreAuthenticatedA
 		return GP_NO_ERROR;
 	}
 
-	// Do it.
-	/////////
-	return gpiConnect(connection, "", "", "", "", authtoken, partnerchallenge, NULL, firewall, GPIFalse, blocking, callback, param);
+	// Pass to internal SDK function.
+	return gpiConnect(connection, "", "", "", "", authtoken, partnerchallenge, "", NULL, firewall, GPIFalse, blocking, callback, param);
 }
 #ifdef GSI_UNICODE
 GPResult gpConnectPreAuthenticatedW
 (
-  GPConnection * connection,
-  const unsigned short authtoken[GP_AUTHTOKEN_LEN],
-  const unsigned short partnerchallenge[GP_PARTNERCHALLENGE_LEN],
-  GPEnum firewall,
-  GPEnum blocking,
-  GPCallback callback,
-  void * param
+			  GPConnection * connection,
+			  const gsi_char authtoken[GP_AUTHTOKEN_LEN],
+			  const gsi_char partnerchallenge[GP_PARTNERCHALLENGE_LEN],
+			  GPEnum firewall,
+			  GPEnum blocking,
+			  GPCallback callback,
+			  void * param
 )
 {
 	char authtoken_A[GP_AUTHTOKEN_LEN];
@@ -426,6 +391,64 @@ GPResult gpConnectPreAuthenticatedW
 	return gpConnectPreAuthenticatedA(connection, authtoken_A, partnerchallenge_A, firewall, blocking, callback, param);
 }
 #endif
+GPResult gpConnectLoginTicketA
+(
+	GPConnection* connection,
+	const char loginticket[GP_LOGIN_TICKET_LEN],
+	GPEnum firewall,
+	GPEnum blocking,
+	GPCallback callback,
+	void* param
+)
+{
+	GPIConnection* iconnection;
+
+	// Error check.
+	///////////////
+	if ((connection == NULL) || (*connection == NULL))
+		return GP_PARAMETER_ERROR;
+	if ((loginticket == NULL) || (loginticket[0] == '\0'))
+		return GP_PARAMETER_ERROR;
+
+	// Check for no callback.
+	/////////////////////////
+	if (callback == NULL)
+		Error(connection, GP_PARAMETER_ERROR, "No callback.");
+
+	// Check for simulation mode.
+	/////////////////////////////
+	iconnection = (GPIConnection*)*connection;
+	if (iconnection->simulation)
+	{
+		GPConnectResponseArg arg;
+		memset(&arg, 0, sizeof(arg));
+		callback(connection, &arg, param);
+		return GP_NO_ERROR;
+	}
+
+	// Do it.
+	/////////
+	return gpiConnect(connection, "", "", "", "", "", "", loginticket, NULL, firewall, GPIFalse, blocking, callback, param);
+}
+
+#ifdef GSI_UNICODE
+GPResult gpConnectLoginTicketW
+(
+	GPConnection* connection,
+	const gsi_char loginticket[GP_LOGIN_TICKET_LEN],
+	GPEnum firewall,
+	GPEnum blocking,
+	GPCallback callback,
+	void* param
+)
+{
+	char loginticket_A[GP_LOGIN_TICKET_LEN];
+
+	UCSToAsciiString(loginticket, loginticket_A);
+
+	return gpConnectLoginTicketA(connection, loginticket_A, firewall, blocking, callback, param);
+}
+#endif
 
 void gpDisconnect(
   GPConnection * connection
@@ -435,28 +458,23 @@ void gpDisconnect(
     int oldState;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return;
 
 	// Check for simulation mode.
-	/////////////////////////////
 	iconnection = (GPIConnection*)*connection;
 	if(iconnection->simulation)
 		return;
 
-    // Make a note of connection state prior to reset
-    /////////////////////////////////////////////////
+    // Make a note of connection state prior to reset.
     oldState = iconnection->connectState;
 
 	gpiDisconnect(connection, GPITrue);
 	//Added by Saad Nader
-	//08-28-2004; fix for memory leaks after being disconnected abruptly
-	////////////////////////////////////////////////
+	//08-28-2004; fix for memory leaks after being disconnected abruptly.
     gpiReset(connection);
 
-    // If we were connected prior, set to disconnected to save off info cache
-    //////////////////////////////////////////////////////////////////////////
+    // If we were connected, set to disconnected to save off info cache.
     if (oldState == GPI_CONNECTED)
         iconnection->connectState = GPI_DISCONNECTED;
 
@@ -471,16 +489,13 @@ GPResult gpIsConnected
 	GPIConnection * iconnection;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Get the connection object.
-	/////////////////////////////
 	iconnection = (GPIConnection *)*connection;
 
 	// Set the flag.
-	////////////////
 	if(iconnection->connectState == GPI_CONNECTED)
 		*connected = GP_CONNECTED;
 	else
@@ -502,36 +517,29 @@ GPResult gpCheckUserA(
 	GPIConnection * iconnection;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Check for no callback.
-	/////////////////////////
 	if(callback == NULL)
 		Error(connection, GP_PARAMETER_ERROR, "No callback.");
 
 	// Check the length of the nick.
-	////////////////////////////////
 	if(strlen(nick) >= GP_NICK_LEN)
 		Error(connection, GP_PARAMETER_ERROR, "Nick too long.");
 
 	// Check the length of the email.
-	/////////////////////////////////
 	if(strlen(email) >= GP_EMAIL_LEN)
 		Error(connection, GP_PARAMETER_ERROR, "Email too long.");
 
 	// Check the length of the password.
-	////////////////////////////////////
 	if(password && (strlen(password) >= GP_PASSWORD_LEN))
 		Error(connection, GP_PARAMETER_ERROR, "Password too long.");
 
 	// Get the connection object.
-	/////////////////////////////
 	iconnection = (GPIConnection *)*connection;
 
 	// Check for simulation mode.
-	/////////////////////////////
 	if(iconnection->simulation)
 	{
 		GPCheckResponseArg arg;
@@ -540,28 +548,27 @@ GPResult gpCheckUserA(
 		return GP_NO_ERROR;
 	}
 
-	// Do the check.
-	////////////////
+	// Perform the check.
 	return gpiCheckUser(connection, nick, email, password, blocking, callback, param);
 }
 #ifdef GSI_UNICODE
 GPResult gpCheckUserW(
-  GPConnection * connection,
-  const unsigned short nick[GP_NICK_LEN],
-  const unsigned short email[GP_EMAIL_LEN],
-  const unsigned short password[GP_PASSWORD_LEN],
-  GPEnum blocking,
-  GPCallback callback,
-  void * param
+			  GPConnection * connection,
+			  const gsi_char nick[GP_NICK_LEN],
+			  const gsi_char email[GP_EMAIL_LEN],
+			  const gsi_char password[GP_PASSWORD_LEN],
+			  GPEnum blocking,
+			  GPCallback callback,
+			  void * param
 )
 {
 	char nick_A[GP_NICK_LEN];
 	char email_A[GP_NICK_LEN];
 	char password_A[GP_NICK_LEN];
 
-	UCS2ToAsciiString(nick, nick_A);
-	UCS2ToAsciiString(email, email_A);
-	UCS2ToAsciiString(password, password_A);
+	UCSToAsciiString(nick, nick_A);
+	UCSToAsciiString(email, email_A);
+	UCSToAsciiString(password, password_A);
 
 	return gpCheckUserA(connection, nick_A, email_A, password_A, blocking, callback, param);
 }
@@ -582,7 +589,6 @@ GPResult gpNewUserA(
 	GPIConnection * iconnection;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 	if((nick == NULL) || (nick[0] == '\0'))
@@ -597,36 +603,29 @@ GPResult gpNewUserA(
 		cdkey = NULL;
 
 	// Check for no callback.
-	/////////////////////////
 	if(callback == NULL)
 		Error(connection, GP_PARAMETER_ERROR, "No callback.");
 
 	// Check the length of the nick.
-	////////////////////////////////
 	if(strlen(nick) >= GP_NICK_LEN)
 		Error(connection, GP_PARAMETER_ERROR, "Nick too long.");
 
 	// Check the length of the uniquenick.
-	//////////////////////////////////////
 	if(strlen(uniquenick) >= GP_UNIQUENICK_LEN)
 		Error(connection, GP_PARAMETER_ERROR, "Uniquenick too long.");
 
 	// Check the length of the email.
-	/////////////////////////////////
 	if(strlen(email) >= GP_EMAIL_LEN)
 		Error(connection, GP_PARAMETER_ERROR, "Email too long.");
 
 	// Check the length of the password.
-	////////////////////////////////////
 	if(strlen(password) >= GP_PASSWORD_LEN)
 		Error(connection, GP_PARAMETER_ERROR, "Password too long.");
 
 	// Get the connection object.
-	/////////////////////////////
 	iconnection = (GPIConnection *)*connection;
 
 	// Check for simulation mode.
-	/////////////////////////////
 	if(iconnection->simulation)
 	{
 		GPNewUserResponseArg arg;
@@ -635,21 +634,20 @@ GPResult gpNewUserA(
 		return GP_NO_ERROR;
 	}
 
-	// Creat the new user.
-	//////////////////////
+	// Create the new user.
 	return gpiNewUser(connection, nick, uniquenick, email, password, cdkey, blocking, callback, param);
 }
 #ifdef GSI_UNICODE
 GPResult gpNewUserW(
-  GPConnection * connection,
-  const unsigned short nick[GP_NICK_LEN],
-  const unsigned short uniquenick[GP_UNIQUENICK_LEN],
-  const unsigned short email[GP_EMAIL_LEN],
-  const unsigned short password[GP_PASSWORD_LEN],
-  const unsigned short cdkey[GP_CDKEY_LEN],
-  GPEnum blocking,
-  GPCallback callback,
-  void * param
+			  GPConnection * connection,
+			  const gsi_char nick[GP_NICK_LEN],
+			  const gsi_char uniquenick[GP_UNIQUENICK_LEN],
+			  const gsi_char email[GP_EMAIL_LEN],
+			  const gsi_char password[GP_PASSWORD_LEN],
+			  const gsi_char cdkey[GP_CDKEY_LEN],
+			  GPEnum blocking,
+			  GPCallback callback,
+			  void * param
 )
 {
 	char nick_A[GP_NICK_LEN];
@@ -658,11 +656,11 @@ GPResult gpNewUserW(
 	char password_A[GP_PASSWORD_LEN];
 	char cdkey_A[GP_CDKEY_LEN];
 
-	UCS2ToAsciiString(nick, nick_A);
-	UCS2ToAsciiString(uniquenick, uniquenick_A);
-	UCS2ToAsciiString(email, email_A);
-	UCS2ToAsciiString(password, password_A);
-	UCS2ToAsciiString(cdkey, cdkey_A);
+	UCSToAsciiString(nick, nick_A);
+	UCSToAsciiString(uniquenick, uniquenick_A);
+	UCSToAsciiString(email, email_A);
+	UCSToAsciiString(password, password_A);
+	UCSToAsciiString(cdkey, cdkey_A);
 
 	return gpNewUserA(connection, nick_A, uniquenick_A, email_A, password_A, cdkey_A, blocking, callback, param);
 }
@@ -679,26 +677,21 @@ GPResult gpSuggestUniqueNickA(
 	GPIConnection * iconnection;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Check for no callback.
-	/////////////////////////
 	if(callback == NULL)
 		Error(connection, GP_PARAMETER_ERROR, "No callback.");
 
 	// Check the length of the desirednick.
-	///////////////////////////////////////
 	if(strlen(desirednick) >= GP_UNIQUENICK_LEN)
 		Error(connection, GP_PARAMETER_ERROR, "Desirednick too long.");
 
 	// Get the connection object.
-	/////////////////////////////
 	iconnection = (GPIConnection *)*connection;
 
 	// Check for simulation mode.
-	/////////////////////////////
 	if(iconnection->simulation)
 	{
 		GPSuggestUniqueNickResponseArg arg;
@@ -707,22 +700,21 @@ GPResult gpSuggestUniqueNickA(
 		return GP_NO_ERROR;
 	}
 
-	// Creat the new user.
-	//////////////////////
+	// Create the new user.
 	return gpiSuggestUniqueNick(connection, desirednick, blocking, callback, param);
 }
 #ifdef GSI_UNICODE
 GPResult gpSuggestUniqueNickW(
-  GPConnection * connection,
-  const unsigned short desirednick[GP_NICK_LEN],
-  GPEnum blocking,
-  GPCallback callback,
-  void * param
+			  GPConnection * connection,
+			  const gsi_char desirednick[GP_NICK_LEN],
+			  GPEnum blocking,
+			  GPCallback callback,
+			  void * param
 )
 {
 	char desirednick_A[GP_UNIQUENICK_LEN];
 
-	UCS2ToAsciiString(desirednick, desirednick_A);
+	UCSToAsciiString(desirednick, desirednick_A);
 
 	return gpSuggestUniqueNickA(connection, desirednick_A, blocking, callback, param);
 }
@@ -740,7 +732,6 @@ GPResult gpRegisterUniqueNickA(
 	GPIConnection * iconnection;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 	if((uniquenick == NULL) || (uniquenick[0] == '\0'))
@@ -749,16 +740,13 @@ GPResult gpRegisterUniqueNickA(
 		cdkey = NULL;
 
 	// Check for no callback.
-	/////////////////////////
 	if(callback == NULL)
 		Error(connection, GP_PARAMETER_ERROR, "No callback.");
 
 	// Get the connection object.
-	/////////////////////////////
 	iconnection = (GPIConnection *)*connection;
 
 	// Check for simulation mode.
-	/////////////////////////////
 	if(iconnection->simulation)
 	{
 		GPRegisterUniqueNickResponseArg arg;
@@ -768,7 +756,6 @@ GPResult gpRegisterUniqueNickA(
 	}
 
 	// Check for disconnected.
-	//////////////////////////
 	if(iconnection->connectState == GPI_DISCONNECTED)
 		Error(connection, GP_PARAMETER_ERROR, "The connection has already been disconnected.");
 
@@ -776,19 +763,19 @@ GPResult gpRegisterUniqueNickA(
 }
 #ifdef GSI_UNICODE
 GPResult gpRegisterUniqueNickW(
-  GPConnection * connection,
-  const unsigned short uniquenick[GP_UNIQUENICK_LEN],
-  const unsigned short cdkey[GP_CDKEY_LEN],
-  GPEnum blocking,
-  GPCallback callback,
-  void * param
+			  GPConnection * connection,
+			  const gsi_char uniquenick[GP_UNIQUENICK_LEN],
+			  const gsi_char cdkey[GP_CDKEY_LEN],
+			  GPEnum blocking,
+			  GPCallback callback,
+			  void * param
 )
 {
 	char uniquenick_A[GP_UNIQUENICK_LEN];
 	char cdkey_A[GP_CDKEY_LEN];
 
-	UCS2ToAsciiString(uniquenick, uniquenick_A);
-	UCS2ToAsciiString(cdkey, cdkey_A);
+	UCSToAsciiString(uniquenick, uniquenick_A);
+	UCSToAsciiString(cdkey, cdkey_A);
 
 	return gpRegisterUniqueNickA(connection, uniquenick_A, cdkey_A, blocking, callback, param);
 }
@@ -798,6 +785,7 @@ GPResult gpRegisterUniqueNickW(
 GPResult gpRegisterCdKeyA(
   GPConnection * connection,
   const char cdkey[GP_CDKEY_LEN],
+  int gameId,
   GPEnum blocking,
   GPCallback callback,
   void * param
@@ -806,23 +794,19 @@ GPResult gpRegisterCdKeyA(
 	GPIConnection * iconnection;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 	if((cdkey == NULL) || (cdkey[0] == '\0'))
 		return GP_PARAMETER_ERROR;
 
 	// Check for no callback.
-	/////////////////////////
 	if(callback == NULL)
 		Error(connection, GP_PARAMETER_ERROR, "No callback.");
 
 	// Get the connection object.
-	/////////////////////////////
 	iconnection = (GPIConnection *)*connection;
 
 	// Check for simulation mode.
-	/////////////////////////////
 	if(iconnection->simulation)
 	{
 		GPRegisterCdKeyResponseArg arg;
@@ -832,24 +816,26 @@ GPResult gpRegisterCdKeyA(
 	}
 
 	// Check for disconnected.
-	//////////////////////////
 	if(iconnection->connectState == GPI_DISCONNECTED)
 		Error(connection, GP_PARAMETER_ERROR, "The connection has already been disconnected.");
 
-	return gpiRegisterCdKey(connection, cdkey, blocking, callback, param);
+	return gpiRegisterCdKey(connection, cdkey, gameId, blocking, callback, param);
 }
 #ifdef GSI_UNICODE
 GPResult gpRegisterCdKeyW(
-  GPConnection * connection, 
-  const gsi_char cdkey[GP_CDKEY_LEN], 
-  GPEnum blocking,
-  GPCallback callback,
-  void * param
+			  GPConnection * connection, 
+			  const gsi_char cdkey[GP_CDKEY_LEN], 
+			  int gameId,
+			  GPEnum blocking,
+			  GPCallback callback,
+			  void * param
 )
 {
 	char cdkey_A[GP_CDKEY_LEN];
-	UCS2ToAsciiString(cdkey, cdkey_A);
-	return gpRegisterCdKeyA(connection, cdkey_A, blocking, callback, param);
+	
+	UCSToAsciiString(cdkey, cdkey_A);
+	
+	return gpRegisterCdKeyA(connection, cdkey_A, gameId, blocking, callback, param);
 }
 #endif
 
@@ -861,21 +847,17 @@ GPResult gpGetErrorCode(
 	GPIConnection * iconnection;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Error check.
-	///////////////
 	if(errorCode == NULL)
 		return GP_PARAMETER_ERROR;
 
 	// Get the connection object.
-	/////////////////////////////
 	iconnection = (GPIConnection *)*connection;
 
 	// Check for simulation mode.
-	/////////////////////////////
 	if(iconnection->simulation)
 	{
 		*errorCode = (GPErrorCode)0;
@@ -883,7 +865,6 @@ GPResult gpGetErrorCode(
 	}
 
 	// Set the code.
-	////////////////
 	*errorCode = iconnection->errorCode;
 
 	return GP_NO_ERROR;
@@ -897,21 +878,17 @@ GPResult gpGetErrorStringA(
 	GPIConnection * iconnection;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Error check.
-	///////////////
 	if(errorString == NULL)
 		return GP_PARAMETER_ERROR;
 
 	// Get the connection object.
-	/////////////////////////////
 	iconnection = (GPIConnection *)*connection;
 
 	// Check for simulation mode.
-	/////////////////////////////
 	if(iconnection->simulation)
 	{
 		errorString[0] = '\0';
@@ -919,21 +896,21 @@ GPResult gpGetErrorStringA(
 	}
 
 	// Copy the error string.
-	/////////////////////////
 	strzcpy(errorString, iconnection->errorString, GP_ERROR_STRING_LEN);
 	return GP_NO_ERROR;
 }
 #ifdef GSI_UNICODE
 GPResult gpGetErrorStringW(
-  GPConnection * connection,
-  unsigned short errorString[GP_ERROR_STRING_LEN]
+			  GPConnection * connection,
+			  gsi_char errorString[GP_ERROR_STRING_LEN]
 )
 {
 	char errorString_A[GP_ERROR_STRING_LEN];
 	GPResult result;
 
 	result = gpGetErrorStringA(connection, errorString_A);
-	AsciiToUCS2String(errorString_A, errorString);
+	AsciiToUCSString(errorString_A, errorString);
+	
 	return result;
 }
 #endif
@@ -950,23 +927,18 @@ GPResult gpNewProfileA(
 	GPIConnection * iconnection;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Check for no callback.
-	/////////////////////////
 	if(callback == NULL)
 		Error(connection, GP_PARAMETER_ERROR, "No callback.");
 
-	// Check for no nick.
-	// PANTS|05.18.00
-	/////////////////////
+	// Check for no nick. | 05.18.00
 	if((nick == NULL) || (nick[0] == '\0'))
 		Error(connection, GP_PARAMETER_ERROR, "Invalid nick.");
 
 	// Check for simulation mode.
-	/////////////////////////////
 	iconnection = (GPIConnection*)*connection;
 	if(iconnection->simulation)
 	{
@@ -977,7 +949,6 @@ GPResult gpNewProfileA(
 	}
 
 	// Check for disconnected.
-	//////////////////////////
 	if(iconnection->connectState == GPI_DISCONNECTED)
 		Error(connection, GP_PARAMETER_ERROR, "The connection has already been disconnected.");
 
@@ -985,28 +956,30 @@ GPResult gpNewProfileA(
 }
 #ifdef GSI_UNICODE
 GPResult gpNewProfileW(
-  GPConnection * connection,
-  const unsigned short nick[GP_NICK_LEN],
-  GPEnum replace,
-  GPEnum blocking,
-  GPCallback callback,
-  void * param
+			  GPConnection * connection,
+			  const gsi_char nick[GP_NICK_LEN],
+			  GPEnum replace,
+			  GPEnum blocking,
+			  GPCallback callback,
+			  void * param
 )
 {
 	char nick_A[GP_NICK_LEN];
 
-	// Since we don't currently allow UNICODE nicknames, make sure the first byte is empty
-	// (We make this check as an early alert to devlopers that the parameter is invalid)
-	// (Even if it's bypassed, the server will still reject the name.)
+	// Since we don't currently allow UNICODE nicknames, make sure the first byte
+	//  is empty. We make this check as an early alert to developers that the 
+	//  parameter is invalid; even if it's bypassed, the server will still reject
+	//  the name.
 	int i = 0;
 	for (; (i < GP_NICK_LEN) && (nick[i] != 0); i++)
 	{
-		if ((nick[i] & 0xFF00) != 0)
+		if ( ! IS_ASCII_UNICODE(nick[i]))
 			return GP_PARAMETER_ERROR;
 	}
 
-	// Convert to ascii and call "A" version
-	UCS2ToAsciiString(nick, nick_A);
+	// Convert to ascii and call "A" version.
+	UCSToAsciiString(nick, nick_A);
+	
 	return gpNewProfileA(connection, nick_A, replace, blocking, callback, param);
 }
 #endif
@@ -1020,17 +993,14 @@ GPResult gpDeleteProfile(
 	GPIConnection * iconnection;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Check for no callback.
-	/////////////////////////
 	if(callback == NULL)
 		Error(connection, GP_PARAMETER_ERROR, "No callback.");
 
 	// Check for simulation mode.
-	/////////////////////////////
 	iconnection = (GPIConnection*)*connection;
 	if(iconnection->simulation)
 	{
@@ -1041,7 +1011,6 @@ GPResult gpDeleteProfile(
 	}
 
 	// Check for disconnected.
-	//////////////////////////
 	if(iconnection->connectState == GPI_DISCONNECTED)
 		Error(connection, GP_PARAMETER_ERROR, "The connection has already been disconnected.");
 
@@ -1057,8 +1026,7 @@ GPResult gpProfileFromID(
 	GSI_UNUSED(connection);
 
 	// Set the profile.
-	// This function is depreciated & may be removed from future versions.
-	//////////////////////////////////////////////////////////////////////
+	// This function is deprecated and may be removed from future versions.
 	*profile = id;
 
 	return GP_NO_ERROR;
@@ -1074,16 +1042,14 @@ GPResult gpIDFromProfile(
 {
 	GSI_UNUSED(connection);
 
-	// ID is the same as GPProfile
-	// This function is depreciated & may be removed from future versions.
-	//////////////////////////////////////////////////////////////////////
+	// ID is the same as GPProfile.
+	// This function is deprecated and may be removed from future versions.
 	*id = profile;
 
 	return GP_NO_ERROR;
 }
 
 // gpUserIDFromProfile
-//////////////////
 GPResult gpUserIDFromProfile(
   GPConnection * connection,
   GPProfile profile,
@@ -1094,16 +1060,13 @@ GPResult gpUserIDFromProfile(
 	GPIProfile * pProfile;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Get the connection object.
-	/////////////////////////////
 	iconnection = (GPIConnection *)*connection;
 
 	// Check for simulation mode.
-	/////////////////////////////
 	if(iconnection->simulation)
 	{
 		*userid = 0;
@@ -1111,12 +1074,10 @@ GPResult gpUserIDFromProfile(
 	}
 
 	// Get the profile object.
-	//////////////////////////
 	if(!gpiGetProfile(connection, profile, &pProfile))
 		Error(connection, GP_PARAMETER_ERROR, "Invalid profile.");
 
 	// Set the id.
-	//////////////
 	*userid = pProfile->userId;
 
 	return GP_NO_ERROR;
@@ -1139,21 +1100,17 @@ GPResult gpProfileSearchA(
 	GPIConnection * iconnection;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Check for no callback.
-	/////////////////////////
 	if(callback == NULL)
 		Error(connection, GP_PARAMETER_ERROR, "No callback.");
 
 	// Get the connection object.
-	/////////////////////////////
 	iconnection = (GPIConnection *)*connection;
 
 	// Check for simulation mode.
-	/////////////////////////////
 	if(iconnection->simulation)
 	{
 		GPProfileSearchResponseArg arg;
@@ -1164,34 +1121,33 @@ GPResult gpProfileSearchA(
 	}
 
 	// Do the search.
-	/////////////////
 	return gpiProfileSearch(connection, nick, uniquenick, email, firstname, lastname, icquin, 0, blocking, callback, param);
 }
 #ifdef GSI_UNICODE
 GPResult gpProfileSearchW(
-  GPConnection * connection,
-  const unsigned short nick[GP_NICK_LEN],
-  const unsigned short uniquenick[GP_UNIQUENICK_LEN],
-  const unsigned short email[GP_EMAIL_LEN],
-  const unsigned short firstname[GP_FIRSTNAME_LEN],
-  const unsigned short lastname[GP_LASTNAME_LEN],
-  int icquin,
-  GPEnum blocking,
-  GPCallback callback,
-  void * param
+			  GPConnection * connection,
+			  const gsi_char nick[GP_NICK_LEN],
+			  const gsi_char uniquenick[GP_UNIQUENICK_LEN],
+			  const gsi_char email[GP_EMAIL_LEN],
+			  const gsi_char firstname[GP_FIRSTNAME_LEN],
+			  const gsi_char lastname[GP_LASTNAME_LEN],
+			  int icquin,
+			  GPEnum blocking,
+			  GPCallback callback,
+			  void * param
 )
 {
 	char nick_A[GP_NICK_LEN];
 	char uniquenick_A[GP_UNIQUENICK_LEN];
-	char email_A[GP_NICK_LEN];
-	char firstname_A[GP_NICK_LEN];
-	char lastname_A[GP_NICK_LEN];
+	char email_A[GP_EMAIL_LEN];
+	char firstname_A[GP_FIRSTNAME_LEN];
+	char lastname_A[GP_LASTNAME_LEN];
 
-	UCS2ToAsciiString(nick, nick_A); // nicknames are ascii
-	UCS2ToAsciiString(uniquenick, uniquenick_A);
-	UCS2ToAsciiString(email, email_A);
-	UCS2ToAsciiString(firstname, firstname_A);
-	UCS2ToAsciiString(lastname, lastname_A);
+	UCSToAsciiString(nick, nick_A); // nicknames are ascii
+	UCSToAsciiString(uniquenick, uniquenick_A);
+	UCSToAsciiString(email, email_A);
+	UCSToAsciiString(firstname, firstname_A);
+	UCSToAsciiString(lastname, lastname_A);
 
 	return gpProfileSearchA(connection, nick_A, uniquenick_A, email_A, firstname_A, lastname_A, icquin, blocking, callback, param);
 }
@@ -1210,21 +1166,17 @@ GPResult gpProfileSearchUniquenickA(
 	GPIConnection * iconnection;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL) || (namespaceIDs == NULL) || (numNamespaces < 1))
 		return GP_PARAMETER_ERROR;
 
 	// Check for no callback.
-	/////////////////////////
 	if(callback == NULL)
 		Error(connection, GP_PARAMETER_ERROR, "No callback.");
 
 	// Get the connection object.
-	/////////////////////////////
 	iconnection = (GPIConnection *)*connection;
 
 	// Check for simulation mode.
-	/////////////////////////////
 	if(iconnection->simulation)
 	{
 		GPProfileSearchResponseArg arg;
@@ -1235,23 +1187,22 @@ GPResult gpProfileSearchUniquenickA(
 	}
 
 	// Do the search.
-	/////////////////
 	return gpiProfileSearchUniquenick(connection, uniquenick, namespaceIDs, numNamespaces, blocking, callback, param);
 }
 #ifdef GSI_UNICODE
 GPResult gpProfileSearchUniquenickW(
-  GPConnection * connection,
-  const unsigned short uniquenick[GP_UNIQUENICK_LEN],
-  const int namespaceIDs[GP_MAX_NAMESPACEIDS],
-  int numNamespaces,
-  GPEnum blocking,
-  GPCallback callback,
-  void * param
+			  GPConnection * connection,
+			  const gsi_char uniquenick[GP_UNIQUENICK_LEN],
+			  const int namespaceIDs[GP_MAX_NAMESPACEIDS],
+			  int numNamespaces,
+			  GPEnum blocking,
+			  GPCallback callback,
+			  void * param
 )
 {
 	char uniquenick_A[GP_UNIQUENICK_LEN];
 
-	UCS2ToAsciiString(uniquenick, uniquenick_A);
+	UCSToAsciiString(uniquenick, uniquenick_A);
 
 	return gpProfileSearchUniquenickA(connection, uniquenick_A, namespaceIDs, numNamespaces, blocking, callback, param);
 }
@@ -1269,21 +1220,17 @@ GPResult gpGetInfo(
 	GPIConnection * iconnection;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL) || (profile == 0))
 		return GP_PARAMETER_ERROR;
 
 	// Check for no callback.
-	/////////////////////////
 	if(callback == NULL)
 		Error(connection, GP_PARAMETER_ERROR, "No callback.");
 
 	// Get the connection object.
-	/////////////////////////////
 	iconnection = (GPIConnection *)*connection;
 
 	// Check for simulation mode.
-	/////////////////////////////
 	if(iconnection->simulation)
 	{
 		GPGetInfoResponseArg arg;
@@ -1293,7 +1240,6 @@ GPResult gpGetInfo(
 	}
 
 	// Check for disconnected.
-	//////////////////////////
 	if(iconnection->connectState == GPI_DISCONNECTED)
 		Error(connection, GP_PARAMETER_ERROR, "The connection has already been disconnected.");
 
@@ -1309,25 +1255,20 @@ GPResult gpGetInfoNoWait(
 	GPIConnection * iconnection;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL) || (profile == 0) || (arg == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Get the connection object.
-	/////////////////////////////
 	iconnection = (GPIConnection *)*connection;
 
 	// Check for simulation mode.
-	/////////////////////////////
-	iconnection = (GPIConnection*)*connection;
 	if(iconnection->simulation)
 	{
-		memset(arg, 0, sizeof(arg));
+		memset(arg, 0, sizeof(*arg));
 		return GP_NO_ERROR;
 	}
 
 	// Check for disconnected.
-	//////////////////////////
 	if(iconnection->connectState == GPI_DISCONNECTED)
 		Error(connection, GP_PARAMETER_ERROR, "The connection has already been disconnected.");
 
@@ -1343,18 +1284,15 @@ GPResult gpSetInfoi(
 	GPIConnection * iconnection;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Check for simulation mode.
-	/////////////////////////////
 	iconnection = (GPIConnection*)*connection;
 	if(iconnection->simulation)
 		return GP_NO_ERROR;
 
 	// Check for disconnected.
-	//////////////////////////
 	if(iconnection->connectState == GPI_DISCONNECTED)
 		Error(connection, GP_PARAMETER_ERROR, "The connection has already been disconnected.");
 
@@ -1370,18 +1308,15 @@ GPResult gpSetInfosA(
 	GPIConnection * iconnection;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Check for simulation mode.
-	/////////////////////////////
 	iconnection = (GPIConnection*)*connection;
 	if(iconnection->simulation)
 		return GP_NO_ERROR;
 
 	// Check for disconnected.
-	//////////////////////////
 	if(iconnection->connectState == GPI_DISCONNECTED)
 		Error(connection, GP_PARAMETER_ERROR, "The connection has already been disconnected.");
 
@@ -1389,14 +1324,16 @@ GPResult gpSetInfosA(
 }
 #ifdef GSI_UNICODE
 GPResult gpSetInfosW(
-  GPConnection * connection, 
-  GPEnum info, 
-  const unsigned short* value
+			  GPConnection * connection, 
+			  GPEnum info, 
+			  const gsi_char *value
 )
 {
-	char* value_A = UCS2ToUTF8StringAlloc(value);
+	char* value_A = UCSToUTF8StringAlloc(value);
+	
 	GPResult result = gpSetInfosA(connection, info, value_A);
 	gsifree(value_A);
+	
 	return result;
 }
 #endif
@@ -1412,18 +1349,15 @@ GPResult gpSetInfod(
 	GPIConnection * iconnection;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Check for simulation mode.
-	/////////////////////////////
 	iconnection = (GPIConnection*)*connection;
 	if(iconnection->simulation)
 		return GP_NO_ERROR;
 
 	// Check for disconnected.
-	//////////////////////////
 	if(iconnection->connectState == GPI_DISCONNECTED)
 		Error(connection, GP_PARAMETER_ERROR, "The connection has already been disconnected.");
 
@@ -1438,18 +1372,15 @@ GPResult gpSetInfoMask(
 	GPIConnection * iconnection;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Check for simulation mode.
-	/////////////////////////////
 	iconnection = (GPIConnection*)*connection;
 	if(iconnection->simulation)
 		return GP_NO_ERROR;
 
 	// Check for disconnected.
-	//////////////////////////
 	if(iconnection->connectState == GPI_DISCONNECTED)
 		Error(connection, GP_PARAMETER_ERROR, "The connection has already been disconnected.");
 
@@ -1462,63 +1393,59 @@ GPResult gpSendBuddyRequestA(
   const char reason[GP_REASON_LEN]
 )
 {
+// On the PS3 the friend list can only be manipulated via NP (the GP list will
+//  sync accordingly).
+#ifdef _PS3
+	Error(connection, GP_PARAMETER_ERROR, "gpSendBuddyRequest is not available on PS3 - NP list must be manipulated directly and GP list will sync accordingly.");
+#endif
+
 	GPIConnection * iconnection;
 	char reasonFixed[GP_REASON_LEN];
 	int i;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Get the connection object.
-	/////////////////////////////
 	iconnection = (GPIConnection *)*connection;
 
 	// Check for simulation mode.
-	/////////////////////////////
 	if(iconnection->simulation)
 		return GP_NO_ERROR;
 
+
 	// Check for disconnected.
-	//////////////////////////
 	if(iconnection->connectState == GPI_DISCONNECTED)
 		Error(connection, GP_PARAMETER_ERROR, "The connection has already been disconnected.");
 
 	// Error check.
-	///////////////
 	if(reason == NULL)
 		Error(connection, GP_PARAMETER_ERROR, "Invalid reason.");
 
-	// Replace backslashes in reason.
-	/////////////////////////////////
+	// Replace backslashes in the reason.
 	strzcpy(reasonFixed, reason, GP_REASON_LEN);
 	for(i = 0 ; reasonFixed[i] ; i++)
 		if(reasonFixed[i] == '\\')
 			reasonFixed[i] = '/';
 
-	// Send the request.
-	////////////////////
-	gpiAppendStringToBuffer(connection, &iconnection->outputBuffer, "\\addbuddy\\");
-	gpiAppendStringToBuffer(connection, &iconnection->outputBuffer, "\\sesskey\\");
-	gpiAppendIntToBuffer(connection, &iconnection->outputBuffer, iconnection->sessKey);
-	gpiAppendStringToBuffer(connection, &iconnection->outputBuffer, "\\newprofileid\\");
-	gpiAppendIntToBuffer(connection, &iconnection->outputBuffer, profile);
-	gpiAppendStringToBuffer(connection, &iconnection->outputBuffer, "\\reason\\");
-	gpiAppendStringToBuffer(connection, &iconnection->outputBuffer, reasonFixed);
-	gpiAppendStringToBuffer(connection, &iconnection->outputBuffer, "\\final\\");
-
+	// First mark this buddy as undeleted if deleted previously
+	gpiBuddyDeletedLocally(connection, profile, gsi_false);
+	
+	gpiSendAddBuddyRequest(connection, profile, reasonFixed, GPIFalse);
 	return GP_NO_ERROR;
 }
 #ifdef GSI_UNICODE
 GPResult gpSendBuddyRequestW(
-  GPConnection * connection,
-  GPProfile profile,
-  const unsigned short reason[GP_REASON_LEN]
+			  GPConnection * connection,
+			  GPProfile profile,
+			  const gsi_char reason[GP_REASON_LEN]
 )
 {
 	char reason_A[GP_REASON_LEN];
-	UCS2ToUTF8String(reason, reason_A);
+	
+	UCSToUTF8String(reason, reason_A);
+	
 	return gpSendBuddyRequestA(connection, profile, reason_A);
 }
 #endif
@@ -1531,18 +1458,15 @@ GPResult gpAuthBuddyRequest(
 	GPIConnection * iconnection;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Check for simulation mode.
-	/////////////////////////////
 	iconnection = (GPIConnection*)*connection;
 	if(iconnection->simulation)
 		return GP_NO_ERROR;
 
 	// Check for disconnected.
-	//////////////////////////
 	if(iconnection->connectState == GPI_DISCONNECTED)
 		Error(connection, GP_PARAMETER_ERROR, "The connection has already been disconnected.");
 
@@ -1558,28 +1482,23 @@ GPResult gpDenyBuddyRequest(
 	GPIProfile * pProfile;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Check for simulation mode.
-	/////////////////////////////
 	iconnection = (GPIConnection*)*connection;
 	if(iconnection->simulation)
 		return GP_NO_ERROR;
 
 	// Check for disconnected.
-	//////////////////////////
 	if(iconnection->connectState == GPI_DISCONNECTED)
 		Error(connection, GP_PARAMETER_ERROR, "The connection has already been disconnected.");
 
 	// Get the profile.
-	///////////////////
 	if(!gpiGetProfile(connection, profile, &pProfile))
 		return GP_NO_ERROR;
 
 	// freeclear the sig if no more requests.
-	////////////////////////////////////
 	pProfile->requestCount--;
 	if(!iconnection->infoCaching && (pProfile->requestCount <= 0))
 	{
@@ -1599,16 +1518,13 @@ GPResult gpGetNumBuddies(
 	GPIConnection * iconnection;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Get the connection object.
-	/////////////////////////////
 	iconnection = (GPIConnection *)*connection;
 
 	// Check for simulation mode.
-	/////////////////////////////
 	if(iconnection->simulation)
 	{
 		*numBuddies = 0;
@@ -1616,7 +1532,6 @@ GPResult gpGetNumBuddies(
 	}
 
 	// Set the number of buddies.
-	/////////////////////////////
 	*numBuddies = iconnection->profileList.numBuddies;
 
 	return GP_NO_ERROR;
@@ -1634,41 +1549,36 @@ GPResult gpGetBuddyStatus(
 	GPIProfile * profile;
 	
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Get the connection object.
-	/////////////////////////////
 	iconnection = (GPIConnection *)*connection;
 
 	// Check for simulation mode.
-	/////////////////////////////
 	if(iconnection->simulation)
 	{
-		memset(status, 0, sizeof(GPBuddyStatus));
+		if(status != NULL)
+			memset(status, 0, sizeof(GPBuddyStatus));
 		return GP_NO_ERROR;
 	}
 
 	// Check for a NULL status.
-	///////////////////////////
 	if(status == NULL)
 		Error(connection, GP_PARAMETER_ERROR, "Invalid status.");
 
 	// Check the buddy index.
-	/////////////////////////
 	num = iconnection->profileList.numBuddies;
 	if((index < 0) || (index >= num))
 		Error(connection, GP_PARAMETER_ERROR, "Invalid index.");
 
 	// Find the buddy with this index.
-	//////////////////////////////////
 	profile = gpiFindBuddy(connection, index);
 	if(!profile)
 		Error(connection, GP_PARAMETER_ERROR, "Invalid index.");
 
 	
-	assert(profile->buddyStatus);
+	GS_ASSERT(profile->buddyStatus);
 	status->profile = (GPProfile)profile->profileId;
 	status->status = profile->buddyStatus->status;
 #ifndef GSI_UNICODE
@@ -1685,12 +1595,12 @@ GPResult gpGetBuddyStatus(
 
 #else
 	if(profile->buddyStatus->statusString)
-		UTF8ToUCS2String(profile->buddyStatus->statusString, status->statusString);
+		UTF8ToUCSString(profile->buddyStatus->statusString, status->statusString);
 	else
 		status->statusString[0] = '\0';
 
 	if(profile->buddyStatus->locationString)
-		UTF8ToUCS2String(profile->buddyStatus->locationString, status->locationString);
+		UTF8ToUCSString(profile->buddyStatus->locationString, status->locationString);
 	else
 		status->locationString[0] = '\0';
 
@@ -1717,16 +1627,13 @@ GPResult gpGetBuddyStatusInfo(
 	GPIBuddyStatusInfo * buddyStatusInfo;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Get the connection object.
-	/////////////////////////////
 	iconnection = (GPIConnection *)*connection;
 
 	// Check for simulation mode.
-	/////////////////////////////
 	if(iconnection->simulation)
 	{
 		memset(statusInfo, 0, sizeof(GPBuddyStatusInfo));
@@ -1734,18 +1641,15 @@ GPResult gpGetBuddyStatusInfo(
 	}
 
 	// Check for a NULL status.
-	///////////////////////////
 	if(statusInfo == NULL)
 		Error(connection, GP_PARAMETER_ERROR, "Invalid status.");
 
 	// Check the buddy index.
-	/////////////////////////
 	num = iconnection->profileList.numBuddies;
 	if((index < 0) || (index >= num))
 		Error(connection, GP_PARAMETER_ERROR, "Invalid index.");
 
 	// Find the buddy with this index.
-	//////////////////////////////////
 	profile = gpiFindBuddy(connection, index);
 	if(!profile)
 		Error(connection, GP_PARAMETER_ERROR, "Invalid index.");
@@ -1753,7 +1657,7 @@ GPResult gpGetBuddyStatusInfo(
 	
 	buddyStatus = profile->buddyStatus;
 	buddyStatusInfo = profile->buddyStatusInfo;
-	assert(buddyStatus || buddyStatusInfo);
+	GS_ASSERT(buddyStatus || buddyStatusInfo);
 
 	statusInfo->profile = (GPProfile)profile->profileId;
 	if (buddyStatus)
@@ -1769,7 +1673,7 @@ GPResult gpGetBuddyStatusInfo(
 		statusInfo->gameMapName[0] = '\0';
 #else
 		if(buddyStatus->statusString)
-			UTF8ToUCS2String(buddyStatus->statusString, statusInfo->richStatus);
+			UTF8ToUCSString(buddyStatus->statusString, statusInfo->richStatus);
 		else
 			statusInfo->richStatus[0] = '\0';
 		statusInfo->gameType[0] = '\0';
@@ -1799,10 +1703,10 @@ GPResult gpGetBuddyStatusInfo(
 		strzcpy(statusInfo->gameVariant, buddyStatusInfo->gameVariant, GP_STATUS_BASIC_STR_LEN);
 		strzcpy(statusInfo->gameMapName, buddyStatusInfo->gameMapName, GP_STATUS_BASIC_STR_LEN);
 #else
-		UTF8ToUCS2String(buddyStatusInfo->richStatus, statusInfo->richStatus);
-		UTF8ToUCS2String(buddyStatusInfo->gameType, statusInfo->gameType);
-		UTF8ToUCS2String(buddyStatusInfo->gameVariant, statusInfo->gameVariant);
-		UTF8ToUCS2String(buddyStatusInfo->gameMapName, statusInfo->gameMapName);
+		UTF8ToUCSString(buddyStatusInfo->richStatus, statusInfo->richStatus);
+		UTF8ToUCSString(buddyStatusInfo->gameType, statusInfo->gameType);
+		UTF8ToUCSString(buddyStatusInfo->gameVariant, statusInfo->gameVariant);
+		UTF8ToUCSString(buddyStatusInfo->gameMapName, statusInfo->gameMapName);
 #endif
 	}
 	
@@ -1821,27 +1725,22 @@ GPResult gpSetBuddyAddr(
 	GPIProfile * profile;
 	
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Get the connection object.
-	/////////////////////////////
 	iconnection = (GPIConnection *)*connection;
 
 	// Check for simulation mode.
-	/////////////////////////////
 	if(iconnection->simulation)
 		return GP_NO_ERROR;
 
 	// Check the buddy index.
-	/////////////////////////
 	num = iconnection->profileList.numBuddies;
 	if((index < 0) || (index >= num))
 		Error(connection, GP_PARAMETER_ERROR, "Invalid index.");
 	
 	// Find the buddy with this index.
-	//////////////////////////////////
 	profile = gpiFindBuddy(connection, index);
 	if(!profile)
 		Error(connection, GP_PARAMETER_ERROR, "Invalid index.");
@@ -1867,16 +1766,13 @@ GPResult gpGetBuddyIndex(
 	GPIConnection * iconnection;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Get the connection object.
-	/////////////////////////////
 	iconnection = (GPIConnection *)*connection;
 
 	// Check for simulation mode.
-	/////////////////////////////
 	if(iconnection->simulation)
 	{
 		*index = 0;
@@ -1884,7 +1780,6 @@ GPResult gpGetBuddyIndex(
 	}
 
 	// Get the index.
-	/////////////////
 	if(gpiGetProfile(connection, profile, &pProfile) && pProfile->buddyStatus)
 		*index = pProfile->buddyStatus->buddyIndex;
 	else if (gpiGetProfile(connection, profile, &pProfile) && pProfile->buddyStatusInfo)
@@ -1904,21 +1799,17 @@ int gpIsBuddy(
 	GPIConnection * iconnection;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return 0;
 
 	// Get the connection object.
-	/////////////////////////////
 	iconnection = (GPIConnection *)*connection;
 
 	// Check for simulation mode.
-	/////////////////////////////
 	if(iconnection->simulation)
 		return 0;
 
 	// Get the index.
-	/////////////////
 	if(gpiGetProfile(connection, profile, &pProfile) && pProfile->buddyStatus)
 		return 1;
 	else if (gpiGetProfile(connection, profile, &pProfile) &&pProfile->buddyStatusInfo)
@@ -1935,16 +1826,13 @@ int gpIsBuddyConnectionOpen(
 	GPIConnection * iconnection;
 	GPIPeer *aPeer;
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return 0;
 
 	// Get the connection object.
-	/////////////////////////////
 	iconnection = (GPIConnection *)*connection;
 
 	// Check for simulation mode.
-	/////////////////////////////
 	if(iconnection->simulation)
 		return 0;
 
@@ -1961,29 +1849,30 @@ GPResult gpDeleteBuddy(
   GPProfile profile
 )
 {
+	// On the PS3 the friend list can only be manipulated via NP (the GP list will
+	//  sync accordingly).
+#ifdef _PS3
+	Error(connection, GP_PARAMETER_ERROR, "gpDeleteBuddy is not available on PS3 - NP list must be manipulated directly and GP list will sync accordingly.");
+#endif
+
 	GPIConnection * iconnection;
 	
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Get the connection object.
-	/////////////////////////////
 	iconnection = (GPIConnection *)*connection;
 
 	// Check for simulation mode.
-	/////////////////////////////
 	if(iconnection->simulation)
 		return GP_NO_ERROR;
 
 	// Check for disconnected.
-	//////////////////////////
 	if(iconnection->connectState == GPI_DISCONNECTED)
 		Error(connection, GP_PARAMETER_ERROR, "The connection has already been disconnected.");
 
 	// Delete the buddy.
-	////////////////////
 	CHECK_RESULT(gpiDeleteBuddy(connection, profile, GPITrue));
 
 	return GP_NO_ERROR;
@@ -1994,29 +1883,30 @@ GPResult gpAddToBlockedList(
   GPProfile profile
 )
 {
+	// On the PS3 the block list can only be manipulated via NP (the GP list will
+	//  sync accordingly).
+#ifdef _PS3
+	Error(connection, GP_PARAMETER_ERROR, "gpAddToBlockedList is not available on PS3 - NP list must be manipulated directly and GP list will sync accordingly.");
+#endif
+
     GPIConnection * iconnection;
 
     // Error check.
-    ///////////////
     if((connection == NULL) || (*connection == NULL))
         return GP_PARAMETER_ERROR;
 
     // Get the connection object.
-    /////////////////////////////
     iconnection = (GPIConnection *)*connection;
 
     // Check for disconnected.
-    //////////////////////////
     if(iconnection->connectState == GPI_DISCONNECTED)
         Error(connection, GP_PARAMETER_ERROR, "The connection has already been disconnected.");
 
     // Check for simulation mode.
-    /////////////////////////////
     if(iconnection->simulation)
         return GP_NO_ERROR;
     
-    // Add em to the internal list - remove buddy status if already a buddy
-    ///////////////////////////////////////////////////////////////////////
+    // Add them to the internal list and remove buddy status if already a buddy.
     return gpiAddToBlockedList(connection, profile);
 }
 
@@ -2025,29 +1915,29 @@ GPResult gpRemoveFromBlockedList(
   GPProfile profile
 )
 {
+	// On PS3 the block list can only be manipulated via NP (the GP list will sync accordingly)
+#ifdef _PS3
+	Error(connection, GP_PARAMETER_ERROR, "gpRemoveFromBlockedList is not available on PS3 - NP list must be manipulated directly and GP list will sync accordingly.");
+#endif
+
     GPIConnection * iconnection;
 
     // Error check.
-    ///////////////
     if((connection == NULL) || (*connection == NULL))
         return GP_PARAMETER_ERROR;
 
     // Get the connection object.
-    /////////////////////////////
     iconnection = (GPIConnection *)*connection;
 
     // Check for disconnected.
-    //////////////////////////
     if(iconnection->connectState == GPI_DISCONNECTED)
         Error(connection, GP_PARAMETER_ERROR, "The connection has already been disconnected.");
 
     // Check for simulation mode.
-    /////////////////////////////
     if(iconnection->simulation)
         return GP_NO_ERROR;
 
-    // Remove blocked association from internal list if it's there
-    //////////////////////////////////////////////////////////////
+    // Remove blocked association from internal list if it's there.
     return gpiRemoveFromBlockedList(connection, profile);
 }
 
@@ -2059,24 +1949,20 @@ GPResult gpGetNumBlocked(
     GPIConnection * iconnection;
 
     // Error check.
-    ///////////////
     if((connection == NULL) || (*connection == NULL))
         return GP_PARAMETER_ERROR;
 
     // Get the connection object.
-    /////////////////////////////
     iconnection = (GPIConnection *)*connection;
 
     // Check for simulation mode.
-    /////////////////////////////
     if(iconnection->simulation)
     {
         *numBlocked = 0;
         return GP_NO_ERROR;
     }
 
-    // Set the number of blocked profiles
-    /////////////////////////////////////
+    // Set the number of blocked profiles.
     *numBlocked = iconnection->profileList.numBlocked;
 
     return GP_NO_ERROR;
@@ -2093,32 +1979,26 @@ GPResult gpGetBlockedProfile(
     GPIProfile * pProfile;
 
     // Error check.
-    ///////////////
     if((connection == NULL) || (*connection == NULL))
         return GP_PARAMETER_ERROR;
 
     // Get the connection object.
-    /////////////////////////////
     iconnection = (GPIConnection *)*connection;
 
     // Check for simulation mode.
-    /////////////////////////////
     if(iconnection->simulation)
         return GP_NO_ERROR;
        
     // Check for a NULL profile.
-    ////////////////////////////
     if(profile == NULL)
         Error(connection, GP_PARAMETER_ERROR, "Invalid profile container");
 
     // Check the block index.
-    /////////////////////////
     num = iconnection->profileList.numBlocked;
     if((index < 0) || (index >= num))
         Error(connection, GP_PARAMETER_ERROR, "Invalid index.");
 
     // Find the blocked profile with this index.
-    ////////////////////////////////////////////
     pProfile = gpiFindBlockedProfile(connection, index);
     if(!pProfile)
         Error(connection, GP_PARAMETER_ERROR, "Invalid index.");
@@ -2137,21 +2017,17 @@ gsi_bool gpIsBlocked(
     GPIConnection * iconnection;
 
     // Error check.
-    ///////////////
     if((connection == NULL) || (*connection == NULL))
         return gsi_false;
 
     // Get the connection object.
-    /////////////////////////////
     iconnection = (GPIConnection *)*connection;
 
     // Check for simulation mode.
-    /////////////////////////////
     if(iconnection->simulation)
         return gsi_false;
 
     // Get the index.
-    /////////////////
     if(gpiGetProfile(connection, profile, &pProfile) && pProfile->blocked)
         return gsi_true;
 
@@ -2172,33 +2048,27 @@ GPResult gpSetStatusA(
 	int i;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Get the connection object.
-	/////////////////////////////
 	iconnection = (GPIConnection *)*connection;
 
 	// Check for simulation mode.
-	/////////////////////////////
 	if(iconnection->simulation)
 		return GP_NO_ERROR;
 
 	// Check for disconnected.
-	//////////////////////////
 	if(iconnection->connectState == GPI_DISCONNECTED)
 		Error(connection, GP_PARAMETER_ERROR, "The connection has already been disconnected.");
 
 	// Error check.
-	///////////////
 	if(statusString == NULL)
 		Error(connection, GP_PARAMETER_ERROR, "Invalid statusString.");
 	if(locationString == NULL)
 		Error(connection, GP_PARAMETER_ERROR, "Invalid locationString.");
 
 	// Replace backslashes with slashes.
-	////////////////////////////////////
 	strzcpy(statusStringFixed, statusString, GP_STATUS_STRING_LEN);
 	for(i = 0 ; statusStringFixed[i] ; i++)
 		if(statusStringFixed[i] == '\\')
@@ -2208,8 +2078,7 @@ GPResult gpSetStatusA(
 		if(locationStringFixed[i] == '\\')
 			locationStringFixed[i] = '/';
 
-	// Don't send it if its the same as the previous.
-	/////////////////////////////////////////////////
+	// Don't send Stauts if it's the same as the previous one.
 	if((status == iconnection->lastStatusState) &&
 	   (strcmp(statusStringFixed, iconnection->lastStatusString) == 0) &&
 	   (strcmp(locationStringFixed, iconnection->lastLocationString) == 0))
@@ -2218,18 +2087,16 @@ GPResult gpSetStatusA(
 	}
 
 	// Copy off the new status.
-	///////////////////////////
 	iconnection->lastStatusState = status;
 #ifndef GSI_UNICODE
 	strzcpy(iconnection->lastStatusString, statusStringFixed, GP_STATUS_STRING_LEN);
 	strzcpy(iconnection->lastLocationString, locationStringFixed, GP_LOCATION_STRING_LEN);
 #else
-	UTF8ToUCS2StringLen(iconnection->lastStatusString, iconnection->lastStatusString_W, GP_STATUS_STRING_LEN);
-	UTF8ToUCS2StringLen(iconnection->lastStatusString, iconnection->lastLocationString_W, GP_LOCATION_STRING_LEN);
+	UTF8ToUCSStringLen(iconnection->lastStatusString, iconnection->lastStatusString_W, GP_STATUS_STRING_LEN);
+	UTF8ToUCSStringLen(iconnection->lastStatusString, iconnection->lastLocationString_W, GP_LOCATION_STRING_LEN);
 #endif
 
 	// Send the new status.
-	///////////////////////
 	gpiAppendStringToBuffer(connection, &iconnection->outputBuffer, "\\status\\");
 	gpiAppendIntToBuffer(connection, &iconnection->outputBuffer, status);
 	gpiAppendStringToBuffer(connection, &iconnection->outputBuffer, "\\sesskey\\");
@@ -2244,16 +2111,18 @@ GPResult gpSetStatusA(
 }
 #ifdef GSI_UNICODE
 GPResult gpSetStatusW(
-  GPConnection * connection,
-  GPEnum status,
-  const unsigned short statusString[GP_STATUS_STRING_LEN],
-  const unsigned short locationString[GP_LOCATION_STRING_LEN]
+			  GPConnection * connection,
+			  GPEnum status,
+			  const gsi_char statusString[GP_STATUS_STRING_LEN],
+			  const gsi_char locationString[GP_LOCATION_STRING_LEN]
 )
 {
 	char statusString_A[GP_STATUS_STRING_LEN];
 	char locationString_A[GP_LOCATION_STRING_LEN];
-	UCS2ToUTF8String(statusString, statusString_A);
-	UCS2ToUTF8String(locationString, locationString_A);
+	
+	UCSToUTF8String(statusString, statusString_A);
+	UCSToUTF8String(locationString, locationString_A);
+	
 	return gpSetStatusA(connection, status, statusString_A, locationString_A);
 }
 #endif
@@ -2292,26 +2161,21 @@ GPResult gpSetStatusInfoA(
 
 	GS_ASSERT(connection != NULL);
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Get the connection object.
-	/////////////////////////////
 	iconnection = (GPIConnection *)*connection;
 
 	// Check for simulation mode.
-	/////////////////////////////
 	if(iconnection->simulation)
 		return GP_NO_ERROR;
 
 	// Check for disconnected.
-	//////////////////////////
 	if(iconnection->connectState == GPI_DISCONNECTED)
 		Error(connection, GP_PARAMETER_ERROR, "The connection has already been disconnected.");
 
 	// Error check.
-	///////////////
 	GS_ASSERT(richStatus != NULL);
 	if (richStatus == NULL)
 		Error(connection, GP_PARAMETER_ERROR, "Invalid richStatus.");
@@ -2336,7 +2200,6 @@ GPResult gpSetStatusInfoA(
 		strncpy(gameMapNameFixed, gameMapName, GP_STATUS_BASIC_STR_LEN);
 
 	// Don't send it if its the same as the previous.
-	/////////////////////////////////////////////////
 	if((statusState == iconnection->lastStatusState) &&
 		(strcmp(richStatus, iconnection->richStatus) == 0) &&
 		(strcmp(gameTypeFixed, iconnection->gameType) == 0) &&
@@ -2410,19 +2273,20 @@ GPResult gpSetStatusInfoW(
 						  unsigned short queryPort,
 						  unsigned short hostPort,
 						  unsigned int sessionFlags,
-						  const unsigned short *richStatus,
+						  const gsi_char *richStatus,
 						  int richStatusLen,
-						  const unsigned short *gameType,
+						  const gsi_char *gameType,
 						  int gameTypeLen,
-						  const unsigned short *gameVariant,
+						  const gsi_char *gameVariant,
 						  int gameVariantLen,
-						  const unsigned short *gameMapName,
+						  const gsi_char *gameMapName,
 						  int gameMapNameLen
 						  )
 {
 	char *richStatus_A, *gameType_A, *gameVariant_A, *gameMapName_A;
 	GPResult aResult;
 	GPIConnection * iconnection;
+	
 	GS_ASSERT(connection != NULL);
 	GS_ASSERT(richStatusLen <= GP_RICH_STATUS_LEN);
 	GS_ASSERT(gameTypeLen <= GP_STATUS_BASIC_STR_LEN);
@@ -2438,21 +2302,21 @@ GPResult gpSetStatusInfoW(
 		Error(connection, GP_PARAMETER_ERROR, "Invalid richStatus.");
 
 	if (richStatusLen <= GP_RICH_STATUS_LEN)
-		richStatus_A = UCS2ToUTF8StringAlloc(richStatus);
+		richStatus_A = UCSToUTF8StringAlloc(richStatus);
 	else 
-		richStatus_A = UCS2ToUTF8StringAlloc((UCS2String)_T(""));
+		richStatus_A = UCSToUTF8StringAlloc((UCSStringType)_T(""));
 	if (gameType && (gameTypeLen <= GP_STATUS_BASIC_STR_LEN))
-		gameType_A = UCS2ToUTF8StringAlloc(gameType);
+		gameType_A = UCSToUTF8StringAlloc(gameType);
 	else 
-		gameType_A = UCS2ToUTF8StringAlloc((UCS2String)_T(""));
+		gameType_A = UCSToUTF8StringAlloc((UCSStringType)_T(""));
 	if (gameVariant && (gameVariantLen <= GP_STATUS_BASIC_STR_LEN))
-		gameVariant_A = UCS2ToUTF8StringAlloc(gameVariant);
+		gameVariant_A = UCSToUTF8StringAlloc(gameVariant);
 	else 
-		gameVariant_A = UCS2ToUTF8StringAlloc((UCS2String)_T(""));
+		gameVariant_A = UCSToUTF8StringAlloc((UCSStringType)_T(""));
 	if (gameMapName && (gameMapNameLen <= GP_STATUS_BASIC_STR_LEN))
-		gameMapName_A = UCS2ToUTF8StringAlloc(gameMapName);
+		gameMapName_A = UCSToUTF8StringAlloc(gameMapName);
 	else 
-		gameMapName_A = UCS2ToUTF8StringAlloc((UCS2String)_T(""));
+		gameMapName_A = UCSToUTF8StringAlloc((UCSStringType)_T(""));
 
 	if ((statusState == iconnection->lastStatusState) &&
 		(sessionFlags == iconnection->sessionFlags) &&
@@ -2488,21 +2352,17 @@ GPResult gpAddStatusInfoKeyA(GPConnection *connection, const char *keyName, cons
 	GPIConnection * iconnection;
 
 	// Error check.
-	///////////////
 	if ((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Get the connection object.
-	/////////////////////////////
 	iconnection = (GPIConnection *)*connection;
 
 	// Check for simulation mode.
-	/////////////////////////////
 	if ( iconnection->simulation )
 		return GP_NO_ERROR;
 
 	// Check for disconnected.
-	//////////////////////////
 	if (iconnection->connectState == GPI_DISCONNECTED)
 		Error(connection, GP_PARAMETER_ERROR, "The connection has already been disconnected.");
 
@@ -2510,14 +2370,17 @@ GPResult gpAddStatusInfoKeyA(GPConnection *connection, const char *keyName, cons
 }
 
 #ifdef GSI_UNICODE
-GPResult gpAddStatusInfoKeyW(GPConnection *connection, const unsigned short *keyName, const unsigned short *keyValue)
+GPResult gpAddStatusInfoKeyW(GPConnection *connection, const gsi_char *keyName, const gsi_char *keyValue)
 {
 	GPResult aResult;
-	char *keyName_A = UCS2ToUTF8StringAlloc(keyName);
-	char *keyValue_A = UCS2ToUTF8StringAlloc(keyValue);
+	char *keyName_A = UCSToUTF8StringAlloc(keyName);
+	char *keyValue_A = UCSToUTF8StringAlloc(keyValue);
+	
 	aResult = gpAddStatusInfoKeyA(connection, keyName_A, keyValue_A);
+	
 	gsifree(keyName_A);
 	gsifree(keyValue_A);
+	
 	return aResult;
 }
 #endif
@@ -2527,21 +2390,17 @@ GPResult gpSetStatusInfoKeyA(GPConnection *connection, const char *keyName, cons
 	GPIConnection * iconnection;
 
 	// Error check.
-	///////////////
 	if ((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Get the connection object.
-	/////////////////////////////
 	iconnection = (GPIConnection *)*connection;
 
 	// Check for simulation mode.
-	/////////////////////////////
 	if ( iconnection->simulation )
 		return GP_NO_ERROR;
 
 	// Check for disconnected.
-	//////////////////////////
 	if (iconnection->connectState == GPI_DISCONNECTED)
 		Error(connection, GP_PARAMETER_ERROR, "The connection has already been disconnected.");
 
@@ -2549,14 +2408,17 @@ GPResult gpSetStatusInfoKeyA(GPConnection *connection, const char *keyName, cons
 }
 
 #ifdef GSI_UNICODE
-GPResult gpSetStatusInfoKeyW(GPConnection *connection, const unsigned short *keyName, const unsigned short *keyValue)
+GPResult gpSetStatusInfoKeyW(GPConnection *connection, const gsi_char *keyName, const gsi_char *keyValue)
 {
 	GPResult aResult;
-	char *keyName_A = UCS2ToUTF8StringAlloc(keyName);
-	char *keyValue_A = UCS2ToUTF8StringAlloc(keyValue);
+	char *keyName_A = UCSToUTF8StringAlloc(keyName);
+	char *keyValue_A = UCSToUTF8StringAlloc(keyValue);
+	
 	aResult = gpSetStatusInfoKeyA(connection, keyName_A, keyValue_A);
+	
 	gsifree(keyName_A);
 	gsifree(keyValue_A);
+	
 	return aResult;
 }
 #endif
@@ -2566,21 +2428,17 @@ GPResult gpDelStatusInfoKeyA(GPConnection *connection, const char *keyName)
 	GPIConnection * iconnection;
 
 	// Error check.
-	///////////////
 	if ((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Get the connection object.
-	/////////////////////////////
 	iconnection = (GPIConnection *)*connection;
 
 	// Check for simulation mode.
-	/////////////////////////////
 	if ( iconnection->simulation )
 		return GP_NO_ERROR;
 
 	// Check for disconnected.
-	//////////////////////////
 	if (iconnection->connectState == GPI_DISCONNECTED)
 		Error(connection, GP_PARAMETER_ERROR, "The connection has already been disconnected.");
 
@@ -2588,12 +2446,15 @@ GPResult gpDelStatusInfoKeyA(GPConnection *connection, const char *keyName)
 }
 
 #ifdef GSI_UNICODE
-GPResult gpDelStatusInfoKeyW(GPConnection *connection, const unsigned short *keyName)
+GPResult gpDelStatusInfoKeyW(GPConnection *connection, const gsi_char *keyName)
 {
 	GPResult aResult;
-	char *keyName_A = UCS2ToUTF8StringAlloc(keyName);
+	char *keyName_A = UCSToUTF8StringAlloc(keyName);
+	
 	aResult = gpDelStatusInfoKeyA(connection, keyName_A);
+	
 	gsifree(keyName_A);
+	
 	return aResult;
 }
 #endif
@@ -2603,39 +2464,36 @@ GPResult gpGetStatusInfoKeyValA(GPConnection *connection, const char *keyName, c
 	GPIConnection * iconnection;
 
 	// Error check.
-	///////////////
 	if ((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Get the connection object.
-	/////////////////////////////
 	iconnection = (GPIConnection *)*connection;
 
 	// Check for simulation mode.
-	/////////////////////////////
 	if ( iconnection->simulation )
 		return GP_NO_ERROR;
 
 	// Check for disconnected.
-	//////////////////////////
 	if (iconnection->connectState == GPI_DISCONNECTED)
 		Error(connection, GP_PARAMETER_ERROR, "The connection has already been disconnected.");
 
 	return gpiStatusInfoGetKey(connection, iconnection->extendedInfoKeys, keyName, keyValue);
 }
 #ifdef GSI_UNICODE
-GPResult gpGetStatusInfoKeyValW(GPConnection *connection, const unsigned short *keyName, unsigned short **keyValue)
+GPResult gpGetStatusInfoKeyValW(GPConnection *connection, const gsi_char *keyName, gsi_char **keyValue)
 {
 	GPResult aResult;
 	char *keyValue_A;
 	
-	char *keyName_A = UCS2ToUTF8StringAlloc(keyName);
+	char *keyName_A = UCSToUTF8StringAlloc(keyName);
 	
 	aResult = gpGetStatusInfoKeyValA(connection, keyName_A, &keyValue_A);
-	*keyValue = UTF8ToUCS2StringAlloc(keyValue_A);
+	*keyValue = UTF8ToUC2StringAlloc(keyValue_A);
 
 	gsifree(keyName_A);
 	gsifree(keyValue_A);
+	
 	return aResult;
 }
 #endif
@@ -2649,26 +2507,21 @@ GPResult gpGetBuddyStatusInfoKeys(GPConnection *connection, int index, GPCallbac
 	GPResult aResult;
 	GPIPeerOp *aPeerOp;
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Check for no callback.
-	/////////////////////////
 	if(callback == NULL)
 		Error(connection, GP_PARAMETER_ERROR, "No callback.");
 
 	// Get the connection object.
-	/////////////////////////////
 	iconnection = (GPIConnection *)*connection;
 
 	// Check for simulation mode.
-	/////////////////////////////
 	if(iconnection->simulation)
 		return GP_NO_ERROR;
 
 	// Check for disconnected.
-	//////////////////////////
 	if(iconnection->connectState == GPI_DISCONNECTED)
 		Error(connection, GP_PARAMETER_ERROR, "The connection has already been disconnected.");
 
@@ -2706,26 +2559,21 @@ GPResult gpSendBuddyMessageA(
 	GPIConnection * iconnection;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Get the connection object.
-	/////////////////////////////
 	iconnection = (GPIConnection *)*connection;
 
 	// Check for simulation mode.
-	/////////////////////////////
 	if(iconnection->simulation)
 		return GP_NO_ERROR;
 
 	// Check for disconnected.
-	//////////////////////////
 	if(iconnection->connectState == GPI_DISCONNECTED)
 		Error(connection, GP_PARAMETER_ERROR, "The connection has already been disconnected.");
 
 	// Error check.
-	///////////////
 	if(message == NULL)
 		Error(connection, GP_PARAMETER_ERROR, "Invalid message.");
 
@@ -2735,16 +2583,19 @@ GPResult gpSendBuddyMessageA(
 GPResult gpSendBuddyMessageW(
   GPConnection * connection,
   GPProfile profile,
-  const unsigned short* message
+  const gsi_char* message
 )
 {
 	char* message_A;
 	GPResult result;
 
-	assert(message != NULL);
-	message_A = UCS2ToUTF8StringAlloc(message);						// convert to UTF8
-	result = gpSendBuddyMessageA(connection, profile, message_A);	// send
-	gsifree(message_A);	// free the converted string
+	GS_ASSERT(message != NULL);
+	
+	message_A = UCSToUTF8StringAlloc(message);						// Convert to UTF8.
+	result = gpSendBuddyMessageA(connection, profile, message_A);	// Send.
+	
+	gsifree(message_A);	// Free the converted string.
+	
 	return result;
 }
 #endif
@@ -2759,26 +2610,21 @@ GPResult gpSendBuddyUTMA(
 	GPIConnection * iconnection;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Get the connection object.
-	/////////////////////////////
 	iconnection = (GPIConnection *)*connection;
 
 	// Check for simulation mode.
-	/////////////////////////////
 	if(iconnection->simulation)
 		return GP_NO_ERROR;
 
 	// Check for disconnected.
-	//////////////////////////
 	if(iconnection->connectState == GPI_DISCONNECTED)
 		Error(connection, GP_PARAMETER_ERROR, "The connection has already been disconnected.");
 
 	// Error check.
-	///////////////
 	if(message == NULL)
 		Error(connection, GP_PARAMETER_ERROR, "Invalid message.");
 
@@ -2789,17 +2635,20 @@ GPResult gpSendBuddyUTMA(
 GPResult gpSendBuddyUTMW(
  GPConnection * connection,
  GPProfile profile,
- const unsigned short* message,
+ const gsi_char* message,
  int sendOption
 )
 {
 	char* message_A;
 	GPResult result;
 
-	assert(message != NULL);
-	message_A = UCS2ToUTF8StringAlloc(message);						// convert to UTF8
-	result = gpSendBuddyUTMA(connection, profile, message_A, sendOption);	// send
-	gsifree(message_A);	// free the converted string
+	GS_ASSERT(message != NULL);
+	
+	message_A = UCSToUTF8StringAlloc(message);								// Convert to UTF8.
+	result = gpSendBuddyUTMA(connection, profile, message_A, sendOption);	// Send.
+	
+	gsifree(message_A);	// Free the converted string.
+	
 	return result;
 }
 #endif
@@ -2815,26 +2664,21 @@ GPResult gpIsValidEmailA(
 	GPIConnection * iconnection;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Check for no callback.
-	/////////////////////////
 	if(callback == NULL)
 		Error(connection, GP_PARAMETER_ERROR, "No callback.");
 
 	// Check the length of the email.
-	/////////////////////////////////
 	if(strlen(email) >= GP_EMAIL_LEN)
 		Error(connection, GP_PARAMETER_ERROR, "Email too long.");
 
 	// Get the connection object.
-	/////////////////////////////
 	iconnection = (GPIConnection *)*connection;
 
 	// Check for simulation mode.
-	/////////////////////////////
 	if(iconnection->simulation)
 	{
 		GPIsValidEmailResponseArg arg;
@@ -2842,7 +2686,7 @@ GPResult gpIsValidEmailA(
 #ifndef GSI_UNICODE
 		strzcpy(arg.email, email, GP_EMAIL_LEN);
 #else
-		UTF8ToUCS2String(email, arg.email);
+		UTF8ToUCSString(email, arg.email);
 #endif
 		arg.isValid = GP_INVALID;
 		callback(connection, &arg, param);
@@ -2850,20 +2694,21 @@ GPResult gpIsValidEmailA(
 	}
 
 	// Do the validation.
-	/////////////////////
 	return gpiIsValidEmail(connection, email, blocking, callback, param);
 }
 #ifdef GSI_UNICODE
 GPResult gpIsValidEmailW(
-  GPConnection * connection,
-  const unsigned short email[GP_EMAIL_LEN],
-  GPEnum blocking,
-  GPCallback callback,
-  void * param
+			  GPConnection * connection,
+			  const gsi_char email[GP_EMAIL_LEN],
+			  GPEnum blocking,
+			  GPCallback callback,
+			  void * param
 )
 {
 	char email_A[GP_EMAIL_LEN];
-	UCS2ToAsciiString(email, email_A);
+	
+	UCSToAsciiString(email, email_A);
+	
 	return gpIsValidEmailA(connection, email_A, blocking,callback, param);
 }
 #endif
@@ -2880,31 +2725,25 @@ GPResult gpGetUserNicksA(
 	GPIConnection * iconnection;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Check for no callback.
-	/////////////////////////
 	if(callback == NULL)
 		Error(connection, GP_PARAMETER_ERROR, "No callback.");
 
 	// Check the length of the email.
-	/////////////////////////////////
 	if(strlen(email) >= GP_EMAIL_LEN)
 		Error(connection, GP_PARAMETER_ERROR, "Email too long.");
 
 	// Check the length of the password.
-	////////////////////////////////////
 	if(strlen(password) >= GP_PASSWORD_LEN)
 		Error(connection, GP_PARAMETER_ERROR, "Password too long.");
 
 	// Get the connection object.
-	/////////////////////////////
 	iconnection = (GPIConnection *)*connection;
 
 	// Check for simulation mode.
-	/////////////////////////////
 	if(iconnection->simulation)
 	{
 		GPGetUserNicksResponseArg arg;
@@ -2912,30 +2751,31 @@ GPResult gpGetUserNicksA(
 #ifndef GSI_UNICODE
 		strzcpy(arg.email, email, GP_EMAIL_LEN);
 #else
-		AsciiToUCS2String(email, arg.email);
+		AsciiToUCSString(email, arg.email);
 #endif
 		callback(connection, &arg, param);
 		return GP_NO_ERROR;
 	}
 
 	// Do the validation.
-	/////////////////////
 	return gpiGetUserNicks(connection, email, password, blocking, callback, param);
 }
 #ifdef GSI_UNICODE
 GPResult gpGetUserNicksW(
-  GPConnection * connection,
-  const unsigned short email[GP_EMAIL_LEN],
-  const unsigned short password[GP_PASSWORD_LEN],
-  GPEnum blocking,
-  GPCallback callback,
-  void * param
+			  GPConnection * connection,
+			  const gsi_char email[GP_EMAIL_LEN],
+			  const gsi_char password[GP_PASSWORD_LEN],
+			  GPEnum blocking,
+			  GPCallback callback,
+			  void * param
 )
 {
   char email_A[GP_EMAIL_LEN];
   char password_A[GP_PASSWORD_LEN];
-  UCS2ToAsciiString(email, email_A);
-  UCS2ToAsciiString(password, password_A);
+  
+  UCSToAsciiString(email, email_A);
+  UCSToAsciiString(password, password_A);
+  
   return gpGetUserNicksA(connection, email_A, password_A, blocking, callback, param);
 }
 #endif
@@ -2950,33 +2790,27 @@ GPResult gpSetInvitableGames(
 	int i;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Get the connection object.
-	/////////////////////////////
 	iconnection = (GPIConnection *)*connection;
 
 	// Check for simulation mode.
-	/////////////////////////////
 	if(iconnection->simulation)
 		return GP_NO_ERROR;
 
 	// Check for disconnected.
-	//////////////////////////
 	if(iconnection->connectState == GPI_DISCONNECTED)
 		Error(connection, GP_PARAMETER_ERROR, "The connection has already been disconnected.");
 
 	// Error check.
-	///////////////
 	if(numProductIDs < 0)
 		Error(connection, GP_PARAMETER_ERROR, "Invalid numProductIDs.");
 	if((numProductIDs > 0) && (productIDs == NULL))
 		Error(connection, GP_PARAMETER_ERROR, "Invalid productIDs.");
 
 	// Send the list.
-	/////////////////
 	gpiAppendStringToBuffer(connection, &iconnection->outputBuffer, "\\inviteto\\");
 	gpiAppendStringToBuffer(connection, &iconnection->outputBuffer, "\\sesskey\\");
 	gpiAppendIntToBuffer(connection, &iconnection->outputBuffer, iconnection->sessKey);
@@ -2991,6 +2825,68 @@ GPResult gpSetInvitableGames(
 
 	return GP_NO_ERROR;
 }
+#ifdef GSI_UNICODE
+GPResult gpInvitePlayerW(
+			  GPConnection * connection,
+			  GPProfile profile,
+			  int productID,
+			  const gsi_char location[GP_LOCATION_STRING_LEN]
+)
+{
+	char location_A[GP_LOCATION_STRING_LEN];
+	
+	UCSToAsciiString(location, location_A);
+	
+	return gpInvitePlayerA(connection, profile, productID, location_A);
+}
+#endif
+
+GPResult gpGetProfileBuddyList(
+	GPConnection* connection,
+	GPProfile profile,
+	int maxBuddies,
+	GPEnum blocking,
+	GPCallback callback,
+	void* param
+)
+{
+	GPIConnection* iconnection;
+
+	// Error check.
+	///////////////
+	if ((connection == NULL) || (*connection == NULL) || (profile == 0))
+		return GP_PARAMETER_ERROR;
+
+	// Check for no callback.
+	/////////////////////////
+	if (callback == NULL)
+		Error(connection, GP_PARAMETER_ERROR, "No callback.");
+
+	// Get the connection object.
+	/////////////////////////////
+	iconnection = (GPIConnection*)*connection;
+
+	// Check for disconnected.
+	//////////////////////////
+	if (iconnection->connectState == GPI_DISCONNECTED)
+		Error(connection, GP_PARAMETER_ERROR, "The connection has already been disconnected.");
+
+	// Check for simulation mode.
+	/////////////////////////////
+	if (iconnection->simulation)
+	{
+		GPGetProfileBuddyListArg arg;
+		memset(&arg, 0, sizeof(arg));
+		arg.profileQueried = profile;
+		callback(connection, &arg, param);
+		return GP_NO_ERROR;
+	}
+
+	// Start the request.
+	////////////////////
+	return gpiProfileBuddyList(connection, profile, maxBuddies, blocking, callback, param);
+}
+
 
 GPResult gpFindPlayers(
   GPConnection * connection,
@@ -3003,26 +2899,21 @@ GPResult gpFindPlayers(
 	GPIConnection * iconnection;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Check for no callback.
-	/////////////////////////
 	if(callback == NULL)
 		Error(connection, GP_PARAMETER_ERROR, "No callback.");
 
 	// Get the connection object.
-	/////////////////////////////
 	iconnection = (GPIConnection *)*connection;
 
 	// Check for disconnected.
-	//////////////////////////
 	if(iconnection->connectState == GPI_DISCONNECTED)
 		Error(connection, GP_PARAMETER_ERROR, "The connection has already been disconnected.");
 
 	// Check for simulation mode.
-	/////////////////////////////
 	if(iconnection->simulation)
 	{
 		GPFindPlayersResponseArg arg;
@@ -3035,7 +2926,6 @@ GPResult gpFindPlayers(
 	}
 
 	// Start the find.
-	//////////////////
 	return gpiFindPlayers(connection, productID, blocking, callback, param);
 }
 
@@ -3111,26 +3001,21 @@ GPResult gpGetReverseBuddies(
 	GPIConnection * iconnection;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Check for no callback.
-	/////////////////////////
 	if(callback == NULL)
 		Error(connection, GP_PARAMETER_ERROR, "No callback.");
 
 	// Get the connection object.
-	/////////////////////////////
 	iconnection = (GPIConnection *)*connection;
 
 	// Check for disconnected.
-	//////////////////////////
 	if(iconnection->connectState == GPI_DISCONNECTED)
 		Error(connection, GP_PARAMETER_ERROR, "The connection has already been disconnected.");
 
 	// Check for simulation mode.
-	/////////////////////////////
 	if(iconnection->simulation)
 	{
 		GPGetReverseBuddiesResponseArg arg;
@@ -3140,11 +3025,10 @@ GPResult gpGetReverseBuddies(
 	}
 
 	// Start the search.
-	////////////////////
 	return gpiOthersBuddy(connection, blocking, callback, param);
 }
 
-GPResult gpGetReversBuddiesList( GPConnection * connection,
+GPResult gpGetReverseBuddiesList( GPConnection * connection,
 	GPProfile *targets, int numOfTargets, 
 	GPEnum blocking,
 	GPCallback callback,
@@ -3153,26 +3037,21 @@ GPResult gpGetReversBuddiesList( GPConnection * connection,
 	GPIConnection * iconnection;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Check for no callback.
-	/////////////////////////
 	if(callback == NULL)
 		Error(connection, GP_PARAMETER_ERROR, "No callback.");
 
 	// Get the connection object.
-	/////////////////////////////
 	iconnection = (GPIConnection *)*connection;
 
 	// Check for disconnected.
-	//////////////////////////
 	if(iconnection->connectState == GPI_DISCONNECTED)
 		Error(connection, GP_PARAMETER_ERROR, "The connection has already been disconnected.");
 
 	// Check for simulation mode.
-	/////////////////////////////
 	if(iconnection->simulation)
 	{
 		GPGetReverseBuddiesListResponseArg arg;
@@ -3182,7 +3061,6 @@ GPResult gpGetReversBuddiesList( GPConnection * connection,
 	}
 
 	// Start the search.
-	////////////////////
 	return gpiOthersBuddyList(connection, targets, numOfTargets, blocking, callback, param);
 
 }
@@ -3196,33 +3074,21 @@ GPResult gpRevokeBuddyAuthorization(
 	GPIConnection * iconnection;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Get the connection object.
-	/////////////////////////////
 	iconnection = (GPIConnection *)*connection;
 
 	// Check for simulation mode.
-	/////////////////////////////
 	if(iconnection->simulation)
 		return GP_NO_ERROR;
 
 	// Check for disconnected.
-	//////////////////////////
 	if(iconnection->connectState == GPI_DISCONNECTED)
 		Error(connection, GP_PARAMETER_ERROR, "The connection has already been disconnected.");
 
-	// Send the invite.
-	///////////////////
-	gpiAppendStringToBuffer(connection, &iconnection->outputBuffer, "\\revoke\\");
-	gpiAppendStringToBuffer(connection, &iconnection->outputBuffer, "\\sesskey\\");
-	gpiAppendIntToBuffer(connection, &iconnection->outputBuffer, iconnection->sessKey);
-	gpiAppendStringToBuffer(connection, &iconnection->outputBuffer, "\\profileid\\");
-	gpiAppendIntToBuffer(connection, &iconnection->outputBuffer, profile);
-	gpiAppendStringToBuffer(connection, &iconnection->outputBuffer, "\\final\\");
-
+	gpiRevokeBuddyAuthorization(connection, profile);
 	return GP_NO_ERROR;
 }
 
@@ -3235,12 +3101,10 @@ GPResult gpGetLoginTicket(
 	GPIConnection * iconnection;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Get the connection object.
-	/////////////////////////////
 	iconnection = (GPIConnection *)*connection;
 	memcpy(loginTicket, iconnection->loginTicket, GP_LOGIN_TICKET_LEN);
 	return GP_NO_ERROR;
@@ -3254,24 +3118,19 @@ GPResult gpSetQuietMode(
 	GPIConnection * iconnection;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Get the connection object.
-	/////////////////////////////
 	iconnection = (GPIConnection *)*connection;
 
 	// Store the flags locally.
-	///////////////////////////
 	iconnection->quietModeFlags = flags;
 
 	// Check for a connection.
-	//////////////////////////
 	if(iconnection->connectState == GPI_CONNECTED)
 	{
 		// Send the flags.
-		//////////////////
 		gpiAppendStringToBuffer(connection, &iconnection->outputBuffer, "\\quiet\\");
 		gpiAppendIntToBuffer(connection, &iconnection->outputBuffer, iconnection->quietModeFlags);
 		gpiAppendStringToBuffer(connection, &iconnection->outputBuffer, "\\sesskey\\");
@@ -3289,14 +3148,17 @@ void gpSetInfoCacheFilenameA(
 {
 	gpiSetInfoCacheFilename(filename);
 }
-void gpSetInfoCacheFilenameW(
-  const unsigned short * filename
-)
+
+#ifdef GSI_UNICODE
+void gpSetInfoCacheFilenameW( const gsi_char * filename )
 {
-	char* filename_A = UCS2ToUTF8StringAlloc(filename);
+	char* filename_A = UCSToUTF8StringAlloc(filename);
+	
 	gpiSetInfoCacheFilename(filename_A);
+	
 	gsifree(filename_A);
 }
+#endif
 
 static GPResult gpiAddSendingFileA(
   GPConnection * connection,
@@ -3310,7 +3172,6 @@ static GPResult gpiAddSendingFileA(
 	gsi_time modTime = 0;
 
 	// Check for a bad path or name.
-	////////////////////////////////
 	if(!path && !name)
 		Error(connection, GP_PARAMETER_ERROR, "File missing path and name.");
 	if(path && !path[0])
@@ -3319,12 +3180,11 @@ static GPResult gpiAddSendingFileA(
 		Error(connection, GP_PARAMETER_ERROR, "Empty name.");
 
 	// Check that the file exists and is readable.
-	//////////////////////////////////////////////
 	if(path)
 	{
 		FILE * fileVerify;
 
-		fileVerify = fopen(path, "r");
+		fileVerify = gsifopen(path, "r");
 		if(!fileVerify)
 			Error(connection, GP_PARAMETER_ERROR, "Can't find file.");
 
@@ -3338,7 +3198,6 @@ static GPResult gpiAddSendingFileA(
 	}
 
 	// Validate the name.
-	/////////////////////
 	if(name)
 	{
 		size_t len;
@@ -3355,20 +3214,17 @@ static GPResult gpiAddSendingFileA(
 			Error(connection, GP_PARAMETER_ERROR, "Invalid character in filename.");
 	}
 	// The name is the path's title.
-	////////////////////////////////
 	else
 	{
 		const char * str;
 
 		// Find the end of the path.
-		////////////////////////////
 		name = strrchr(path, '/');
 		str = strrchr(path, '\\');
 		if(str > name)
 			name = str;
 
 		// Point the name at the title.
-		///////////////////////////////
 		if(name)
 			name++;
 		else
@@ -3376,18 +3232,15 @@ static GPResult gpiAddSendingFileA(
 	}
 
 	// Add this to the list.
-	////////////////////////
 	file = gpiAddFileToTransfer(transfer, path, name);
 	if(!file)
 		Error(connection, GP_MEMORY_ERROR, "Out of memory.");
 
 	// Set the size and time.
-	/////////////////////////
 	file->size = size;
 	file->modTime = modTime;
 
 	// Update the total size.
-	/////////////////////////
 	transfer->totalSize += size;
 
 	return GP_NO_ERROR;
@@ -3396,15 +3249,18 @@ static GPResult gpiAddSendingFileA(
 static GPResult gpiAddSendingFileW(
   GPConnection * connection,
   GPITransfer * transfer,
-  const unsigned short * path,
-  const unsigned short * name
+  const gsi_char * path,
+  const gsi_char * name
 )
 {
-	char* path_A = UCS2ToUTF8StringAlloc(path);
-	char* name_A = UCS2ToUTF8StringAlloc(name);
+	char* path_A = UCSToUTF8StringAlloc(path);
+	char* name_A = UCSToUTF8StringAlloc(name);
+	
 	GPResult result = gpiAddSendingFileA(connection, transfer, path_A, name_A);
+	
 	gsifree(path_A);
 	gsifree(name_A);
+	
 	return result;
 }
 #endif
@@ -3427,42 +3283,34 @@ GPResult gpSendFilesA(
 	int numFiles;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Get the connection object.
-	/////////////////////////////
 	iconnection = (GPIConnection *)*connection;
 
 	// Check for simulation mode.
-	/////////////////////////////
 	if(iconnection->simulation)
 		Error(connection, GP_PARAMETER_ERROR, "Cannot send files in simulation mode.");
 
 	// Check for disconnected.
-	//////////////////////////
 	if(iconnection->connectState == GPI_DISCONNECTED)
 		Error(connection, GP_PARAMETER_ERROR, "The connection has already been disconnected.");
 
 	// Check other stuff.
-	/////////////////////
 	if(!callback)
 		Error(connection, GP_PARAMETER_ERROR, "No callback.");
 	if(!iconnection->callbacks[GPI_TRANSFER_CALLBACK].callback)
 		Error(connection, GP_PARAMETER_ERROR, "No callback.");
 
 	// No message is an empty message.
-	//////////////////////////////////
 	if(!message)
 		message = "";
 
 	// Create the transfer object.
-	//////////////////////////////
 	CHECK_RESULT(gpiNewSenderTransfer(connection, &pTransfer, profile));
 
 	// Fill in the message.
-	///////////////////////
 	pTransfer->message = goastrdup(message);
 	if(!pTransfer->message)
 	{
@@ -3471,7 +3319,6 @@ GPResult gpSendFilesA(
 	}
 
 	// Add all the files.
-	/////////////////////
 	numFiles = 0;
 	do
 	{
@@ -3500,7 +3347,6 @@ GPResult gpSendFilesA(
 	while(name || path);
 
 	// Check that we got at least 1 file.
-	/////////////////////////////////////
 	if(!ArrayLength(pTransfer->files))
 	{
 		gpiFreeTransfer(connection, pTransfer);
@@ -3508,7 +3354,6 @@ GPResult gpSendFilesA(
 	}
 
 	// Ping the receiver.
-	/////////////////////
 	result = gpiSendBuddyMessage(connection, profile, GPI_BM_PING, "1", 0, NULL);
 	if(result != GP_NO_ERROR)
 	{
@@ -3517,19 +3362,20 @@ GPResult gpSendFilesA(
 	}
 
 	// Successful so far.
-	/////////////////////
 	if(transfer)
 		*transfer = pTransfer->localID;
 
 	return GP_NO_ERROR;
 }
+
+#ifdef GSI_UNICODE   //
 GPResult gpSendFilesW(
-  GPConnection * connection,
-  GPTransfer * transfer,
-  GPProfile profile,
-  const unsigned short* message,
-  gpSendFilesCallback callback,
-  void * param
+			  GPConnection * connection,
+			  GPTransfer * transfer,
+			  GPProfile profile,
+			  const gsi_char* message,
+			  gpSendFilesCallback callback,
+			  void * param
 )
 {
 	char* message_A = NULL;
@@ -3538,11 +3384,14 @@ GPResult gpSendFilesW(
 	if (message == NULL)
 		return gpSendFilesA(connection, transfer, profile, NULL, callback, param);
 	
-	message_A = UCS2ToUTF8StringAlloc(message);
+	message_A = UCSToUTF8StringAlloc(message);
 	result = gpSendFilesA(connection, transfer, profile, message_A, callback, param);
+	
 	gsifree(message_A);
+	
 	return result;
 }
+#endif
 
 GPResult gpAcceptTransferA(
   GPConnection * connection,
@@ -3551,51 +3400,41 @@ GPResult gpAcceptTransferA(
 )
 {
 	GPITransfer * pTransfer;
-	GPIConnection * iconnection;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
-	// Get the connection object.
-	/////////////////////////////
-	iconnection = (GPIConnection*)*connection;
-
 	// Get the transfer.
-	////////////////////
 	pTransfer = gpiFindTransferByLocalID(connection, transfer);
 	if(!pTransfer)
 		Error(connection, GP_PARAMETER_ERROR, "Invalid transfer.");
 
 	// Check that we have a directory set.
-	//////////////////////////////////////
 	if(!pTransfer->baseDirectory)
 		Error(connection, GP_PARAMETER_ERROR, "No transfer directory set.");
 
 	// Check if this transfer has been cancelled.
-	/////////////////////////////////////////////
 	if(pTransfer->state & GPITransferCancelled)
 		Error(connection, GP_PARAMETER_ERROR, "Transfer already cancelled.");
 
 	// Send a reply.
-	////////////////
 	CHECK_RESULT(gpiSendTransferReply(connection, &pTransfer->transferID, pTransfer->peer, GPI_ACCEPTED, message));
 
 	// We're now transferring.
-	//////////////////////////
 	pTransfer->state = GPITransferTransferring;
 
 	// Set the current file index to the first file.
-	////////////////////////////////////////////////
 	pTransfer->currentFile = 0;
 
 	return GP_NO_ERROR;
 }
+
+#ifdef GSI_UNICODE   //
 GPResult gpAcceptTransferW(
-  GPConnection * connection,
-  GPTransfer transfer,
-  const unsigned short * message
+			  GPConnection * connection,
+			  GPTransfer transfer,
+			  const gsi_char * message
 )
 {
 	char* message_A = NULL;
@@ -3604,12 +3443,14 @@ GPResult gpAcceptTransferW(
 	if (message == NULL)
 		return gpAcceptTransferA(connection, transfer, NULL);
 	
-	message_A = UCS2ToUTF8StringAlloc(message);
+	message_A = UCSToUTF8StringAlloc(message);
 	result = gpAcceptTransferA(connection, transfer, message_A);
+	
 	gsifree(message_A);
+	
 	return result;
 }
-	
+#endif	
 
 GPResult gpRejectTransferA(
   GPConnection * connection,
@@ -3620,30 +3461,28 @@ GPResult gpRejectTransferA(
 	GPITransfer * pTransfer;
 
 	// Get the transfer.
-	////////////////////
 	pTransfer = gpiFindTransferByLocalID(connection, transfer);
 	if(!pTransfer)
 		return GP_NO_ERROR;
 
 	// Check if this transfer has been cancelled.
-	/////////////////////////////////////////////
 	if(pTransfer->state & GPITransferCancelled)
 		return GP_NO_ERROR;
 
 	// Send the reply.
-	//////////////////
 	gpiSendTransferReply(connection, &pTransfer->transferID, pTransfer->peer, GPI_REJECTED, message);
 
 	// Free the transfer.
-	/////////////////////
 	gpiFreeTransfer(connection, pTransfer);
 
 	return GP_NO_ERROR;
 }
+
+#ifdef GSI_UNICODE  //
 GPResult gpRejectTransferW(
-  GPConnection * connection,
-  GPTransfer transfer,
-  const unsigned short* message
+			  GPConnection * connection,
+			  GPTransfer transfer,
+			  const gsi_char* message
 )
 {
 	char* message_A = NULL;
@@ -3652,11 +3491,14 @@ GPResult gpRejectTransferW(
 	if (message == NULL)
 		return gpRejectTransferA(connection, transfer, NULL);
 	
-	message_A = UCS2ToUTF8StringAlloc(message);
+	message_A = UCSToUTF8StringAlloc(message);
 	result = gpRejectTransferA(connection, transfer, message_A);
+	
 	gsifree(message_A);
+	
 	return result;
 }
+#endif
 
 GPResult gpFreeTransfer(
   GPConnection * connection,
@@ -3666,23 +3508,19 @@ GPResult gpFreeTransfer(
 	GPITransfer * pTransfer;
 
 	// Get the transfer.
-	////////////////////
 	pTransfer = gpiFindTransferByLocalID(connection, transfer);
 	if(!pTransfer)
 		return GP_NO_ERROR;
 
 	// Check if this should be a reject.
-	////////////////////////////////////
 	if(!pTransfer->sender && (pTransfer->state == GPITransferWaiting))
 		return gpRejectTransfer(connection, transfer, NULL);
 
 	// Check for cancelling.
-	////////////////////////
 	if(pTransfer->state < GPITransferComplete)
 		gpiCancelTransfer(connection, pTransfer);
 
 	// Free the transfer.
-	/////////////////////
 	gpiFreeTransfer(connection, pTransfer);
 
 	return GP_NO_ERROR;
@@ -3697,13 +3535,11 @@ GPResult gpSetTransferData(
 	GPITransfer * pTransfer;
 
 	// Get the transfer.
-	////////////////////
 	pTransfer = gpiFindTransferByLocalID(connection, transfer);
 	if(!pTransfer)
 		Error(connection, GP_PARAMETER_ERROR, "Invalid transfer.");
 
 	// Set the data.
-	////////////////
 	pTransfer->userData = userData;
 
 	return GP_NO_ERROR;
@@ -3717,13 +3553,11 @@ void * gpGetTransferData(
 	GPITransfer * pTransfer;
 
 	// Get the transfer.
-	////////////////////
 	pTransfer = gpiFindTransferByLocalID(connection, transfer);
 	if(!pTransfer)
 		return NULL;
 
 	// Return the data.
-	///////////////////
 	return pTransfer->userData;
 }
 
@@ -3743,43 +3577,44 @@ GPResult gpSetTransferDirectoryA(
 		Error(connection, GP_PARAMETER_ERROR, "Invalid directory.");
 
 	// Get the transfer.
-	////////////////////
 	pTransfer = gpiFindTransferByLocalID(connection, transfer);
 	if(!pTransfer)
 		Error(connection, GP_PARAMETER_ERROR, "Invalid transfer.");
 
-	// This has to be set before transferring.
-	//////////////////////////////////////////
+	// We need to set this before transferring.
 	if(pTransfer->sender)
 		Error(connection, GP_PARAMETER_ERROR, "Sender has no transfer directory.");
 	if(pTransfer->state != GPITransferWaiting)
 		Error(connection, GP_PARAMETER_ERROR, "Can only set transfer directory before transferring.");
 
 	// Free any existing directory.
-	///////////////////////////////
 	if(pTransfer->baseDirectory)
 		gsifree(pTransfer->baseDirectory);
 	pTransfer->baseDirectory = NULL;
 
 	// Set the directory.
-	/////////////////////
 	pTransfer->baseDirectory = goastrdup(directory);
 	if(!pTransfer->baseDirectory)
 		Error(connection, GP_MEMORY_ERROR, "Out of memory.");
 
 	return GP_NO_ERROR;
 }
+
+#ifdef GSI_UNICODE   //
 GPResult gpSetTransferDirectoryW(
   GPConnection * connection,
   GPTransfer transfer,
-  const unsigned short * directory
+  const gsi_char * directory
 )
 {
-	char* directory_A = UCS2ToUTF8StringAlloc(directory);
+	char* directory_A = UCSToUTF8StringAlloc(directory);
 	GPResult result = gpSetTransferDirectoryA(connection, transfer, directory_A);
+	
 	gsifree(directory_A);
+	
 	return result;
 }
+#endif
 
 GPResult gpSetTransferThrottle(
   GPConnection * connection,
@@ -3791,44 +3626,36 @@ GPResult gpSetTransferThrottle(
 	GPIConnection * iconnection;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Get the connection object.
-	/////////////////////////////
 	iconnection = (GPIConnection*)*connection;
 
 	// Negative means no throttle.
-	//////////////////////////////
 	if(throttle < 0)
 		throttle = -1;
 
 	// Get the transfer.
-	////////////////////
 	pTransfer = gpiFindTransferByLocalID(connection, transfer);
 	if(!pTransfer)
 		Error(connection, GP_PARAMETER_ERROR, "Invalid transfer.");
 
 	// Store the throttle setting.
-	//////////////////////////////
 	pTransfer->throttle = throttle;
 
 	// Send the rate.
-	/////////////////
 	CHECK_RESULT(gpiPeerStartTransferMessage(connection, pTransfer->peer, GPI_BM_FILE_TRANSFER_THROTTLE, (GPITransferID_st)&pTransfer->transferID));
 	gpiSendOrBufferString(connection, pTransfer->peer, "\\rate\\");
 	gpiSendOrBufferInt(connection, pTransfer->peer, throttle);
 	gpiPeerFinishTransferMessage(connection, pTransfer->peer, NULL, 0);
 
 	// If we're the sender, call the callback.
-	//////////////////////////////////////////
 	if(pTransfer->sender)
 	{
 		GPTransferCallbackArg * arg;
 
 		// Call the callback.
-		/////////////////////
 		arg = (GPTransferCallbackArg *)gsimalloc(sizeof(GPTransferCallbackArg));
 		if(arg)
 		{
@@ -3852,13 +3679,11 @@ GPResult gpGetTransferThrottle(
 	GPITransfer * pTransfer;
 
 	// Get the transfer.
-	////////////////////
 	pTransfer = gpiFindTransferByLocalID(connection, transfer);
 	if(!pTransfer)
 		Error(connection, GP_PARAMETER_ERROR, "Invalid transfer.");
 
 	// Get the throttle.
-	////////////////////
 	*throttle = pTransfer->throttle;
 
 	return GP_NO_ERROR;
@@ -3873,13 +3698,11 @@ GPResult gpGetTransferProfile(
 	GPITransfer * pTransfer;
 
 	// Get the transfer.
-	////////////////////
 	pTransfer = gpiFindTransferByLocalID(connection, transfer);
 	if(!pTransfer)
 		Error(connection, GP_PARAMETER_ERROR, "Invalid transfer.");
 
 	// Get the profile.
-	///////////////////
 	*profile = pTransfer->profile;
 
 	return GP_NO_ERROR;
@@ -3894,13 +3717,11 @@ GPResult gpGetTransferSide(
 	GPITransfer * pTransfer;
 
 	// Get the transfer.
-	////////////////////
 	pTransfer = gpiFindTransferByLocalID(connection, transfer);
 	if(!pTransfer)
 		Error(connection, GP_PARAMETER_ERROR, "Invalid transfer.");
 
 	// Get the side.
-	////////////////
 	if(pTransfer->sender)
 		*side = GP_TRANSFER_SENDER;
 	else
@@ -3918,13 +3739,11 @@ GPResult gpGetTransferSize(
 	GPITransfer * pTransfer;
 
 	// Get the transfer.
-	////////////////////
 	pTransfer = gpiFindTransferByLocalID(connection, transfer);
 	if(!pTransfer)
 		Error(connection, GP_PARAMETER_ERROR, "Invalid transfer.");
 
 	// Get the size.
-	////////////////
 	*size = pTransfer->totalSize;
 
 	return GP_NO_ERROR;
@@ -3939,13 +3758,11 @@ GPResult gpGetTransferProgress(
 	GPITransfer * pTransfer;
 
 	// Get the transfer.
-	////////////////////
 	pTransfer = gpiFindTransferByLocalID(connection, transfer);
 	if(!pTransfer)
 		Error(connection, GP_PARAMETER_ERROR, "Invalid transfer.");
 
 	// Get the progress.
-	////////////////////
 	*progress = pTransfer->progress;
 
 	return GP_NO_ERROR;
@@ -3960,13 +3777,11 @@ GPResult gpGetNumFiles(
 	GPITransfer * pTransfer;
 
 	// Get the transfer.
-	////////////////////
 	pTransfer = gpiFindTransferByLocalID(connection, transfer);
 	if(!pTransfer)
 		Error(connection, GP_PARAMETER_ERROR, "Invalid transfer.");
 
 	// Get the progress.
-	////////////////////
 	*num = ArrayLength(pTransfer->files);
 
 	return GP_NO_ERROR;
@@ -3981,13 +3796,11 @@ GPResult gpGetCurrentFile(
 	GPITransfer * pTransfer;
 
 	// Get the transfer.
-	////////////////////
 	pTransfer = gpiFindTransferByLocalID(connection, transfer);
 	if(!pTransfer)
 		Error(connection, GP_PARAMETER_ERROR, "Invalid transfer.");
 
 	// Get the current file.
-	////////////////////////
 	*index = pTransfer->currentFile;
 
 	return GP_NO_ERROR;
@@ -4005,41 +3818,33 @@ GPResult gpSkipFile(
 	GPIConnection * iconnection;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Get the connection object.
-	/////////////////////////////
 	iconnection = (GPIConnection*)*connection;
 
 	// Get the transfer.
-	////////////////////
 	pTransfer = gpiFindTransferByLocalID(connection, transfer);
 	if(!pTransfer)
 		Error(connection, GP_PARAMETER_ERROR, "Invalid transfer.");
 
 	// Get the file.
-	////////////////
 	if((index < 0) || (index >= ArrayLength(pTransfer->files)))
 		Error(connection, GP_PARAMETER_ERROR, "Invalid index.");
 	file = (GPIFile *)ArrayNth(pTransfer->files, index);
 
 	// Are we already past this file?
-	/////////////////////////////////
 	if(index < pTransfer->currentFile)
 		return GP_NO_ERROR;
 
 	// Did we not get to this file yet?
-	///////////////////////////////////
 	if(pTransfer->currentFile != index)
 	{
 		// Mark it.
-		///////////
 		file->flags |= GPI_FILE_SKIP;
 
 		// If we're receiving, let the sender know we want to skip it.
-		//////////////////////////////////////////////////////////////
 		if(!pTransfer->sender)
 			gpiSkipFile(connection, pTransfer, index, GPI_SKIP_USER_SKIP);
 
@@ -4047,7 +3852,6 @@ GPResult gpSkipFile(
 	}
 
 	// If we're receiving, delete our temp file.
-	////////////////////////////////////////////
 	if(!pTransfer->sender && (index == pTransfer->currentFile) && file->file)
 	{
 		fclose(file->file);
@@ -4056,11 +3860,9 @@ GPResult gpSkipFile(
 	}
 
 	// Skip the current file.
-	/////////////////////////
 	gpiSkipCurrentFile(connection, pTransfer, GPI_SKIP_USER_SKIP);
 
 	// Call the callback.
-	/////////////////////
 	arg = (GPTransferCallbackArg *)gsimalloc(sizeof(GPTransferCallbackArg));
 	if(arg)
 	{
@@ -4085,23 +3887,20 @@ GPResult gpGetFileName(
 	GPITransfer * pTransfer;
 
 	// Get the transfer.
-	////////////////////
 	pTransfer = gpiFindTransferByLocalID(connection, transfer);
 	if(!pTransfer)
 		Error(connection, GP_PARAMETER_ERROR, "Invalid transfer.");
 
 	// Get the file.
-	////////////////
 	if((index < 0) || (index >= ArrayLength(pTransfer->files)))
 		Error(connection, GP_PARAMETER_ERROR, "Invalid index.");
 	file = (GPIFile *)ArrayNth(pTransfer->files, index);
 
 	// Get the name.
-	////////////////
 #ifndef GSI_UNICODE
 	*name = file->name;
 #else
-	*name = file->name_W;
+	*name = (gsi_char *)(file->name_W);
 #endif
 
 	return GP_NO_ERROR;
@@ -4119,23 +3918,20 @@ GPResult gpGetFilePath(
 	GPITransfer * pTransfer;
 
 	// Get the transfer.
-	////////////////////
 	pTransfer = gpiFindTransferByLocalID(connection, transfer);
 	if(!pTransfer)
 		Error(connection, GP_PARAMETER_ERROR, "Invalid transfer.");
 
 	// Get the file.
-	////////////////
 	if((index < 0) || (index >= ArrayLength(pTransfer->files)))
 		Error(connection, GP_PARAMETER_ERROR, "Invalid index.");
 	file = (GPIFile *)ArrayNth(pTransfer->files, index);
 
 	// Get the path.
-	////////////////
 #ifndef GSI_UNICODE
 	*path = file->path;
 #else
-	*path = file->path_W;
+	*path = (gsi_char *)(file->path_W);
 #endif
 
 	return GP_NO_ERROR;
@@ -4152,19 +3948,16 @@ GPResult gpGetFileSize(
 	GPITransfer * pTransfer;
 
 	// Get the transfer.
-	////////////////////
 	pTransfer = gpiFindTransferByLocalID(connection, transfer);
 	if(!pTransfer)
 		Error(connection, GP_PARAMETER_ERROR, "Invalid transfer.");
 
 	// Get the file.
-	////////////////
 	if((index < 0) || (index >= ArrayLength(pTransfer->files)))
 		Error(connection, GP_PARAMETER_ERROR, "Invalid index.");
 	file = (GPIFile *)ArrayNth(pTransfer->files, index);
 
 	// Get the size.
-	////////////////
 	*size = file->size;
 
 	return GP_NO_ERROR;
@@ -4181,19 +3974,16 @@ GPResult gpGetFileProgress(
 	GPITransfer * pTransfer;
 
 	// Get the transfer.
-	////////////////////
 	pTransfer = gpiFindTransferByLocalID(connection, transfer);
 	if(!pTransfer)
 		Error(connection, GP_PARAMETER_ERROR, "Invalid transfer.");
 
 	// Get the file.
-	////////////////
 	if((index < 0) || (index >= ArrayLength(pTransfer->files)))
 		Error(connection, GP_PARAMETER_ERROR, "Invalid index.");
 	file = (GPIFile *)ArrayNth(pTransfer->files, index);
 
 	// Get the progress.
-	////////////////////
 	*progress = file->progress;
 
 	return GP_NO_ERROR;
@@ -4210,19 +4000,16 @@ GPResult gpGetFileModificationTime(
 	GPITransfer * pTransfer;
 
 	// Get the transfer.
-	////////////////////
 	pTransfer = gpiFindTransferByLocalID(connection, transfer);
 	if(!pTransfer)
 		Error(connection, GP_PARAMETER_ERROR, "Invalid transfer.");
 
 	// Get the file.
-	////////////////
 	if((index < 0) || (index >= ArrayLength(pTransfer->files)))
 		Error(connection, GP_PARAMETER_ERROR, "Invalid index.");
 	file = (GPIFile *)ArrayNth(pTransfer->files, index);
 
 	// Get the modTime.
-	///////////////////
 	*modTime = file->modTime;
 
 	return GP_NO_ERROR;
@@ -4236,21 +4023,17 @@ GPResult gpGetNumTransfers(
 	GPIConnection * iconnection;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Check for NULL.
-	//////////////////
 	if(num == NULL)
 		Error(connection, GP_PARAMETER_ERROR, "NULL pointer.");
 
 	// Get the connection object.
-	/////////////////////////////
 	iconnection = (GPIConnection *)*connection;
 
 	// Set num.
-	///////////
 	*num = ArrayLength(iconnection->transfers);
 
 	return GP_NO_ERROR;
@@ -4262,34 +4045,24 @@ GPResult gpGetTransfer(
   GPTransfer * transfer
 )
 {
-	GPIConnection * iconnection;
 	int localID;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return GP_PARAMETER_ERROR;
 
 	// Check for NULL.
-	//////////////////
 	if(transfer == NULL)
 		Error(connection, GP_PARAMETER_ERROR, "NULL pointer.");
 
-	// Get the connection object.
-	/////////////////////////////
-	iconnection = (GPIConnection *)*connection;
-
 	// Get the local ID.
-	////////////////////
 	localID = gpiGetTransferLocalIDByIndex(connection, index);
 
 	// Check if it was a bad index.
-	///////////////////////////////
 	if(localID == -1)
 		Error(connection, GP_PARAMETER_ERROR, "Index out of range.");
 
 	// Set the transfer they want.
-	//////////////////////////////
 	*transfer = localID;
 
 	return GP_NO_ERROR;
@@ -4302,17 +4075,73 @@ void gpProfilesReport(
   void (* report)(const char * output)
 )
 {
-	//GPIConnection * iconnection;
+	// GPIConnection * iconnection;
 
 	// Error check.
-	///////////////
 	if((connection == NULL) || (*connection == NULL))
 		return;
 
 	// Get the connection object.
-	/////////////////////////////
-	//iconnection = (GPIConnection *)*connection;
+	// iconnection = (GPIConnection *)*connection;
 
 	gpiReport(connection, report);
 }
+#endif
+
+#ifdef _PS3
+
+GPResult gpRegisterNpBasicEventCallback(GPConnection *connection,
+										GPNpBasicEventCallback callback,
+										void *param)
+{
+	GPIConnection *iconnection;
+	// Error check.
+	GS_ASSERT(connection);
+	GS_ASSERT(*connection);
+	GS_ASSERT(callback);
+	if((connection == NULL) || *connection == NULL || callback == NULL)
+		return GP_PARAMETER_ERROR;
+	
+	iconnection = (GPIConnection *)*connection;
+
+	iconnection->npEventCallback.callback = callback;
+	iconnection->npEventCallback.userData = param;
+	
+	return GP_NO_ERROR;
+}
+
+GPResult gpSetNpCommunicationId(GPConnection *connection, 
+								const SceNpCommunicationId *communicationId)
+{
+	GPIConnection *iconnection;
+	// Error check.
+	GS_ASSERT(connection);
+	GS_ASSERT(*connection);
+	GS_ASSERT(communicationId);
+	if((connection == NULL) || *connection == NULL || communicationId == NULL)
+		return GP_PARAMETER_ERROR;
+	
+	iconnection = (GPIConnection *)*connection;
+	memcpy(&iconnection->npCommunicationId, communicationId, sizeof(iconnection->npCommunicationId));
+	return GP_NO_ERROR;
+}
+
+GPResult gpRegisterCellSysUtilCallbackSlot(GPConnection *connection, int slotNum)
+{
+	GPIConnection *iconnection;
+	GS_ASSERT(connection);
+	GS_ASSERT(*connection);
+	GS_ASSERT(slotNum >= 0 && slotNum <= 3);
+	if((connection == NULL) || *connection == NULL)
+		return GP_PARAMETER_ERROR;
+
+	if (slotNum < 0 || slotNum > 3)
+		return GP_PARAMETER_ERROR;
+
+	iconnection = (GPIConnection *)*connection;
+	iconnection->npCellSysUtilSlotNum = slotNum;
+
+	return GP_NO_ERROR;
+}
+
 #endif

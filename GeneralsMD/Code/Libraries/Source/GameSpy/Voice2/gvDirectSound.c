@@ -5,7 +5,6 @@
 #include "gvCodec.h"
 #include "gvSource.h"
 #include "gvUtil.h"
-#pragma warning(disable:4201)
 #include <mmsystem.h>
 #include <dsound.h>
 #if (DIRECTSOUND_VERSION == 0x0800)
@@ -120,7 +119,7 @@ GVBool gviHardwareStartup(HWND hWnd)
 		return GVFalse;
 
 	// init COM
-	assert(GVICleanupCOM == GVFalse);
+	GS_ASSERT(GVICleanupCOM == GVFalse);
 	result = CoInitialize(NULL);
 	if(SUCCEEDED(result))
 		GVICleanupCOM = GVTrue;

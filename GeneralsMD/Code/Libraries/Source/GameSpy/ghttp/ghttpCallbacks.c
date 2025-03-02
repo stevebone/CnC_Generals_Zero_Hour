@@ -1,12 +1,12 @@
- /*
-GameSpy GHTTP SDK 
-Dan "Mr. Pants" Schoenblum
-dan@gamespy.com
-
-Copyright 1999-2007 GameSpy Industries, Inc
-
-devsupport@gamespy.com
-*/
+///////////////////////////////////////////////////////////////////////////////
+// File:	ghttpCallbacks.c
+// SDK:		GameSpy HTTP SDK
+//
+// Copyright (c) 2012 GameSpy Technology & IGN Entertainment, Inc. All rights
+// reserved. This software is made available only pursuant to certain license 
+// terms offered by IGN or its subsidiary GameSpy Industries, Inc. Unlicensed 
+// use or use in a  manner not expressly authorized by IGN or GameSpy 
+// Technology is prohibited.
 
 #include "ghttpCallbacks.h"
 #include "ghttpPost.h"
@@ -20,7 +20,7 @@ void ghiCallCompletedCallback
 	char * buffer;
 	GHTTPByteCount bufferLen;
 
-	assert(connection);
+	GS_ASSERT(connection);
 	
 #ifdef GSI_COMMON_DEBUG
 	if(connection->result != GHTTPSuccess)
@@ -31,12 +31,10 @@ void ghiCallCompletedCallback
 #endif
 
 	// Check for no callback.
-	/////////////////////////
 	if(!connection->completedCallback)
 		return;
 
 	// Figure out the buffer/bufferLen parameters.
-	//////////////////////////////////////////////
 	if(connection->type == GHIGET)
 	{
 		buffer = connection->getFileBuffer.data;
@@ -47,17 +45,20 @@ void ghiCallCompletedCallback
 	}
 	bufferLen = connection->fileBytesReceived;
 
+	// This prevents us from passing a null pointer to the callback.
+	if (connection->recvHeaders == NULL)
+		connection->recvHeaders = goastrdup("");
+
 	// Call the callback.
-	/////////////////////
 	freeBuffer = connection->completedCallback(
 		connection->request,
 		connection->result,
 		buffer,
 		bufferLen,
+		connection->recvHeaders,
 		connection->callbackParam);
 
 	// Check for gsifree.
-	//////////////////
 	if(buffer && !freeBuffer)
 		connection->getFileBuffer.dontFree = GHTTPTrue;
 }
@@ -69,15 +70,13 @@ void ghiCallProgressCallback
 	GHTTPByteCount bufferLen
 )
 {	
-	assert(connection);
+	GS_ASSERT(connection);
 
 	// Check for no callback.
-	/////////////////////////
 	if(!connection->progressCallback)
 		return;
 
 	// Call the callback.
-	/////////////////////
 	connection->progressCallback(
 		connection->request,
 		connection->state,
@@ -94,15 +93,13 @@ void ghiCallPostCallback
 	GHIConnection * connection
 )
 {
-	assert(connection);
+	GS_ASSERT(connection);
 
 	// Check for no callback.
-	/////////////////////////
 	if(!connection->postingState.callback)
 		return;
 
 	// Call the callback.
-	/////////////////////
 	connection->postingState.callback(
 		connection->request,
 		connection->postingState.bytesPosted,

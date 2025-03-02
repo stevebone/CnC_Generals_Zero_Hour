@@ -1,12 +1,11 @@
-/*
-GameSpy Peer SDK 
-Dan "Mr. Pants" Schoenblum
-dan@gamespy.com
-
-Copyright 1999-2007 GameSpy Industries, Inc
-
-devsupport@gamespy.com
-*/
+///////////////////////////////////////////////////////////////////////////////
+// File:	peerSB.c
+// SDK:		GameSpy Peer SDK
+//
+// Copyright (c) IGN Entertainment, Inc.  All rights reserved.  
+// This software is made available only pursuant to certain license terms offered
+// by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed use or use in a 
+// manner not expressly authorized by IGN or GameSpy is prohibited.
 
 /*************
 ** INCLUDES **
@@ -168,7 +167,7 @@ PEERBool piSBStartListingGames
 	PEER_CONNECTION;
 
 	// check that we're initialized.
-	assert(connection->sbInitialized);
+	GS_ASSERT(connection->sbInitialized);
 	if(!connection->sbInitialized)
 		return PEERFalse;
 
@@ -185,14 +184,14 @@ PEERBool piSBStartListingGames
 	if(connection->groupID)
 		sprintf(groupFilter, "groupid=%d", connection->groupID);
 	else
-		strcpy(groupFilter, "groupid is null");
+		gsiSafeStrcpyA(groupFilter, "groupid is null", sizeof(groupFilter));
 
 	// Setup the actual filter.
 	///////////////////////////
 	if(filter)
 	{
 		sprintf(smartSpyFilter, "(%s) AND (", groupFilter);
-		strzcat(smartSpyFilter, filter, sizeof(smartSpyFilter) - 1);
+		strzcat(smartSpyFilter, filter, sizeof(smartSpyFilter));
 		strcat(smartSpyFilter, ")");
 	}
 	else
@@ -206,7 +205,7 @@ PEERBool piSBStartListingGames
 
 	// We always set these keys.
 	////////////////////////////
-	strcpy(fullFields, "\\hostname\\gamemode");
+	gsiSafeStrcpyA(fullFields, "\\hostname\\gamemode", sizeof(fullFields));
 	listLen = (int)strlen(fullFields);
 	SBQueryEngineAddQueryKey(&connection->gameEngine, HOSTNAME_KEY);
 	SBQueryEngineAddQueryKey(&connection->gameEngine, GAMEMODE_KEY);
@@ -257,7 +256,7 @@ void piSBStopListingGames
 	PEER_CONNECTION;
 
 	// check that we're initialized.
-	assert(connection->sbInitialized);
+	GS_ASSERT(connection->sbInitialized);
 	if(!connection->sbInitialized)
 		return;
 
@@ -319,19 +318,13 @@ static void piSBGroupsListCallback
 	case slc_serveradded:
 		{
 		int groupID = (int)ntohl(SBServerGetPublicInetAddress(server));
-//#ifndef GSI_PEER_UNICODE
+
 		const char * name = SBServerGetStringValueA(server, "hostname", "(No Name)");
 		int numWaiting = SBServerGetIntValueA(server, "numwaiting", 0);
 		int maxWaiting = SBServerGetIntValueA(server, "maxwaiting", 0);
 		int numGames = SBServerGetIntValueA(server, "numservers", 0);
 		int numPlaying = SBServerGetIntValueA(server, "numplayers", 0);
-//#else
-//		const unsigned short * name = SBServerGetStringValue(server, L"hostname", L"(No Name)");
-//		int numWaiting = SBServerGetIntValue(server, L"numwaiting", 0);
-//		int maxWaiting = SBServerGetIntValue(server, L"maxwaiting", 0);
-//		int numGames = SBServerGetIntValue(server, L"numservers", 0);
-//		int numPlaying = SBServerGetIntValue(server, L"numplayers", 0);
-//#endif
+
 		piAddListGroupRoomsCallback(peer, PEERTrue, groupID, server, name, numWaiting, maxWaiting, numGames, numPlaying, (peerListGroupRoomsCallback)operation->callback, operation->callbackParam, operation->ID);
 		break;
 		}
@@ -366,12 +359,12 @@ PEERBool piSBStartListingGroups
 )
 {
 	char fullFields[MAX_FIELD_LIST_LEN + 1];
-	int len;
+	size_t len;
 
 	PEER_CONNECTION;
 
 	// check that we're initialized.
-	assert(connection->sbInitialized);
+	GS_ASSERT(connection->sbInitialized);
 	if(!connection->sbInitialized)
 		return PEERFalse;
 
@@ -385,9 +378,9 @@ PEERBool piSBStartListingGroups
 
 	// Setup the fields list.
 	/////////////////////////
-	strcpy(fullFields, "\\hostname\\numwaiting\\maxwaiting\\numservers\\numplayers");
-	len = (int)strlen(fullFields);
-	strzcpy(fullFields + len, fields, (unsigned int)MAX_FIELD_LIST_LEN - len);
+	gsiSafeStrcpyA(fullFields, "\\hostname\\numwaiting\\maxwaiting\\numservers\\numplayers", sizeof(fullFields));
+	len = strlen(fullFields);
+	strzcpy(fullFields + len, fields, (size_t)MAX_FIELD_LIST_LEN - len);
 
 	// Start updating the list.
 	///////////////////////////
@@ -408,7 +401,7 @@ void piSBStopListingGroups
 	PEER_CONNECTION;
 
 	// check that we're initialized.
-	assert(connection->sbInitialized);
+	GS_ASSERT(connection->sbInitialized);
 	if(!connection->sbInitialized)
 		return;
 
@@ -452,12 +445,22 @@ static int piSBAutoMatchGetServerRating(PEER peer, SBServer server)
 	PEER_CONNECTION;
 		
 	// ignore the local machine
-	if(connection->autoMatchReporting && piIsLocalServer(peer, server))
+	if(connection->autoMatchReporting && piIsLocalServer(peer, server)) 
+	{
 		return 0;
+	}
+	
+	// there is a possibility of us getting our own server even when we go back to searching
+	if(connection->autoMatchStatus == PEERSearching && piIsLocalServer(peer, server)) 
+	{
+		return 0;
+	}
 
 	// check if it got the keys.
-	if(!SBServerHasFullKeys(server))
+	if(!SBServerHasFullKeys(server)) 
+	{
 		return 0;
+	}
 	
 	// ignore full servers
 #ifndef GSI_UNICODE
@@ -573,10 +576,17 @@ static void piSBAutoMatchCheckPushedServer(PEER peer, SBServer server)
 		// no matches?
 		if(!count)
 		{
-			piSetAutoMatchStatus(peer, PEERWaiting);
+			// don't set the next status to PEERWaiting if we're already in PEERWaiting
+			if (connection->autoMatchNextStatus != PEERWaiting && connection->autoMatchStatus != PEERWaiting)
+			{
+				connection->autoMatchNextStatus = PEERWaiting;
+				connection->autoMatchDelay = piGetAutoMatchDelay();
+			}
+
+			//piSetAutoMatchStatus(peer, PEERWaiting);
 			return;
 		}
-
+			
 		// sort by rating
 #ifdef GSI_UNICODE
 		_tcscpy(info.sortkey, (const unsigned short *)PI_AUTOMATCH_RATING_KEY);
@@ -657,7 +667,7 @@ static void piSBAutoMatchListCallback
 		if(!SBServerHasFullKeys(server) && SBServerDirectConnect(server) && !(server->state & STATE_PENDINGFULLQUERY))
 		{
 			// Send a normal query, if the server is firewalled we wouldn't be here
-			// assert(SBServerDirectConnect(server))
+			// GS_ASSERT(SBServerDirectConnect(server))
 			SBBool usequerychallenge = SBFalse;
 			if (serverlist->backendgameflags & QR2_USE_QUERY_CHALLENGE)
 				usequerychallenge = SBTrue;
@@ -683,14 +693,21 @@ static void piSBAutoMatchListCallback
 		if(!SBServerListCount(&connection->autoMatchList) ||
 			(0==connection->autoMatchEngine.querylist.count))
 		{
-			piSetAutoMatchStatus(peer, PEERWaiting);
+			if (connection->autoMatchStatus == PEERSearching)
+			{
+				connection->autoMatchDelay = piGetAutoMatchDelay();
+				connection->autoMatchNextStatus = PEERWaiting;
+			}
+			//piSetAutoMatchStatus(peer, PEERWaiting);
 		}
 		break;
 	case slc_queryerror:
 		// browsing failed
 		connection->autoMatchSBFailed = PEERTrue;
-		if(connection->autoMatchStatus == PEERSearching)
+		if(connection->autoMatchStatus == PEERSearching) 
+		{
 			piSetAutoMatchStatus(peer, connection->autoMatchQRFailed?PEERFailed:PEERWaiting);
+		}
 		break;
 
 	case slc_publicipdetermined:
@@ -746,8 +763,10 @@ static void piSBAutoMatchEngineCallback
 		break;
 
 	case qe_updatefailed:
-		if(!SBServerListCount(&connection->autoMatchList))
+		if(!SBServerListCount(&connection->autoMatchList)) 
+		{
 			piSetAutoMatchStatus(peer, PEERWaiting);
+		}
 		break;
 
 	// check if the querying is complete.
@@ -785,7 +804,13 @@ static void piSBAutoMatchEngineCallback
 		// no matches?
 		if(!count)
 		{
-			piSetAutoMatchStatus(peer, PEERWaiting);
+			if (connection->autoMatchNextStatus != PEERWaiting)
+			{
+				connection->autoMatchNextStatus = PEERWaiting;
+				connection->autoMatchDelay = piGetAutoMatchDelay();
+			}
+
+			//piSetAutoMatchStatus(peer, PEERWaiting);
 			return;
 		}
 
@@ -823,7 +848,7 @@ PEERBool piSBStartListingAutoMatches
 	PEER_CONNECTION;
 
 	// check that we're initialized.
-	assert(connection->sbInitialized);
+	GS_ASSERT(connection->sbInitialized);
 	if(!connection->sbInitialized)
 	{
 		connection->autoMatchSBFailed = PEERTrue;
@@ -861,7 +886,7 @@ void piSBStopListingAutoMatches
 	PEER_CONNECTION;
 
 	// check that we're initialized.
-	assert(connection->sbInitialized);
+	GS_ASSERT(connection->sbInitialized);
 	if(!connection->sbInitialized)
 		return;
 
@@ -950,13 +975,12 @@ void piSBUpdateGame
 	PEER_CONNECTION;
 
 	// check that we're initialized.
-	assert(connection->sbInitialized);
+	GS_ASSERT(connection->sbInitialized);
 	
 	if(!connection->sbInitialized)
 		return;
 	
 	// Changed 08-26-2004
-	// Saad Nader 
 	// Added force update by master server parameter 
 	// for internal update function
 	/////////////////////

@@ -1,12 +1,11 @@
- /*
-GameSpy GHTTP SDK 
-Dan "Mr. Pants" Schoenblum
-dan@gamespy.com
-
-Copyright 1999-2007 GameSpy Industries, Inc
-
-devsupport@gamespy.com
-*/
+///////////////////////////////////////////////////////////////////////////////
+// File:	ghttpc.c
+// SDK:		GameSpy HTTP SDK
+//
+// Copyright (c) IGN Entertainment, Inc.  All rights reserved.  
+// This software is made available only pursuant to certain license terms offered
+// by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed use or use in a 
+// manner not expressly authorized by IGN or GameSpy is prohibited.
 
 #include "../../common/gsCommon.h"
 #include "../ghttp.h"
@@ -30,6 +29,7 @@ typedef struct Result
 	GHTTPResult result;
 } Result;
 
+static int retVal = 0; 	// exit code 0 = PASS, 1 = FAIL
 static int pendingRequests;
 static Result results[MAX_REQUESTS];
 
@@ -108,10 +108,12 @@ static GHTTPBool CompletedCallback
 	GHTTPResult result,
 	char * buffer,
 	GHTTPByteCount bufferLen,
+	char * headers,
 	void * param
 )
 {
-	int index = (int)param;
+
+	int index = *(int *)(param);
 
 	pendingRequests--;
 
@@ -128,8 +130,11 @@ static GHTTPBool CompletedCallback
 	if(result == GHTTPSuccess)
 		_tprintf(_T("%d finished\n"), index);
 	else
+	{
+		retVal = 1;
 		_tprintf(_T("%d failed: %s\n"), index, resultStrings[result]);
-
+	}
+	
 	// Don't free this buffer, its from the stack.
 	//////////////////////////////////////////////
 	if(index == 1)
@@ -140,6 +145,7 @@ static GHTTPBool CompletedCallback
 	GSI_UNUSED(request);
 	GSI_UNUSED(buffer);
 	GSI_UNUSED(bufferLen);
+	GSI_UNUSED(headers);
 
 	return GHTTPTrue;
 }
@@ -155,7 +161,7 @@ static void ProgressCallback
 	void * param
 )
 {
-	int index = (int)param;
+	int index = *(int *)(param);
 
 	// Show the current state.
 	//////////////////////////
@@ -167,10 +173,18 @@ static void ProgressCallback
 	{
 		// Display based on if we know the total size.
 		//////////////////////////////////////////////
+
+#if (GSI_MAX_INTEGRAL_BITS >= 64)
 		if(totalSize != -1)
+			_tprintf(_T(" (%lld / %lld bytes)\n"), bytesReceived, totalSize);
+		else
+			_tprintf(_T(" (%lld bytes)\n"), bytesReceived);
+#else
+		if (totalSize != -1)
 			_tprintf(_T(" (%d / %d bytes)\n"), bytesReceived, totalSize);
 		else
 			_tprintf(_T(" (%d bytes)\n"), bytesReceived);
+#endif
 	}
 	else
 		_tprintf(_T("\n"));
@@ -182,7 +196,7 @@ static void ProgressCallback
 
 static void CheckRequest(GHTTPRequest request, int index)
 {
-	assert(index < MAX_REQUESTS);
+	GS_ASSERT(index < MAX_REQUESTS);
 	results[index].started = (request < 0)?GHTTPFalse:GHTTPTrue;
 	if(results[index].started)
 		results[index].startTime = current_time();
@@ -212,7 +226,7 @@ int test_main(int argc, char **argv)
 		_T("http://www.gamespy.net/images/dev_serv_main.jpg"),
 		GHTTPFalse,
 		CompletedCallback,
-		(void *)pendingRequests);
+		&pendingRequests);
 	CheckRequest(request, pendingRequests);
 	pendingRequests++;
 
@@ -227,7 +241,7 @@ int test_main(int argc, char **argv)
 		GHTTPFalse,
 		ProgressCallback,
 		CompletedCallback,
-		(void *)pendingRequests);
+		&pendingRequests);
 	CheckRequest(request, pendingRequests);
 	pendingRequests++;
 
@@ -238,39 +252,39 @@ int test_main(int argc, char **argv)
 		_T("logo.jpg"),
 		GHTTPFalse,
 		CompletedCallback,
-		(void *)pendingRequests);
+		&pendingRequests);
 	CheckRequest(request, pendingRequests);
 	pendingRequests++;
 #endif
 
 	// stream a page
 	request = ghttpStreamEx(
-		_T("http://www.gamespy.net"),
+		_T("http://www.google.com"),
 		NULL,
 		NULL,
 		GHTTPFalse,
 		GHTTPFalse,
 		ProgressCallback,
 		CompletedCallback,
-		(void *)pendingRequests);
+		&pendingRequests);
 	CheckRequest(request, pendingRequests);
 	pendingRequests++;
 
 	// get a header
 	request = ghttpHead(
-		_T("http://sdkdev.gamespy.com/games/st_ladder/web/index.html"),
+		_T(GSI_HTTP_PROTOCOL_URL "sdkdev." GSI_DOMAIN_NAME "/games/st_ladder/web/index.html"),
 		GHTTPFalse,
 		CompletedCallback,
-		(void *)pendingRequests);
+		&pendingRequests);
 	CheckRequest(request, pendingRequests);
 	pendingRequests++;
 
 	// stream a secure page	
 	request = ghttpStreamEx(
 #if defined(_REVOLUTION)
-		_T("https://mariokartwii.race.gs.nintendowifi.net/RaceService/test.txt"),
+		_T(GSI_HTTP_PROTOCOL_URL "mariokartwii.race." GSI_DOMAIN_NAME "/RaceService/test.txt"),
 #else
-		_T("https://www.gamespyid.com/"),
+		_T("https://encrypted.google.com/"),
 #endif
 		NULL,
 		NULL,
@@ -278,7 +292,7 @@ int test_main(int argc, char **argv)
 		GHTTPFalse,
 		ProgressCallback,
 		CompletedCallback,
-		(void *)pendingRequests);
+		&pendingRequests);
 
 	//if(!IS_GHTTP_ERROR(request))
 	//	ghttpSetRequestEncryptionEngine(request, GHTTPEncryptionEngine_GameSpy);
@@ -309,5 +323,10 @@ int test_main(int argc, char **argv)
 	GSI_UNUSED(argc);
 	GSI_UNUSED(argv);
 
-	return 0;
+	if( retVal )
+		_tprintf(_T("TEST FAILED\n"));
+	else
+		_tprintf(_T("TEST PASSED\n"));
+	
+	return retVal;
 }

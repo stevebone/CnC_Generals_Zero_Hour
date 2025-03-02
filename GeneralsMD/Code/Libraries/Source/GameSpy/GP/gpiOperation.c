@@ -1,23 +1,18 @@
-/*
-gpiOperation.c
-GameSpy Presence SDK 
-Dan "Mr. Pants" Schoenblum
-
-Copyright 1999-2007 GameSpy Industries, Inc
-
-devsupport@gamespy.com
-
-***********************************************************************
-Please see the GameSpy Presence SDK documentation for more information
-**********************************************************************/
+///////////////////////////////////////////////////////////////////////////////
+// File:	gpiOperation.c
+// SDK:		GameSpy Presence and Messaging SDK
+//
+// Copyright (c) 2012 GameSpy Technology & IGN Entertainment, Inc. All rights
+// reserved. This software is made available only pursuant to certain license
+// terms offered by IGN or its subsidiary GameSpy Industries, Inc. Unlicensed
+// use or use in a manner not expressly authorized by IGN or GameSpy Technology
+// is prohibited.
 
 //INCLUDES
-//////////
 #include <stdlib.h>
 #include "gpi.h"
 
 //FUNCTIONS
-///////////
 GPResult
 gpiFailedOpCallback(
   GPConnection * connection,
@@ -25,17 +20,18 @@ gpiFailedOpCallback(
 )
 {
 	GPICallback callback;
+	
+	GS_ASSERT(connection != NULL);
+
 	GPIConnection * iconnection = (GPIConnection*)*connection;
 
-	assert(connection != NULL);
-	assert(*connection != NULL);
-	assert(operation != NULL);
+	GS_ASSERT(*connection != NULL);
+	GS_ASSERT(operation != NULL);
 
 	callback = operation->callback;
 	if(callback.callback != NULL)
 	{
 		// Handle based on operation type.
-		//////////////////////////////////
 		switch(operation->type)
 		{
 		case GPI_CONNECT:
@@ -123,7 +119,7 @@ gpiFailedOpCallback(
 			break;
 		}
 		default:
-			assert(0);
+			GS_FAIL();
 		}
 	}
 
@@ -145,13 +141,11 @@ gpiAddOperation(
 	GPIConnection * iconnection = (GPIConnection*)*connection;
 
 	// Create a new operation struct.
-	/////////////////////////////////
 	operation = (GPIOperation *)gsimalloc(sizeof(GPIOperation));
 	if(operation == NULL)
 		Error(connection, GP_MEMORY_ERROR, "Out of memory.");
 
 	// Set the data.
-	////////////////
 	operation->type = type;
 	operation->data = data;
 	operation->blocking = (GPIBool)blocking;
@@ -159,7 +153,6 @@ gpiAddOperation(
 	if(type == GPI_CONNECT)
 	{
 		// Connect is always ID 1.
-		//////////////////////////
 		operation->id = 1;
 	}
 	else
@@ -173,7 +166,6 @@ gpiAddOperation(
 	operation->callback.param = param;
 
 	// Add it to the list.
-	//////////////////////
 	operation->pnext = iconnection->operationList;
 	iconnection->operationList = operation;
 
@@ -190,33 +182,27 @@ gpiDestroyOperation(
 	GPIConnection * iconnection = (GPIConnection*)*connection;
 	
 	// Search?
-	//////////
 	if(operation->type == GPI_PROFILE_SEARCH)
 	{
 		GPISearchData * data = (GPISearchData *)operation->data;
 
 		// One less.
-		////////////
 		iconnection->numSearches--;
-		assert(iconnection->numSearches >= 0);
+		GS_ASSERT(iconnection->numSearches >= 0);
 
 		// Close the socket.
-		////////////////////
 		shutdown(data->sock, 2);
 		closesocket(data->sock);
 
 		// freeclear the buffers.
-		////////////////////
 		freeclear(data->outputBuffer.buffer);
 		freeclear(data->inputBuffer.buffer);
 	}
 
 	// freeclear the data.
-	/////////////////
 	freeclear(operation->data);
 
 	// freeclear the operation struct.
-	/////////////////////////////
 	freeclear(operation);
 }
 
@@ -231,15 +217,12 @@ gpiRemoveOperation(
 	GPIOperation * pprev = NULL;
 
 	// Go through the list of operations.
-	/////////////////////////////////////
 	while(pcurr != NULL)
 	{
 		// Check for a match.
-		/////////////////////
 		if(pcurr == operation)
 		{
 			// Update the list.
-			///////////////////
 			if(pprev == NULL)
 				iconnection->operationList = pcurr->pnext;
 			else
@@ -266,15 +249,12 @@ gpiFindOperationByID(
 	GPIConnection * iconnection = (GPIConnection*)*connection;
 
 	// Go through the list of operations.
-	/////////////////////////////////////
 	for(op = iconnection->operationList ; op != NULL ; op = op->pnext)
 	{
 		// Check the id.
-		////////////////
 		if(op->id == id)
 		{
 			// Found it.
-			////////////
 			if(operation != NULL)
 				*operation = op;
 			return GPITrue;
@@ -282,7 +262,6 @@ gpiFindOperationByID(
 	}
 
 	// Didn't find it.
-	//////////////////
 	if(operation != NULL)
 		*operation = NULL;
 	return GPIFalse;
@@ -297,17 +276,14 @@ gpiOperationsAreBlocking(
 	GPIConnection * iconnection = (GPIConnection*)*connection;
 
 	// Loop through the operations.
-	///////////////////////////////
 	for(operation = iconnection->operationList ; operation != NULL ; operation = operation->pnext)
 	{
 		// Check if it's blocking.
-		//////////////////////////
 		if((operation->blocking) && (operation->type != GPI_PROFILE_SEARCH))
 			return GPITrue;
 	}
 
 	// Nothing was blocking.
-	////////////////////////
 	return GPIFalse;
 }
 
@@ -321,7 +297,6 @@ gpiProcessOperation(
 	GPResult result = GP_NO_ERROR;
 
 	// Check the operation type.
-	////////////////////////////
 	switch(operation->type)
 	{
 	case GPI_CONNECT:
@@ -351,7 +326,7 @@ gpiProcessOperation(
 	default:
 		gsDebugFormat(GSIDebugCat_GP, GSIDebugType_Misc, GSIDebugLevel_HotError,
 			"gpiProcessOperation was passed an operation with an invalid type (%d)\n", operation->type);
-		assert(0);
+		GS_FAIL();
 		break;
 	}
 

@@ -1,8 +1,16 @@
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+// File:	gsUdpEngine.c
+// SDK:		GameSpy Common
+//
+// Copyright (c) 2012 GameSpy Technology & IGN Entertainment, Inc.  All rights 
+// reserved. This software is made available only pursuant to certain license 
+// terms offered by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed
+// use or use in a manner not expressly authorized by IGN or GameSpy Technology
+// is prohibited.
+// ------------------------------------
 // UDP Communication Engine
-#include "gsUdpEngine.h"
 
+#include "gsUdpEngine.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -59,6 +67,23 @@ typedef struct
 	unsigned short mLocalPort;
 }GSUdpEngineObject;
 
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+//private function prototypes
+GSUdpEngineObject * gsUdpEngineGetEngine();
+void gsUdpMsgHandlerFree(void *theMsgHandler);
+int GS_STATIC_CALLBACK gsUdpMsgHandlerCompare(const void *theFirstHandler, const void *theSecondHandler);
+int GS_STATIC_CALLBACK gsUdpMsgHandlerCompare2(const void *theFirstHandler, const void *theSecondHandler);
+int GS_STATIC_CALLBACK gsUdpRemotePeerCompare(const void *theFirstPeer, const void *theSecondPeer);
+int GS_STATIC_CALLBACK gsUdpRemotePeerCompare2(const void *theFirstPeer, const void *theSecondPeer);
+void gsUdpSocketError(GT2Socket theSocket);
+void gsUdpClosedRoutingCB(GT2Connection theConnection, GT2CloseReason reason);
+void gsUdpConnectedRoutingCB(GT2Connection theConnection, GT2Result theResult, GT2Byte *theMessage, int theMessageLen);
+void gsUdpPingRoutingCB(GT2Connection theConnection, int theLatency);
+void gsUdpReceivedRoutingCB(GT2Connection theConnection, GT2Byte *theMessage, int theMessageLen, GT2Bool reliable);
+GT2Bool gsUdpUnrecognizedMsgCB(GT2Socket theSocket, unsigned int theIp, unsigned short thePort, GT2Byte * theMessage, int theMsgLen);
+void gsUdpConnAttemptCB(GT2Socket socket, GT2Connection connection, unsigned int ip, unsigned short port, int latency, GT2Byte * message, int len);
+
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -83,7 +108,7 @@ void gsUdpMsgHandlerFree(void *theMsgHandler)
 }
 
 // Used to find a message handler based on the initial message.
-int gsUdpMsgHandlerCompare(const void *theFirstHandler, const void *theSecondHandler)
+int GS_STATIC_CALLBACK gsUdpMsgHandlerCompare(const void *theFirstHandler, const void *theSecondHandler)
 {
 	GSUdpMsgHandler *msgHandler1 = (GSUdpMsgHandler *)theFirstHandler, 
                     *msgHandler2 = (GSUdpMsgHandler *)theSecondHandler;
@@ -94,7 +119,8 @@ int gsUdpMsgHandlerCompare(const void *theFirstHandler, const void *theSecondHan
 }
 
 // Used to find a message handler based on the header.
-int gsUdpMsgHandlerCompare2(const void *theFirstHandler, const void *theSecondHandler)
+
+int GS_STATIC_CALLBACK gsUdpMsgHandlerCompare2(const void *theFirstHandler, const void *theSecondHandler)
 {
 	GSUdpMsgHandler *msgHandler1 = (GSUdpMsgHandler *)theFirstHandler, 
                     *msgHandler2 = (GSUdpMsgHandler *)theSecondHandler;
@@ -109,7 +135,7 @@ int gsUdpMsgHandlerCompare2(const void *theFirstHandler, const void *theSecondHa
 // Remote Peer DArray compare functions 
 
 // Finds a remote peer based on IP and Port
-int gsUdpRemotePeerCompare(const void *theFirstPeer, const void *theSecondPeer)
+int GS_STATIC_CALLBACK gsUdpRemotePeerCompare(const void *theFirstPeer, const void *theSecondPeer)
 {
 	GSUdpRemotePeer *aPeer1 = (GSUdpRemotePeer *)theFirstPeer,
 					*aPeer2 = (GSUdpRemotePeer *)theSecondPeer;
@@ -122,7 +148,7 @@ int gsUdpRemotePeerCompare(const void *theFirstPeer, const void *theSecondPeer)
 }
 
 // Finds a remote peer based on a GT2Connection
-int gsUdpRemotePeerCompare2(const void *theFirstPeer, const void *theSecondPeer)
+int GS_STATIC_CALLBACK gsUdpRemotePeerCompare2(const void *theFirstPeer, const void *theSecondPeer)
 {
 	GSUdpRemotePeer *aPeer1 = (GSUdpRemotePeer *)theFirstPeer,
 		*aPeer2 = (GSUdpRemotePeer *)theSecondPeer;
@@ -502,7 +528,6 @@ GSUdpErrorCode gsUdpEngineInitialize(unsigned short thePort, int theIncomingBufS
 	GSUdpEngineObject *aUdp = gsUdpEngineGetEngine();
 	
 	// Setup our gt2 buffer sizes for reliable messages
-	
 	incomingBufferSize = theIncomingBufSize != 0 ? theIncomingBufSize : GS_UDP_DEFAULT_IN_BUFFSIZE;
 	outgoingBufferSize = theOutgoingBufSize != 0 ? theOutgoingBufSize : GS_UDP_DEFAULT_OUT_BUFFSIZE;
 
@@ -984,8 +1009,8 @@ GSUdpErrorCode gsUdpEngineAddMsgHandler(char theInitMsg[GS_UDP_MSG_HEADER_LEN], 
 	GSUdpEngineObject *aUdp = gsUdpEngineGetEngine();
 	GSUdpMsgHandler aMsgHandler;
 	GS_ASSERT(aUdp->mInitialized);
-	GS_ASSERT(theInitMsg || theInitMsg[0]);
-	GS_ASSERT(theHeader || theHeader[0]);
+	GS_ASSERT(theInitMsg && theInitMsg[0]);
+	GS_ASSERT(theHeader && theHeader[0]);
 	if (!aUdp->mInitialized)
 	{
 		gsDebugFormat(GSIDebugCat_Common, GSIDebugType_Network, GSIDebugLevel_Debug,
@@ -1010,15 +1035,6 @@ GSUdpErrorCode gsUdpEngineAddMsgHandler(char theInitMsg[GS_UDP_MSG_HEADER_LEN], 
 		return GS_UDP_PARAMETER_ERROR;
 	}
 
-	// This check is not necessary.  Some SDKs may not use all callbacks
-	/*if (!theMsgHandlerError || !theMsgHandlerConnected || !theMsgHandlerClosed 
-		|| !theMsgHandlerPing || !theMsgHandlerRecv)
-	{
-		gsDebugFormat(GSIDebugCat_Common, GSIDebugType_Network, GSIDebugLevel_Debug,
-			"[Udp Engine] Invalid callback(s)");
-		return GS_UDP_PARAMETER_ERROR;
-	}
-	*/
 	aMsgHandler.mClosed = theMsgHandlerClosed;
 	aMsgHandler.mConnected = theMsgHandlerConnected;
 	aMsgHandler.mPingReply = theMsgHandlerPing;

@@ -1,0 +1,55 @@
+;
+;	Command & Conquer Generals Zero Hour(tm)
+;	Copyright 2025 Electronic Arts Inc.
+;
+;	This program is free software: you can redistribute it and/or modify
+;	it under the terms of the GNU General Public License as published by
+;	the Free Software Foundation, either version 3 of the License, or
+;	(at your option) any later version.
+;
+;	This program is distributed in the hope that it will be useful,
+;	but WITHOUT ANY WARRANTY; without even the implied warranty of
+;	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;	GNU General Public License for more details.
+;
+;	You should have received a copy of the GNU General Public License
+;	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+;
+
+;////////////////////////////////////////////////////////////////////////////////
+;//																																					   //
+;//  (c) 2001-2003 Electronic Arts Inc.																				 //
+;//																																						 //
+;////////////////////////////////////////////////////////////////////////////////
+
+; Waves vertex shader
+; Kenny Mitchell April 2001
+; Modified July 2001 Mark Wilczynski
+
+
+
+
+
+vs.1.1
+
+; Below is Kenny's new optimized version
+; Transform position to clip space and output it
+dp4 r0.x, v0, c[2]
+dp4 r0.y, v0, c[3]
+dp4 r0.z, v0, c[4]
+dp4 r0.w, v0, c[5]
+
+mov oPos, r0
+
+; get 1/w and multiply it onto x and y
+rcp r1.w, r0.w
+mul r1.xy, r0.xy, r1.w
+
+; scale/flip/offset tex coords to screen
+mad oT1.xy, r1.xy, c[6].xy,c[6].zw
+
+mov oT0, v2
+mov oD0, v1
+
+;generate uv coordinates for a third texture (alpha channel)
+mad oT2.xy,v0.xz,c[10].zw,c[10].xy

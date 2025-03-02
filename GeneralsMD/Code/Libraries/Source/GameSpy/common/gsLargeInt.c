@@ -1,7 +1,18 @@
 ///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
+// File:	gsLargeInt.c
+// SDK:		GameSpy Common
+//
+// Copyright (c) 2012 GameSpy Technology & IGN Entertainment, Inc.  All rights 
+// reserved. This software is made available only pursuant to certain license 
+// terms offered by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed
+// use or use in a manner not expressly authorized by IGN or GameSpy Technology
+// is prohibited.
+
 #include "gsLargeInt.h"
 
+#if PS3_SNC 
+_Pragma ("control %push postopt=0")
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -151,7 +162,7 @@ gsi_bool gsiLargeIntSizePower2(const gsLargeInt_t *src1, const gsLargeInt_t *src
 		len2--;
 
 	// set to longer length
-	*lenout = (l_word)max(len1, len2);
+	*lenout = (l_word)GS_MAX(len1, len2);
 	
 	// search for power of two >= length
 	//   (this length is in digits, not bits)
@@ -175,9 +186,9 @@ gsi_bool gsiLargeIntSizePower2(const gsLargeInt_t *src1, const gsLargeInt_t *src
 static gsi_i32 gsiLargeIntCompare(const l_word *data1, l_word len1, const l_word *data2, l_word len2)
 {
 	// skip leading whitespace, if any
-	while(data1[len1-1] == 0 && len1>0)
+	while(len1>0 && data1[len1-1] == 0)
 		len1--;
-	while(data2[len2-1] == 0 && len2>0)
+	while(len2>0 && data2[len2-1] == 0)
 		len2--;
 	if (len1<len2)
 		return -1;
@@ -316,7 +327,7 @@ gsi_bool gsLargeIntSub(const gsLargeInt_t *src1, const gsLargeInt_t *src2, gsLar
 gsi_bool gsiLargeIntSub(const l_word *src1, l_word length1, const l_word *src2, l_word length2, l_word *dest, l_word *lenout)
 {
 	l_dword borrow = 0; // to hold overflow
-	gsi_u32 shorterLen = min(length1, length2);
+	gsi_u32 shorterLen = GS_MIN(length1, length2);
 	gsi_u32 i=0;
 
 	GSLINT_ENTERTIMER(GSLintTimerSub);
@@ -420,7 +431,7 @@ static gsi_bool gsiLargeIntMult(const l_word *data1, l_word length1, const l_wor
 						return gsi_false; // overflow
 					}
 				}
-				if (digit > (gsi_i32)temp.mLength)
+				if ((gsi_i32)digit > (gsi_i32)temp.mLength)
 					temp.mLength = (l_word)digit;
 			}
 		}
@@ -584,9 +595,9 @@ static gsi_bool gsiLargeIntDiv(const l_word *src, l_word len, const gsLargeInt_t
 			if (quotient.mLength < (l_word)(readIndex+readLength))
 				quotient.mLength = (l_word)(readIndex+readLength);
 			// remove new leading zeroes
-			while(scopy[readIndex+readLength-1] == 0 && readLength>1)
+			while(readLength>1 && scopy[readIndex+readLength-1] == 0)
 				readLength--;
-			while(scopy[readIndex+readLength-1] == 0 && readIndex>1)
+			while(readIndex>1 && scopy[readIndex+readLength-1] == 0)
 				readIndex--;
 		}
 	}
@@ -626,8 +637,8 @@ static gsi_bool gsiLargeIntSubDivide(l_word *src, l_word length, const l_word *d
 	gsLargeInt_t quotientCopy; // copy of quotient, length padded for multiplication
 
 	GSLINT_ENTERTIMER(GSLintTimerSubDivide);
-	// assert(src > divisor)
-	// assert(src < (MAX_DIGIT_VALUE * divisor))
+	// GS_ASSERT(src > divisor)
+	// GS_ASSERT(src < (MAX_DIGIT_VALUE * divisor))
 	//if(dlen==1 && *divisor==0)
 	//	_asm {int 3} // division by zero
 
@@ -706,7 +717,7 @@ gsi_bool gsLargeIntKMult(const gsLargeInt_t *src1, const gsLargeInt_t *src2, gsL
 	}
 
 	// when length is small it's faster to use "normal" multiplication
-	if (max(src1->mLength,src2->mLength) < GS_LARGEINT_KARATSUBA_CUTOFF)
+	if (GS_MAX(src1->mLength,src2->mLength) < GS_LARGEINT_KARATSUBA_CUTOFF)
 		return gsLargeIntMult(src1, src2, dest);
 
 	// Check for size/length restrictions
@@ -772,8 +783,6 @@ static gsi_bool gsiLargeIntKMult(const l_word *data1, const l_word *data2, l_wor
 		temp2.mLength = 0;
 		temp3.mLength = 0;
 
-		//printf("Karasuba splitting at %d (1/2 = %d)\r\n", length, halfLen);
-
 		// Karatsuba:  k = 12*34
 		//  a = (1*3)
 		//  b = (1+2)*(3+4)-a-c
@@ -790,24 +799,16 @@ static gsi_bool gsiLargeIntKMult(const l_word *data1, const l_word *data2, l_wor
 		//      Stores in TH of dest, so later *B^N isn't necessary
 		//      For the example, this puts 1*3 into the high half 03xx
 		gsiLargeIntKMult(&data1[halfLen], &data2[halfLen], halfLen, &dest[length], lenout, (l_word)(maxlen-length));
-		//printf("Calculated A (%d) = ", *lenout);
-		//gsiLargeIntPrint(&dest[length], *lenout);
 
 		// Compute c. (BH of data1 * BH of data2)
 		//      For the example, this puts 2*4 into the low half xx08
 		gsiLargeIntKMult(data1, data2, halfLen, dest, lenout, maxlen);
-		//printf("Calculated C (%d) = ", *lenout);
-		//gsiLargeIntPrint(dest, *lenout);
 
 		// Compute b1. (TH of data1 + BH of data1) 
 		gsiLargeIntAdd(&data1[halfLen], halfLen, data1, halfLen, temp1.mData, &temp1.mLength, GS_LARGEINT_MAX_DIGITS);
-		//printf("Calculated B1 (%d) = ", temp1.mLength);
-		//gsiLargeIntPrint(temp1.mData, temp1.mLength);
 
 		// Compute b2. (TH of data2 + BH of data2)
 		gsiLargeIntAdd(&data2[halfLen], halfLen, data2, halfLen, temp2.mData, &temp2.mLength, GS_LARGEINT_MAX_DIGITS);
-		//printf("Calculated B2 (%d) = ", temp2.mLength);
-		//gsiLargeIntPrint(temp2.mData, temp2.mLength);
 
 		// Compute b3. (b1*b2) (*B^N)
 		//      For the example, (1+2)(3+4)*B^N = 21*B^N = 0210
@@ -826,11 +827,7 @@ static gsi_bool gsiLargeIntKMult(const l_word *data1, const l_word *data2, l_wor
 			gsiLargeIntKMult(temp1.mData, temp2.mData, *lenout, &temp3.mData[halfLen], &temp3.mLength, (l_word)(GS_LARGEINT_MAX_DIGITS-halfLen));
 		}
 		temp3.mLength = (l_word)(temp3.mLength + halfLen); // fix length for temp3
-		//if (temp3.mLength > GS_LARGEINT_INT_SIZE)
-		//	_asm {int 3} // this should be at most temp1.mLength+temp2.mLength
 		memset(temp3.mData, 0, halfLen*sizeof(l_word));
-		//printf("Calculated B3 (%d) = ", temp3.mLength);
-		//gsiLargeIntPrint(&temp3.mData[halfLen], temp3.mLength-halfLen);
 
 		// Compute final b. (b3-a-c) (*B^N)
 		//      Note: The subtraction is in terms of (*B^N)
@@ -839,8 +836,6 @@ static gsi_bool gsiLargeIntKMult(const l_word *data1, const l_word *data2, l_wor
 		temp3.mLength = (l_word)(temp3.mLength + halfLen);
 		gsiLargeIntSub( dest        , length, &temp3.mData[halfLen], (l_word)(temp3.mLength-halfLen), &temp3.mData[halfLen], &temp3.mLength);
 		temp3.mLength = (l_word)(temp3.mLength + halfLen);
-		//printf("Calculated B (%d) = ", temp3.mLength);
-		//gsiLargeIntPrint(temp3.mData, temp3.mLength);
 
 		// Add em up
 		//      Dest already contains A+C, so Add B
@@ -1192,13 +1187,11 @@ gsi_bool gsLargeIntPowerMod(const gsLargeInt_t *b, const gsLargeInt_t *p, const 
 			 249, 125, 251, 63, 253, 127, 255};
 
 
-			//printf("[gsint] Digit %d = %d\r\n", i, digitval);
 			if (i==0)
 			{
 				int counter = 0;
 
 				memcpy(dest, &lut[oddtab[digitval]], sizeof(gsLargeInt_t));
-				//printf("[gsint] Set start to %d\r\n", dest->mData[0]);
 
 				for (counter = twotab[digitval]; counter> 0; counter--)
 				{
@@ -1207,14 +1200,12 @@ gsi_bool gsLargeIntPowerMod(const gsLargeInt_t *b, const gsLargeInt_t *p, const 
 						gsifree(lut);
 						return gsi_false;
 					}
-					//printf("[gsint] First digit, squared to %d\r\n", dest->mData[0]);
 				}
 			}
 			else if (digitval != 0)
 			{
 				int counter = 0;
 				int lutindex = oddtab[digitval]; // we only precalculate the odd powers
-				//int lutindex = (oddtab[digitval]+1)/2; // we only precalculate the odd powers
 
 				for (counter = (int)(k-twotab[digitval]); counter> 0; counter--)
 				{
@@ -1223,7 +1214,6 @@ gsi_bool gsLargeIntPowerMod(const gsLargeInt_t *b, const gsLargeInt_t *p, const 
 						gsifree(lut);
 						return gsi_false;
 					}
-					//printf("[gsint]    Squared to %d\r\n", dest->mData[0]);
 				}
 		
 				if (gsi_is_false(gsiLargeIntMultM(dest, &lut[lutindex], &mod, modPrime, dest)))
@@ -1231,7 +1221,6 @@ gsi_bool gsLargeIntPowerMod(const gsLargeInt_t *b, const gsLargeInt_t *p, const 
 					gsifree(lut);
 					return gsi_false;
 				}
-				//printf("[gsint]    Mult by [%d](%d) to %d\r\n", lutindex, lut[lutindex].mData[0], dest->mData[0]);
 				for (counter = twotab[digitval]; counter> 0; counter--)
 				{
 					if (gsi_is_false(gsiLargeIntMultM(dest,dest, &mod, modPrime, dest)))
@@ -1239,7 +1228,6 @@ gsi_bool gsLargeIntPowerMod(const gsLargeInt_t *b, const gsLargeInt_t *p, const 
 						gsifree(lut);
 						return gsi_false;
 					}
-					//printf("[gsint]    Squared to %d\r\n", dest->mData[0]);
 				}
 			}
 			else
@@ -1252,7 +1240,6 @@ gsi_bool gsLargeIntPowerMod(const gsLargeInt_t *b, const gsLargeInt_t *p, const 
 						gsifree(lut);
 						return gsi_false;
 					}
-					//printf("[gsint]    Squared to %d\r\n", dest->mData[0]);
 				}
 			}
 		}
@@ -1515,7 +1502,7 @@ gsi_bool gsiLargeIntMultM(gsLargeInt_t *x, gsLargeInt_t *y, const gsLargeInt_t *
 	{
 		if (gsi_is_false(gsiLargeIntSub(m->mData, m->mLength, &temp[logB_r], tempLen - logB_r, dest->mData, &dest->mLength)))
 		{
-			memset(temp, 0, sizeof(temp));
+			gsiZeroMemory(temp, sizeof(temp));
 			memset(dest, 0, sizeof(gsLargeInt_t));
 			return gsi_false;
 		}
@@ -1525,7 +1512,7 @@ gsi_bool gsiLargeIntMultM(gsLargeInt_t *x, gsLargeInt_t *y, const gsLargeInt_t *
 		memset(dest, 0, sizeof(gsLargeInt_t));
 		dest->mLength = m->mLength;
 		memcpy(dest->mData, &temp[logB_r], (tempLen - logB_r)*GS_LARGEINT_DIGIT_SIZE_BYTES);
-		memset(temp, 0, sizeof(temp));
+		gsiZeroMemory(temp, sizeof(temp));
 	}
 
 	return gsi_true;
@@ -1667,18 +1654,6 @@ gsi_bool gsiLargeIntMultM(gsLargeInt_t *x, gsLargeInt_t *y, const gsLargeInt_t *
 }
 
 #endif
-/*
-//    Computes (src*src*r^-1)%mod
-static gsi_bool gsiLargeIntSquareM(const gsLargeInt_t *src, const gsLargeInt_t *mod, gsi_u32 modPrime, gsi_u32 R, gsLargeInt_t *dest)
-{
-	GSI_UNUSED(src);
-	GSI_UNUSED(mod);
-	GSI_UNUSED(modPrime);
-	GSI_UNUSED(R);
-	GSI_UNUSED(dest);
-	assert(0);
-	return gsi_true;
-}*/
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1742,12 +1717,12 @@ gsi_bool gsLargeIntSetFromHexString(gsLargeInt_t *lint, const char* hexstream)
 {
 	l_word* writePos = lint->mData;
 	gsi_u32 temp;
-	int len = 0;
+	unsigned int len;
 	int byteIndex = 0;
 
 	GS_ASSERT(hexstream != NULL);
 	
-	len = (int)strlen(hexstream);
+	len = strlen(hexstream);
 	if (len == 0)
 	{
 		lint->mLength = 0;
@@ -1775,7 +1750,7 @@ gsi_bool gsLargeIntSetFromHexString(gsLargeInt_t *lint, const char* hexstream)
 			writePos++;
 			byteIndex = 0;
 		}
-		len-=min(2,len);
+		len-=GS_MIN(2,len);
 	}
 	return gsi_true;
 }
@@ -1815,7 +1790,7 @@ gsi_bool gsLargeIntReverseBytes(gsLargeInt_t *lint)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 // hashing is made complicated by differing byte orders 
-void gsLargeIntAddToMD5(const gsLargeInt_t * _lint, MD5_CTX * md5)
+void gsLargeIntAddToMD5(const gsLargeInt_t * _lint, GSMD5_CTX * md5)
 {
 	int byteLength = 0;
 	gsi_u8 * dataStart = NULL;
@@ -1835,22 +1810,23 @@ void gsLargeIntAddToMD5(const gsLargeInt_t * _lint, MD5_CTX * md5)
 
 	// reverse to big-endian (MS) then hash
 	gsLargeIntReverseBytes(&lint);
-	MD5Update(md5, dataStart, (unsigned int)byteLength);
+	GSMD5Update(md5, dataStart, (unsigned int)byteLength);
 	gsLargeIntReverseBytes(&lint);
 } 
 
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
-// Length in bytes so leading zeroes can be dropped from hex strings
+// Length in bytes so leading zeros can be dropped from hex strings
 gsi_u32  gsLargeIntGetByteLength(const gsLargeInt_t *lint)
 {
 	int intSize = (int)lint->mLength;
 	int byteSize = 0;
-	int i=0;
-	l_word mask = 0xFF;
+	unsigned int i;
+	const l_word byteMask = 0xFF;
+	l_word mask = byteMask;
 
-	// skip leading zeroes
+	// skip leading zeros
 	while(intSize > 0 && lint->mData[intSize-1] == 0)
 		intSize --;
 	if (intSize == 0)
@@ -1859,7 +1835,6 @@ gsi_u32  gsLargeIntGetByteLength(const gsLargeInt_t *lint)
 	byteSize = intSize * (gsi_i32)sizeof(l_word);
 
 	// subtract bytes for each leading 0x00 byte
-	mask = 0xFF;
 	for (i=1; i < GS_LARGEINT_DIGIT_SIZE_BYTES; i++)
 	{
 		if (lint->mData[intSize-1] <= mask)
@@ -1867,7 +1842,7 @@ gsi_u32  gsLargeIntGetByteLength(const gsLargeInt_t *lint)
 			byteSize -= sizeof(l_word)-i;
 			break;
 		}
-		mask = (l_word)((mask << 8) | 0xFF);
+		mask = (l_word)((mask << 8) | byteMask);
 	}
 
 	return (gsi_u32)byteSize;
@@ -1902,3 +1877,8 @@ gsi_bool gsLargeIntWriteToMemoryStream(const gsLargeInt_t *lint, gsi_u8* data)
 	memcpy(data, copy.mData, copy.mLength * GS_LARGEINT_DIGIT_SIZE_BYTES);
 	return gsi_true;
 }
+
+#if PS3_SNC
+_Pragma ("control %pop postopt")
+#endif
+

@@ -1,6 +1,11 @@
-// GameSpy Peer SDK C Test App
-// Dan "Mr. Pants" Schoenblum
-// dan@gamespy.com
+///////////////////////////////////////////////////////////////////////////////
+// File:	peerc.c
+// SDK:		GameSpy Peer SDK
+//
+// Copyright (c) IGN Entertainment, Inc.  All rights reserved.  
+// This software is made available only pursuant to certain license terms offered
+// by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed use or use in a 
+// manner not expressly authorized by IGN or GameSpy is prohibited.
 
 /*********
 INCLUDES 
@@ -139,17 +144,13 @@ static void RoomMessageCallback
 (
 	PEER peer,
 	RoomType roomType,
-	const gsi_char * nick,
+	const gsi_char * nick_,
 	const gsi_char * message,
 	MessageType messageType,
 	void * param
 )
 {
-	_tprintf(_T(" (%s) %s: %s\n"), RtoS[roomType], nick, message);
-	//if(strcasecmp(message, _T("quit")) == 0)
-	//	stop = PEERTrue;
-	//else if((strlen(message) > 5) && (strncasecmp(message, _T("echo"), 4) == 0))
-	//	peerMessageRoom(peer, roomType, message + 5, messageType);
+	_tprintf(_T(" (%s) %s: %s\n"), RtoS[roomType], nick_, message);
 
 	GSI_UNUSED(param);
 	GSI_UNUSED(peer);
@@ -160,7 +161,7 @@ static void RoomUTMCallback
 (
 	PEER peer, 
 	RoomType roomType, 
-	const gsi_char * nick, 
+	const gsi_char * nick_,
 	const gsi_char * command, 
 	const gsi_char * parameters,
 	PEERBool authenticated, 
@@ -169,7 +170,7 @@ static void RoomUTMCallback
 {
 	GSI_UNUSED(peer);
 	GSI_UNUSED(roomType);
-	GSI_UNUSED(nick);
+	GSI_UNUSED(nick_);
 	GSI_UNUSED(command);
 	GSI_UNUSED(parameters);
 	GSI_UNUSED(authenticated);
@@ -179,13 +180,13 @@ static void RoomUTMCallback
 static void PlayerMessageCallback
 (
 	PEER peer,
-	const gsi_char * nick,
+	const gsi_char * nick_,
 	const gsi_char * message,
 	MessageType messageType,
 	void * param
 )
 {
-	_tprintf(_T("(PRIVATE) %s: %s\n"), nick, message);
+	_tprintf(_T("(PRIVATE) %s: %s\n"), nick_, message);
 	
 	GSI_UNUSED(peer);
 	GSI_UNUSED(messageType);
@@ -195,15 +196,15 @@ static void PlayerMessageCallback
 static void ReadyChangedCallback
 (
 	PEER peer,
-	const gsi_char * nick,
+	const gsi_char * nick_,
 	PEERBool ready,
 	void * param
 )
 {
 	if(ready)
-		_tprintf(_T("%s is ready\n"), nick);
+		_tprintf(_T("%s is ready\n"), nick_);
 	else
-		_tprintf(_T("%s is not ready\n"), nick);
+		_tprintf(_T("%s is not ready\n"), nick_);
 
 	GSI_UNUSED(peer);
 	GSI_UNUSED(param);
@@ -231,11 +232,11 @@ static void PlayerJoinedCallback
 (
 	PEER peer,
 	RoomType roomType,
-	const gsi_char * nick,
+	const gsi_char * nick_,
 	void * param
 )
 {
-	_tprintf(_T("%s joined the %s\n"), nick, RtoS[roomType]);
+	_tprintf(_T("%s joined the %s\n"), nick_, RtoS[roomType]);
 	
 	GSI_UNUSED(peer);
 	GSI_UNUSED(param);
@@ -245,12 +246,12 @@ static void PlayerLeftCallback
 (
 	PEER peer,
 	RoomType roomType,
-	const gsi_char * nick,
+	const gsi_char * nick_,
 	const gsi_char * reason,
 	void * param
 )
 {
-	_tprintf(_T("%s left the %s\n"), nick, RtoS[roomType]);
+	_tprintf(_T("%s left the %s\n"), nick_, RtoS[roomType]);
 	
 	GSI_UNUSED(peer);
 	GSI_UNUSED(param);
@@ -295,7 +296,7 @@ static void EnumPlayersCallback
 	PEERBool success,
 	RoomType roomType,
 	int index,
-	const gsi_char * nick,
+	const gsi_char * nick_,
 	int flags,
 	void * param
 )
@@ -312,7 +313,7 @@ static void EnumPlayersCallback
 		return;
 	}
 
-	_tprintf(_T("%d: %s\n"), index, nick);
+	_tprintf(_T("%d: %s\n"), index, nick_);
 	/*if(flags & PEER_FLAG_OP)
 		_tprintf(_T(" (host)\n"));
 	else
@@ -403,6 +404,8 @@ static void ListGroupRoomsCallback
 		_tprintf(_T("    Max players in room: %d\n"), maxWaiting);
 		_tprintf(_T("    Games: %d\n"), numGames);
 		_tprintf(_T("    Players in games: %d\n"), numPlaying);
+		_tprintf(_T("    Test Value: %d\n"), SBServerGetIntValue( server, _T("test"), -1));
+		_tprintf(_T("    Ranked Value: %d\n"), SBServerGetIntValue( server, _T("ranked"), -1));
 	}
 	else
 		groupRoomCallbackDone = PEERTrue;  // if groupID is set to 0 it means all group rooms have been listed
@@ -465,23 +468,7 @@ static void NickErrorCallback
 	GSI_UNUSED(numSuggestedNicks);
 	GSI_UNUSED(param);
 }
-/*
-static void AutoMatchStatusCallback(PEER thePeer, PEERAutoMatchStatus theStatus, void* theParam)
-{
-	_tprintf(_T("Automatch status: %d\r\n"), theStatus);
-	GSI_UNUSED(thePeer);
-	GSI_UNUSED(theStatus);
-	GSI_UNUSED(theParam);
-}
 
-static int AutoMatchRateCallback(PEER thePeer, SBServer theServer, void* theParam)
-{
-	GSI_UNUSED(thePeer);
-	GSI_UNUSED(theServer);
-	GSI_UNUSED(theParam);
-	return 0;
-}
-*/
 static void RoomKeyChangedCallback(PEER thePeer, RoomType theType, const gsi_char* theNick, const gsi_char* theKey, const gsi_char* theValue, void* theParam)
 {
 	GSI_UNUSED(thePeer);
@@ -715,7 +702,7 @@ int test_main(int argc, char **argv)
 
 	// list the group rooms
 	printf("Listing group rooms:\n");
-	peerListGroupRooms(peer, _T(""), ListGroupRoomsCallback, userData, non_blocking);
+	peerListGroupRooms(peer, _T("\\test\\ranked\\"), ListGroupRoomsCallback, userData, non_blocking);
 
 	while (!groupRoomCallbackDone)
 	{
@@ -729,7 +716,7 @@ int test_main(int argc, char **argv)
 
 	// Loop for a while
 	startTime = current_time();
-	while((current_time() - startTime) < (1000))
+	while((current_time() - startTime) < (10000))
 	{
 		peerThink(peer);
 		msleep(10);
@@ -746,7 +733,7 @@ int test_main(int argc, char **argv)
 
 	// Loop for a while
 	startTime = current_time();
-	while((current_time() - startTime) < (1000))
+	while((current_time() - startTime) < (10000))
 	{
 		peerThink(peer);
 		msleep(10);

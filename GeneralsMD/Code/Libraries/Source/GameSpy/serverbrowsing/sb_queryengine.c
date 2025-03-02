@@ -1,3 +1,12 @@
+///////////////////////////////////////////////////////////////////////////////
+// File:	sb_queryengine.c
+// SDK:		GameSpy Server Browsing SDK
+//
+// Copyright (c) IGN Entertainment, Inc.  All rights reserved.  
+// This software is made available only pursuant to certain license terms offered
+// by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed use or use in a 
+// manner not expressly authorized by IGN or GameSpy is prohibited.
+
 #include "sb_serverbrowsing.h"
 #include "sb_internal.h"
 
@@ -8,7 +17,7 @@ void FIFODebugCheckAdd(SBServerFIFO *fifo, SBServer server)
 	SBServer aServer = fifo->first;
 	while(aServer != NULL)
 	{
-		assert(aServer != server);
+		GS_ASSERT(aServer != server);
 		aServer = aServer->next;
 	}
 }
@@ -20,11 +29,11 @@ void FIFODebugCheck(SBServerFIFO *fifo)
 	int i=0;
 	SBServer aServer;
 
-	assert(fifo != NULL);
+	GS_ASSERT(fifo != NULL);
 	aServer = fifo->first;
 	for (i=0; i < fifo->count; i++)
 	{
-		assert(aServer != NULL);
+		GS_ASSERT(aServer != NULL);
 		aServer = aServer->next;
 	}
 }
@@ -94,7 +103,7 @@ static SBBool FIFORemove(SBServerFIFO *fifo, SBServer server)
 			if (fifo->last == hold)
 				fifo->last = prev;
 			fifo->count--;
-		//	assert((fifo->count == 0 && fifo->first == NULL && fifo->last == NULL) || fifo->count > 0);
+		//	GS_ASSERT((fifo->count == 0 && fifo->first == NULL && fifo->last == NULL) || fifo->count > 0);
 			return SBTrue;
 		}
 		prev = hold;
@@ -314,7 +323,11 @@ void SBQueryEngineInit(SBQueryEngine *engine, int maxupdates, int queryversion, 
 		sndev_set_options(0, SN_DEV_SET_PING_RESET, &optval, sizeof(optval));
 	}
 	#else
-	engine->icmpsock = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP);
+		#if defined(_MACOSX) || defined(_IPHONE)	//SOCK_RAW fails under OS X; use SOCK_DGRAM instead
+			engine->icmpsock = socket(AF_INET, SOCK_DGRAM, IPPROTO_ICMP);
+		#else
+			engine->icmpsock = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP);
+		#endif
 	#endif
 #endif
 	FIFOClear(&engine->pendinglist);
@@ -585,7 +598,7 @@ static void ProcessIncomingReplies(SBQueryEngine *engine, SBBool icmpSocket)
 	int i;
 	char indata[MAX_RECVFROM_SIZE]; 
 	struct sockaddr_in saddr;
-	int saddrlen = sizeof(saddr);
+	socklen_t saddrlen = sizeof(saddr);
 	SBServer server;
 	SOCKET recvSock = 0;
 

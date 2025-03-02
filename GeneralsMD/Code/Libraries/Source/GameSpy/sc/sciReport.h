@@ -1,5 +1,12 @@
 ///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
+// File:	sciReport.h
+// SDK:		GameSpy ATLAS Competition SDK
+//
+// Copyright (c) IGN Entertainment, Inc.  All rights reserved.  
+// This software is made available only pursuant to certain license terms offered
+// by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed use or use in a 
+// manner not expressly authorized by IGN or GameSpy is prohibited.
+
 #ifndef __SCIREPORT_H__
 #define __SCIREPORT_H__
 
@@ -7,7 +14,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 #include "sci.h"
-#include "../hashtable.h"
+#include "../common/hashtable.h"
 
 
 #ifdef __cplusplus
@@ -52,15 +59,6 @@ typedef enum
 	SCIReportState_TEAMDATA
 } SCIReportState;
 
-typedef enum
-{
-	SCIKeyType_INT32,
-	SCIKeyType_INT16,
-	SCIKeyType_BYTE,
-	SCIKeyType_STRING,
-	SCIKeyType_FLOAT,
-	SCIKeyType_INT64
-} SCIKeyType;
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -134,7 +132,7 @@ SCResult sciDestroyReport(SCIReport *theReport);
 SCResult SC_CALL sciReportSetPlayerConnectionId(SCIReport * theReport, gsi_u32 thePlayerIndex, const gsi_u8 theConnectionId[SC_CONNECTION_GUID_SIZE]);
 SCResult SC_CALL sciReportSetPlayerTeamIndex   (SCIReport * theReport, gsi_u32 thePlayerIndex, gsi_u32 theTeamIndex);
 SCResult SC_CALL sciReportSetPlayerGameResult  (SCIReport * theReport, gsi_u32 thePlayerIndex, SCGameResult theGameResult);
-SCResult SC_CALL sciReportSetPlayerAuthInfo    (SCIReport * theReport, gsi_u32 thePlayerIndex, const GSLoginCertificate * theCertificate, const gsi_u8 theAuthHash[16]);
+SCResult SC_CALL sciReportSetPlayerAuthInfo    (SCIReport * theReport, gsi_u32 thePlayerIndex, const GSLoginCertificate * certificate, const gsi_u8 theAuthHash[16]);
 SCResult SC_CALL sciReportSetTeamGameResult    (SCIReport * theReport, gsi_u32 theTeamIndex  , SCGameResult theGameResult);
 SCResult SC_CALL sciReportSetAsMatchless       (SCIReport * theReport);
 
@@ -169,10 +167,6 @@ SCResult SC_CALL sciReportEndEntity(SCIReport * theReport);
 SCResult SC_CALL sciReportEnd(SCIReport * theReport, gsi_bool isAuth, SCGameStatus theStatus);
 
 
-
-
-
-
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 #ifdef __cplusplus
@@ -182,4 +176,4 @@ SCResult SC_CALL sciReportEnd(SCIReport * theReport, gsi_bool isAuth, SCGameStat
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
-#endif // __SCREPORT_H__
+#endif // __SCIREPORT_H__

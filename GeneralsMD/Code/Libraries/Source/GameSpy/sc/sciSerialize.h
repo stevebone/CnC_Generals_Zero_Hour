@@ -1,5 +1,12 @@
 ///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
+// File:	sciSerialize.h
+// SDK:		GameSpy ATLAS Competition SDK
+//
+// Copyright (c) IGN Entertainment, Inc.  All rights reserved.  
+// This software is made available only pursuant to certain license terms offered
+// by IGN or its subsidiary GameSpy Industries, Inc.  Unlicensed use or use in a 
+// manner not expressly authorized by IGN or GameSpy is prohibited.
+
 #ifndef __SCISERIALIZE_H__
 #define __SCISERIALIZE_H__
 
@@ -42,4 +49,4 @@ gsi_u8* sciSerializeGUID      (gsi_u8* theCursor, const gsi_u8 theGUID[SC_CONNEC
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
-#endif // __SCSERIALIZE_H__
+#endif // __SCISERIALIZE_H__

@@ -1,9 +1,18 @@
-// gptestDlg.cpp : implementation file
+///////////////////////////////////////////////////////////////////////////////
+// File:	gptestDlg.cpp
+// SDK:		GameSpy Presence and Messaging SDK
 //
+// Copyright (c) 2012 GameSpy Technology & IGN Entertainment, Inc. All rights
+// reserved. This software is made available only pursuant to certain license
+// terms offered by IGN or its subsidiary GameSpy Industries, Inc. Unlicensed
+// use or use in a manner not expressly authorized by IGN or GameSpy Technology
+// is prohibited.
 
 #include "stdafx.h"
 #include "gptest.h"
 #include "gptestDlg.h"
+
+#include "../gp.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -75,6 +84,7 @@ CGptestDlg::CGptestDlg(CWnd* pParent /*=NULL*/)
 	, m_HostIp(_T(""))
 	, m_HostPrivateIp(_T(""))
 	, m_cdkey(_T(""))
+	, m_gameId(0)
 {
 	//{{AFX_DATA_INIT(CGptestDlg)
 	m_partnerid = 0;
@@ -113,6 +123,7 @@ CGptestDlg::CGptestDlg(CWnd* pParent /*=NULL*/)
 	m_ipmhomepage = FALSE;
 	m_ipmsex = FALSE;
 	m_ipmzipcode = FALSE;
+	m_ipmbuddylist = FALSE;
 	m_newnick = _T("");
 	m_replace = FALSE;
 	m_izipcode = _T("");
@@ -135,7 +146,7 @@ CGptestDlg::CGptestDlg(CWnd* pParent /*=NULL*/)
 	m_namespace = _T("");
 	m_productid = 0;
 	//}}AFX_DATA_INIT
-	// Note that LoadIcon does not require a subsequent DestroyIcon in Win32
+	// Note that LoadIcon does not require a subsequent DestroyIcon in Win32.
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	
 	
@@ -205,6 +216,7 @@ void CGptestDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_IPMHOMEPAGE, m_ipmhomepage);
 	DDX_Check(pDX, IDC_IPMSEX, m_ipmsex);
 	DDX_Check(pDX, IDC_IPMZIPCODE, m_ipmzipcode);
+	DDX_Check(pDX, IDC_IPMBUDDYLIST, m_ipmbuddylist);
 	DDX_Text(pDX, IDC_NEWNICK, m_newnick);
 	DDX_Check(pDX, IDC_REPLACE, m_replace);
 	DDX_Text(pDX, IDC_IZIPCODE, m_izipcode);
@@ -244,10 +256,12 @@ void CGptestDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_HOST_IP, m_HostIp);
 	DDX_Text(pDX, IDC_HOST_PRIVATE_IP, m_HostPrivateIp);
 	DDX_Text(pDX, IDC_CDKEY, m_cdkey);
-    DDX_Control(pDX, IDC_BLOCKLIST, m_blocklist);
-    DDX_Control(pDX, IDC_GET_BLOCKEDLIST, m_getblockedlist);
-    DDX_Control(pDX, IDC_ADD_BLOCK, m_addblock);
-    DDX_Control(pDX, IDC_REMOVE_BLOCK, m_removeblock);
+	DDX_Control(pDX, IDC_BLOCKLIST, m_blocklist);
+	DDX_Control(pDX, IDC_GET_BLOCKEDLIST, m_getblockedlist);
+	DDX_Control(pDX, IDC_ADD_BLOCK, m_addblock);
+	DDX_Control(pDX, IDC_REMOVE_BLOCK, m_removeblock);
+	DDX_Text(pDX, IDC_GAMEID, m_gameId);
+	DDV_MinMaxInt(pDX, m_gameId, 0, 65536);
 }
 
 BEGIN_MESSAGE_MAP(CGptestDlg, CDialog)
@@ -300,6 +314,7 @@ BEGIN_MESSAGE_MAP(CGptestDlg, CDialog)
     ON_LBN_SELCHANGE(IDC_BLOCKLIST, OnSelchangeBlocklist)
     ON_BN_CLICKED(IDC_ADD_BLOCK, OnAddBlock)
     ON_BN_CLICKED(IDC_REMOVE_BLOCK, OnRemoveBlock)
+	ON_BN_CLICKED(IDC_BUDDYLIST, &CGptestDlg::OnBuddyList)
 END_MESSAGE_MAP()
 
 // The system calls this to obtain the cursor to display while the user drags
@@ -345,7 +360,7 @@ void CheckResponse(GPConnection * connection, void * arg_, void * param)
 	CString strMessage;
 	char buf[16];
 
-	strMessage.Format("%s@%s (%s)\n", dlg->m_nick, dlg->m_email, dlg->m_password);
+	strMessage.Format("%s@%s (%s)\n", dlg->m_nick.GetString(), dlg->m_email.GetString(), dlg->m_password.GetString());
 
 	if(arg->result == GP_NO_ERROR)
 	{
@@ -505,6 +520,7 @@ void GetInfoResponse(GPConnection * connection, void * arg_, void * param)
 		dlg->m_ipmbirthday = (arg->publicmask & GP_MASK_BIRTHDAY)?TRUE:FALSE;
 		dlg->m_ipmsex = (arg->publicmask & GP_MASK_SEX)?TRUE:FALSE;
 		dlg->m_ipmemail = (arg->publicmask & GP_MASK_EMAIL)?TRUE:FALSE;
+		dlg->m_ipmbuddylist = (arg->publicmask & GP_MASK_BUDDYLIST) ?TRUE:FALSE;
 		if(index != -1)
 		{
 			dlg->m_iaddress = inet_ntoa(addr);
@@ -512,7 +528,7 @@ void GetInfoResponse(GPConnection * connection, void * arg_, void * param)
 			//itoa(statusInfo.buddyPort, intValue, 10);
 			itoa(status.port, intValue, 10);
 			dlg->m_iaddress += intValue;
-			dlg->m_status = status.status;
+			dlg->m_status = (int)status.status;
 			dlg->m_statusString = status.statusString;
 			dlg->m_locationString = status.locationString;
 			
@@ -856,13 +872,50 @@ void SuggestUniqueNickResponse(GPConnection * connection, void * arg_, void * pa
 		{
 			dlg->m_results.InsertString(i, arg->suggestedNicks[i]);
 			dlg->m_results.SetItemData(i, 0);
-			// don't get info for this one
+			// Don't get info for this one.
 			searchMatches[i].profile = -1;
 		}
 	}
 	else
 	{
 		dlg->MessageBox("GetUserNicksResponse failed");
+	}
+	GSI_UNUSED(connection);
+	GSI_UNUSED(param);
+}
+
+void GetProfileBuddyListTestResponse(GPConnection * connection, void * arg_, void * param)
+{
+	GPGetProfileBuddyListArg * arg = (GPGetProfileBuddyListArg *)arg_;
+
+	if(arg->result == GP_NO_ERROR)
+	{
+		int i;
+		CString str;
+
+		if (arg->hidden == GP_HIDDEN)
+		{
+			dlg->MessageBox("Buddy list is hidden.");
+			return;
+		}
+
+		if (arg->numProfiles == 0)
+		{
+			dlg->MessageBox("No buddies for this profile.");
+			return;
+		}
+
+		for(i = 0 ; i < arg->numProfiles ; i++)
+		{
+			CString profileStr;
+			profileStr.Format("%d", arg->profiles[i]);
+			dlg->m_results.InsertString(i, profileStr);
+			dlg->m_results.SetItemData(i, (DWORD)arg->profiles[i]);
+		}
+	}
+	else
+	{
+		dlg->MessageBox("GetProfileBuddyListTestResponse failed");
 	}
 	GSI_UNUSED(connection);
 	GSI_UNUSED(param);
@@ -1054,7 +1107,7 @@ void TransferCallback(GPConnection * connection, void * arg_, void * param)
 	GSI_UNUSED(param);
 }
 
-// Utility func for converting an error code to a string.
+// Utility function for converting an error code to a string.
 /////////////////////////////////////////////////////////
 #define CtoS(code)  case code: string += " (" #code ")"; return;
 void CGptestDlg::CodeToString(CString & string)
@@ -1140,10 +1193,10 @@ BOOL CGptestDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
-	// Set the icon for this dialog.  The framework does this automatically
-	//  when the application's main window is not a dialog
-	SetIcon(m_hIcon, TRUE);			// Set big icon
-	SetIcon(m_hIcon, FALSE);		// Set small icon
+	// Set the icon for this dialog. The framework does this automatically
+	//  when the application's main window is not a dialog.
+	SetIcon(m_hIcon, TRUE);			// Set big icon.
+	SetIcon(m_hIcon, FALSE);		// Set small icon.
 
 	dlg = this;
 	m_connection = NULL;
@@ -1223,7 +1276,7 @@ void CGptestDlg::OnDestroy()
 	file = fopen("login.txt", "wt");
 	if(file)
 	{
-		fprintf(file, "%s\n%s\n%s\n%s", m_email, m_nick, m_password, m_uniquenick);
+		fprintf(file, "%s\n%s\n%s\n%s", m_email.GetString(), m_nick.GetString(), m_password.GetString(), m_uniquenick.GetString());
 		fclose(file);
 	}
 
@@ -1240,15 +1293,16 @@ void CGptestDlg::OnInitialize()
 
 
 #ifdef GSI_COMMON_DEBUG
-	// Define GSI_COMMON_DEBUG if you want to view the SDK debug output
-	// Set the SDK debug log file, or set your own handler using gsSetDebugCallback
+	// Define GSI_COMMON_DEBUG if you want to view the SDK debug output.
+	// Set the SDK debug log file, or set your own handler using 
+	// gsSetDebugCallback.
 	gsSetDebugCallback(DebugCallback);
 
-	// Set some debug levels
+	// Set some debug levels.
 	gsSetDebugLevel(GSIDebugCat_All, GSIDebugType_All, GSIDebugLevel_Debug);
 #endif
 
-	// check that the game's backend is available
+	// Perform the GameSpy Availability Check.
 	GSIACResult result;
 	GSIStartAvailableCheck(GSI_TEST_GAMENAME);
 	while((result = GSIAvailableCheckThink()) == GSIACWaiting)
@@ -1398,7 +1452,7 @@ void CGptestDlg::OnUpdate()
 }
 
 
-void CGptestDlg::OnTimer(UINT nIDEvent) 
+void CGptestDlg::OnTimer(UINT_PTR nIDEvent) 
 {
 	if(!m_connection)
 		return;
@@ -1664,6 +1718,8 @@ void CGptestDlg::OnSetinfo()
 		mask |= GP_MASK_SEX;
 	if(m_ipmemail)
 		mask |= GP_MASK_EMAIL;
+	if(m_ipmbuddylist)
+		mask |= GP_MASK_BUDDYLIST;
 	gpSetInfoMask(&m_connection, (GPEnum)mask);
 }
 
@@ -1807,6 +1863,7 @@ void CGptestDlg::OnPublicmaskAll()
 	m_ipmbirthday = TRUE;
 	m_ipmsex = TRUE;
 	m_ipmemail = TRUE;
+	m_ipmbuddylist = TRUE;
 
 	UpdateData(FALSE);
 }
@@ -1824,6 +1881,7 @@ void CGptestDlg::OnPublicmaskNone()
 	m_ipmbirthday = FALSE;
 	m_ipmsex = FALSE;
 	m_ipmemail = FALSE;
+	m_ipmbuddylist = FALSE;
 
 	UpdateData(FALSE);
 }
@@ -1962,7 +2020,7 @@ void CGptestDlg::OnRegisterCdKey()
 		return;
 
 	// Register CDkey
-	CHECK(gpRegisterCdKey(&m_connection, (LPCSTR)m_cdkey, GP_BLOCKING, RegisterCdKeyCallback, NULL));
+	CHECK(gpRegisterCdKey(&m_connection, (LPCSTR)m_cdkey, m_gameId, GP_BLOCKING, RegisterCdKeyCallback, NULL));
 }
 
 void CGptestDlg::OnGetBlocked()
@@ -1973,7 +2031,7 @@ void CGptestDlg::OnGetBlocked()
 	m_blocklist.ResetContent();
     UpdateData();
 
-    // Grab block list
+    // Grab block list.
     GPProfile profile;
     int numBlocked;
     CHECK(gpGetNumBlocked(&m_connection, &numBlocked));
@@ -2053,4 +2111,22 @@ void CGptestDlg::OnRemoveBlock()
 
         m_blocklist.DeleteString(index);
     }
+}
+
+void CGptestDlg::OnBuddyList()
+{
+    if(!m_connection)
+        return;
+
+	// Get the profile selected.
+	////////////////////////////
+    int index = m_results.GetCurSel();
+    if(index != LB_ERR)
+    {
+        UpdateData();
+        GPProfile profile = (GPProfile)m_results.GetItemData(index);
+
+		dlg->m_results.ResetContent();
+		CHECK(gpGetProfileBuddyList(&m_connection, profile, 0, (GPEnum)m_blocking, GetProfileBuddyListTestResponse, NULL));
+	}
 }

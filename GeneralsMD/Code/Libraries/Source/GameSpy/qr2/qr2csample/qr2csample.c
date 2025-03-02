@@ -17,6 +17,7 @@ devsupport@gamespy.com
 INCLUDES
 ********/
 #include "../qr2.h"
+#include "../../natneg/natneg.h"
 
 /********
 DEFINES
@@ -24,11 +25,12 @@ DEFINES
 // set some of the fixed server keys
 #define GAME_VERSION	_T("2.00")
 #define GAME_NAME		_T("gmtest")
+#define SECRET_KEY		_T("HA6zkS")
 #define MAX_PLAYERS		32
 #define MAX_TEAMS		2
 #define BASE_PORT		11111
 
-// ensure cross-platform compatibility for printf
+// This ensures cross-platform compatibility for printf.
 #ifdef _WIN32_WCE
 	void RetailOutputA(CHAR *tszErr, ...);
 	#define printf RetailOutputA
@@ -38,17 +40,18 @@ DEFINES
 	#define vprintf VPrintf
 #endif
 
-// define our additional keys, making sure not to overwrite the reserved standard key ids
-// standard keys use 0-NUM_RESERVED_KEYS (defined in qr2regkeys.h)
+// Here we define our additional keys, making sure not to overwrite the
+// reserved standard key ids.
+// Standard keys use 0-NUM_RESERVED_KEYS (defined in qr2regkeys.h).
 #define GRAVITY_KEY 100
 #define RANKINGON_KEY 101
 #define TIME__KEY 102
 #define AVGPING_T_KEY 103
 
 /********
-TYPDEFS
+TYPEDEFS
 ********/
-//representative of a game player structure
+// This is representative of a game player structure.
 typedef struct
 {
 	gsi_char pname[80];
@@ -59,7 +62,7 @@ typedef struct
 	int pteam;
 } player_t;
 
-//representative of a team structure
+// This is representative of a team structure.
 typedef struct
 {
 	gsi_char tname[80];
@@ -68,7 +71,7 @@ typedef struct
 
 } team_t;
 
-//representative of a game data structure
+// This is representative of a game data structure.
 typedef struct
 {
 	player_t players[MAX_PLAYERS];
@@ -91,7 +94,7 @@ typedef struct
 /********
 GLOBAL VARS
 ********/
-// just to give us bogus data
+// This is just to give us bogus data.
 gsi_char *constnames[MAX_PLAYERS]=
 {
 	_T("Joe Player"), _T("L33t 0n3"), _T("Raptor"), _T("Gr81"),
@@ -101,31 +104,38 @@ gsi_char *constnames[MAX_PLAYERS]=
 };
 gamedata_t gamedata;  // to store all the server/player/teamkeys
 
+// vars used by ACE client connection to accept/send responses over the wire once connected
+int connected = 0;
+struct sockaddr_in otheraddr;
+SOCKET sock = INVALID_SOCKET;
+
 /********
 DEBUG OUTPUT
 ********/
 #ifdef GSI_COMMON_DEBUG
-	static void DebugCallback(GSIDebugCategory theCat, GSIDebugType theType,
-	                          GSIDebugLevel theLevel, const char * theTokenStr,
-	                          va_list theParamList)
-	{
-		GSI_UNUSED(theLevel);
-		printf("[%s][%s] ", 
-				gGSIDebugCatStrings[theCat], 
-				gGSIDebugTypeStrings[theType]);
+	#if !defined(_MACOSX) && !defined(_IPHONE)
+		static void DebugCallback(GSIDebugCategory theCat, GSIDebugType theType,
+								  GSIDebugLevel theLevel, const char * theTokenStr,
+								  va_list theParamList)
+		{
+			GSI_UNUSED(theLevel);
+			printf("[%s][%s] ", 
+					gGSIDebugCatStrings[theCat], 
+					gGSIDebugTypeStrings[theType]);
 
-		vprintf(theTokenStr, theParamList);
-	}
+			vprintf(theTokenStr, theParamList);
+		}
+	#endif
 
 	#ifdef GSI_UNICODE
-	static void AppDebug(const unsigned short* format, ...)
+	static void AppDebug(const wchar_t* format, ...)
 	{
-        // Construct text, then pass in as ASCII
+        // Construct text, then pass it in as ASCII.
         unsigned short buf[1024];
         char tmp[2056];
         va_list aList;
         va_start(aList, format);
-        vswprintf(buf, 1024, format, aList);
+        _vswprintf(buf, 1024, format, aList);
 
         UCS2ToAsciiString(buf, tmp);
         gsDebugFormat(GSIDebugCat_App, GSIDebugType_Misc, GSIDebugLevel_Notice,
@@ -144,8 +154,36 @@ DEBUG OUTPUT
 	#define AppDebug _tprintf
 #endif
 
+
+// simple reader function that tries to read data off the socket
+static void tryread(SOCKET s)
+{
+    char buf[256];
+    int len;
+    struct sockaddr_in saddr;
+    socklen_t saddrlen = sizeof(saddr);
+    while (CanReceiveOnSocket(s))
+    {
+        len = recvfrom(s, buf, sizeof(buf) - 1, 0, (struct sockaddr *)&saddr, &saddrlen);
+
+        if (len < 0)
+        {
+            len = GOAGetLastError(s);
+            printf("|Got recv error: %d\n", len);
+            break;
+        }
+        buf[len] = 0;
+        if (memcmp(buf, NNMagicData, NATNEG_MAGIC_LEN) == 0)
+        {
+            NNProcessData(buf, len, &saddr);
+        } else
+            printf("|Got data (%s:%d): %s\n", inet_ntoa(saddr.sin_addr),ntohs(saddr.sin_port), buf);
+    }
+}
+
+
 /********
-PROTOTYPES - To prevent warnings on codewarrior strict compile
+PROTOTYPES - To prevent warnings on codewarrior strict compile.
 ********/
 void serverkey_callback(int keyid, qr2_buffer_t outbuf, void *userdata);
 void playerkey_callback(int keyid, int index, qr2_buffer_t outbuf, void *userdata);
@@ -156,13 +194,14 @@ void adderror_callback(qr2_error_t error, gsi_char *errmsg, void *userdata);
 void nn_callback(int cookie, void *userdata);
 void cm_callback(gsi_char *data, int len, void *userdata);
 void cc_callback(SOCKET gamesocket, struct sockaddr_in *remoteaddr, void *userdata);
+void hr_callback(void *userdata);
 void DoGameStuff(gsi_time totalTime);
 int  test_main(int argc, char **argp);
 
 // called when a server key needs to be reported
 void serverkey_callback(int keyid, qr2_buffer_t outbuf, void *userdata)
 {
-	AppDebug("Reporting server keys\n");
+	AppDebug(_T("Reporting server keys\n"));
 
 	switch (keyid)
 	{
@@ -215,12 +254,12 @@ void serverkey_callback(int keyid, qr2_buffer_t outbuf, void *userdata)
 	GSI_UNUSED(userdata);
 }
 
-// called when a player key needs to be reported
+// This is called when a player key needs to be reported.
 void playerkey_callback(int keyid, int index, qr2_buffer_t outbuf, void *userdata)
 {
-	AppDebug("Reporting player keys\n");
+	AppDebug(_T("Reporting player keys\n"));
 	
-	//check for valid index
+	// Here we check for valid index.
 	if (index >= gamedata.numplayers)
 	{
 		qr2_buffer_add(outbuf, _T(""));
@@ -254,12 +293,12 @@ void playerkey_callback(int keyid, int index, qr2_buffer_t outbuf, void *userdat
 	GSI_UNUSED(userdata);
 }
 
-// called when a team key needs to be reported
+// This is called when a team key needs to be reported.
 void teamkey_callback(int keyid, int index, qr2_buffer_t outbuf, void *userdata)
 {
-	AppDebug("Reporting team keys\n");
+	AppDebug(_T("Reporting team keys\n"));
 
-	//check for valid index
+	// Here we check for valid index.
 	if (index >= gamedata.numteams)
 	{
 		qr2_buffer_add(outbuf, _T(""));
@@ -284,12 +323,13 @@ void teamkey_callback(int keyid, int index, qr2_buffer_t outbuf, void *userdata)
 	GSI_UNUSED(userdata);
 }	
 
-// called when we need to report the list of keys we report values for
+// This is called when we need to report the list of keys for which we report 
+// values.
 void keylist_callback(qr2_key_type keytype, qr2_keybuffer_t keybuffer, void *userdata)
 {
-	AppDebug("Reporting keylist\n");
+	AppDebug(_T("Reporting keylist\n"));
 
-	//need to add all the keys we support
+	// We need to add all the keys we support.
 	switch (keytype)
 	{
 	case key_server:
@@ -305,8 +345,8 @@ void keylist_callback(qr2_key_type keytype, qr2_keybuffer_t keybuffer, void *use
 		qr2_keybuffer_add(keybuffer, TEAMPLAY_KEY);
 		qr2_keybuffer_add(keybuffer, FRAGLIMIT_KEY);
 		qr2_keybuffer_add(keybuffer, TIMELIMIT_KEY);
-		qr2_keybuffer_add(keybuffer, GRAVITY_KEY); //a custom key
-		qr2_keybuffer_add(keybuffer, RANKINGON_KEY); //a custom key
+		qr2_keybuffer_add(keybuffer, GRAVITY_KEY); // This is a custom key.
+		qr2_keybuffer_add(keybuffer, RANKINGON_KEY); // This is a custom key.
 		break;
 	case key_player:
 		qr2_keybuffer_add(keybuffer, PLAYER__KEY);
@@ -314,12 +354,12 @@ void keylist_callback(qr2_key_type keytype, qr2_keybuffer_t keybuffer, void *use
 		qr2_keybuffer_add(keybuffer, DEATHS__KEY);
 		qr2_keybuffer_add(keybuffer, PING__KEY);
 		qr2_keybuffer_add(keybuffer, TEAM__KEY);
-		qr2_keybuffer_add(keybuffer, TIME__KEY); //a custom key
+		qr2_keybuffer_add(keybuffer, TIME__KEY); // This is a custom key.
 		break;
 	case key_team:
 		qr2_keybuffer_add(keybuffer, TEAM_T_KEY);
 		qr2_keybuffer_add(keybuffer, SCORE_T_KEY);
-		qr2_keybuffer_add(keybuffer, AVGPING_T_KEY); //a custom key
+		qr2_keybuffer_add(keybuffer, AVGPING_T_KEY); // This is a custom key.
 		break;
 	default: break;
 	}
@@ -327,10 +367,12 @@ void keylist_callback(qr2_key_type keytype, qr2_keybuffer_t keybuffer, void *use
 	GSI_UNUSED(userdata);
 }
 
-// called when we need to report the number of players and teams
+// This is called when we need to report the number of players and teams.
 int count_callback(qr2_key_type keytype, void *userdata)
 {
-	AppDebug("Reporting number of players/teams\n");
+	GSI_UNUSED(userdata);
+
+	AppDebug(_T("Reporting number of players/teams\n"));
 
 	if (keytype == key_player)
 		return gamedata.numplayers;
@@ -339,14 +381,13 @@ int count_callback(qr2_key_type keytype, void *userdata)
 	else
 		return 0;
 
-	GSI_UNUSED(userdata);
 }
 
-// called if our registration with the GameSpy master server failed
+// This is called if our registration with the GameSpy master server failed.
 void adderror_callback(qr2_error_t error, gsi_char *errmsg, void *userdata)
 {
-	GS_ASSERT(errmsg)
-	AppDebug("Error adding server: %d, %s\n", error, errmsg);
+	GS_ASSERT(errmsg);
+	AppDebug(_T("Error adding server: %d, %s\n"), error, errmsg);
 	GSI_UNUSED(userdata);
 }
 
@@ -369,8 +410,28 @@ void cm_callback(gsi_char *data, int len, void *userdata)
 // called when a client has connected
 void cc_callback(SOCKET gamesocket, struct sockaddr_in *remoteaddr, void *userdata)
 {
-	AppDebug("Client connected from %s:%d\n", inet_ntoa(remoteaddr->sin_addr), ntohs(remoteaddr->sin_port));
-	GSI_UNUSED(gamesocket);
+    struct sockaddr_in saddr;
+    socklen_t namelen = sizeof(saddr);
+    if (gamesocket != INVALID_SOCKET)
+    {
+        getsockname(gamesocket, (struct sockaddr *)&saddr, &namelen);
+        printf("|Local game socket: %d\n", ntohs(saddr.sin_port));
+    }    
+
+    AppDebug(_T("Client connected from %s:%d\n"), inet_ntoa(remoteaddr->sin_addr), ntohs(remoteaddr->sin_port));
+
+    // copy off the socket and addr to send replies to the client
+    memcpy(&otheraddr, remoteaddr, sizeof(otheraddr));
+    sock = gamesocket;
+    connected = 1;
+	
+	GSI_UNUSED(userdata);
+}
+
+// called once the server is successfully listed on the backend
+void hr_callback(void *userdata)
+{
+	AppDebug(_T("Server successfully listed on backend...\n"));
 	GSI_UNUSED(userdata);
 }
 
@@ -378,7 +439,7 @@ void cc_callback(SOCKET gamesocket, struct sockaddr_in *remoteaddr, void *userda
 static void init_game(void)
 {
 	int i;
-	AppDebug("Generating game data\n");
+	AppDebug(_T("Generating game data\n"));
 	srand((unsigned int) current_time() );
 	gamedata.numplayers = rand() % 15 + 1;
 	gamedata.maxplayers = MAX_PLAYERS;
@@ -413,82 +474,73 @@ static void init_game(void)
 	gamedata.hostport = 25000;
 }
 
-// simulate whatever else a game server does 
+// This is where you would simulate whatever else a game server does.
 void DoGameStuff(gsi_time totalTime)
 {
-	// After 30 seconds, we will change the game map and call qr2_send_statechanged
-	// This should only be called after major changes such as mapname or gametype, and
-	// cannot be applied more than once every 10 seconds (subsequent calls will be delayed 
-	// when necessary)
+	// After 30 seconds, we will change the game map and call 
+	// qr2_send_statechanged.
+	// You should only call this after major changes (such as mapname or 
+	// gametype), and it cannot be applied more than once every 10 seconds 
+	// (subsequent calls will be delayed when necessary).
 	static int stateChanged = 0; 
 	if (!stateChanged && totalTime > 30000) {
-		AppDebug("Mapname changed, calling qr2_send_statechanged\n");
+		AppDebug(_T("Mapname changed, calling qr2_send_statechanged\n"));
 		_tcscpy(gamedata.mapname,_T("gmtmap2"));
 		qr2_send_statechanged(NULL);
 		stateChanged = 1;
 	}
-
-	msleep(10);
 }
 
 
 int test_main(int argc, char **argp)
 {			
 	/* qr2_init parameters */
-	gsi_char  secret_key[9];         // your title's assigned secret key
 	gsi_char  ip[255];               // to manually set local IP
 	const int isPublic = 1;          // set to '0' for a LAN game
 	const int isNatNegSupported = 1; // set to '0' if you don't support Nat Negotiation
 	gsi_time  aStartTime = 0;        // for sample, so we don't run forever
 	void * userData = NULL;          // optional data that will be passed to the callback functions
+	unsigned long lastsendtime = 0;  // timer used with ACE to send data to connected clients every 2 seconds
 
-	// for debug output on these platforms
-#if defined (_PS3) || defined (_PS2) || defined (_PSP) || defined(_NITRO)
+	// This is for debug output on these platforms.
+#if defined (_PS3) || defined (_PS2) || defined (_PSP) || defined(_NITRO) || defined(_PSP2)
 	#ifdef GSI_COMMON_DEBUG
-		// Define GSI_COMMON_DEBUG if you want to view the SDK debug output
-		// Set the SDK debug log file, or set your own handler using gsSetDebugCallback
-		//gsSetDebugFile(stdout); // output to console
+		// Define GSI_COMMON_DEBUG if you want to view the SDK debug output.
+		// Set the SDK debug log file, or set your own handler using 
+		// gsSetDebugCallback.
+		//gsSetDebugFile(stdout); // Output to console.
 		gsSetDebugCallback(DebugCallback);
 
-		// Set debug levels
+		// Here we set debug levels.
 		gsSetDebugLevel(GSIDebugCat_All, GSIDebugType_All, GSIDebugLevel_Verbose);
 	#endif
 #endif
 
-	//set the secret key, in a semi-obfuscated manner
-	secret_key[0] = 'H';
-	secret_key[1] = 'A';
-	secret_key[2] = '6';
-	secret_key[3] = 'z';
-	secret_key[4] = 'k';
-	secret_key[5] = 'S';
-	secret_key[6] = '\0';
-
 	// register our custom keys (you do not have to register the reserved standard keys)
-	AppDebug("Registering custom keys\n");
+	AppDebug(_T("Registering custom keys\n"));
 	qr2_register_key(GRAVITY_KEY, _T("gravity")    );
 	qr2_register_key(RANKINGON_KEY, _T("rankingon"));
-	qr2_register_key(TIME__KEY,     _T("time_")    ); // player keys always end with '_'
-	qr2_register_key(AVGPING_T_KEY, _T("avgping_t")); // team keys always end with '_t'
+	qr2_register_key(TIME__KEY,     _T("time_")    ); // Player keys always end with '_'
+	qr2_register_key(AVGPING_T_KEY, _T("avgping_t")); // Team keys always end with '_t'
 
-	// create some random game data
+	// Here we create some random game data.
 	init_game();
 
-	// Check if we want to override our IP  (otherwise qr2 will set for us)	
+	// Check if we want to override our IP (otherwise qr2 will set for us).
 #ifndef GSI_UNICODE
 	if (argc>1)
-		strcpy(ip, argp[1]);
+		gsiSafeStrcpyA(ip, argp[1], sizeof(ip));
 #else
 	if (argc>1)
 		AsciiToUCS2String(argp[1], ip);
 #endif
 
-	AppDebug("Initializing SDK; server should show up on the master list within 6-10 sec.\n");
+	AppDebug(_T("Initializing SDK; server should show up on the master list within 6-10 sec.\n"));
 	//Call qr_init with the query port number and gamename, default IP address, and no user data
 	//Pass NULL for the qrec parameter (first parameter) as long as you're running a single game 
 	//server instance per process
 	//Reference gt2nat sample for qr2_init_socket implementation
-	if (qr2_init(NULL,argc>1?ip:NULL,BASE_PORT,GAME_NAME, secret_key, isPublic, isNatNegSupported,
+	if (qr2_init(NULL,argc>1?ip:NULL,BASE_PORT,GAME_NAME, SECRET_KEY, isPublic, isNatNegSupported,
 		serverkey_callback, playerkey_callback, teamkey_callback,
 		keylist_callback, count_callback, adderror_callback, userData) != e_qrnoerror)
 	{
@@ -505,32 +557,61 @@ int test_main(int argc, char **argp)
 	// Set a function to be called when a client has connected
 	qr2_register_clientconnected_callback(NULL, cc_callback);
 
+	// callback informs us when we've successfully advertised to the backend, (e.g. tells us when a server is listed)
+	qr2_register_hostregistered_callback(NULL, hr_callback);
+
 	// Enter the main loop
-	AppDebug("Sample will quit after 60 seconds\n");
+	AppDebug(_T("Sample will quit after 60 seconds\n"));
 	aStartTime = current_time();
 	while ((current_time() - aStartTime) < 60000)
 	{
-		gsi_time totalTime = current_time() - aStartTime; // used to change the game state after 30 seconds
+		gsi_time totalTime = current_time() - aStartTime; // This is used to change the game state after 30 seconds.
 
-		// An actual game would do something between "thinks"
+		// An actual game would do something between "thinks".
 		DoGameStuff(totalTime);
 
-		//check for / process incoming queries
-		//should be called every 10-100 ms; quicker calls produce more accurate ping measurements
+		// This is to check for / process incoming queries.
+		// It should be called every 10-100 ms; quicker calls produce more 
+		// accurate ping measurements.
 		qr2_think(NULL);
+
+        // if connected with ACE
+        if (connected)
+        {
+            // every 2 seconds, fire off a message to the client
+            if (current_time() - lastsendtime > 2000)
+            {
+                int ret = sendto(sock, "sup client!?", 12, 0, (struct sockaddr *)&otheraddr, sizeof(struct sockaddr_in));
+                int error = GOAGetLastError(sock);
+                printf("|Sending (%d:%d), remoteaddr: %s, remoteport: %d\n", ret, error, inet_ntoa(otheraddr.sin_addr), ntohs(otheraddr.sin_port));
+                lastsendtime = current_time();
+            }			
+        }
+
+        // read from our returned socket if any clients have connected
+        if (sock != INVALID_SOCKET)
+            tryread(sock);
+        msleep(10);
+
 	}
 
-	AppDebug("Shutting down - server will be removed from the master server list\n");
-	//let gamemaster know we are shutting down (removes dead server entry from the list)
+	AppDebug(_T("Shutting down - server will be removed from the master server list\n"));
+	// Here we let gamemaster know we are shutting down (this removes the dead
+	// server entry from the list).
 	qr2_shutdown(NULL);
 
+    // cleanup & close ACE socket
+    if (sock != INVALID_SOCKET)
+        closesocket(sock);
+
+    sock = INVALID_SOCKET;
+    SocketShutDown();
 	
 #ifdef GSI_UNICODE
-	// In Unicode mode we must perform additional cleanup
+	// In Unicode mode we must perform additional cleanup.
 	qr2_internal_key_list_free();
 #endif
 
-	// Finished
+	// We finished Successfully.
 	return 0;
 }
-
