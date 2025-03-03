@@ -33,7 +33,10 @@
 #include "Common/GameState.h"
 #include "Common/Snapshot.h"
 #include "Common/XferLoad.h"
-
+#include <windows.h>
+#include <cstdio>
+#include <iostream>
+#include <vector>
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 XferLoad::XferLoad( void )

@@ -1,5 +1,5 @@
 /*
-**	Command & Conquer Generals Zero Hour(tm)
+**	Command & Conquer Generals(tm)
 **	Copyright 2025 Electronic Arts Inc.
 **
 **	This program is free software: you can redistribute it and/or modify
@@ -64,37 +64,13 @@ class STLSpecialAlloc;
 
 // FORWARD DECLARATIONS
 class Object;
-/**
-	Note that NameKeyType isn't a "real" enum, but an enum type used to enforce the
-	fact that NameKeys are really magic cookies, and aren't really interchangeable
-	with ints. NAMEKEY_INVALID is always a legal value, but all other values are dynamically
-	determined at runtime. (The generated code is basically identical, of course.)
-*/
-//------------------------------------------------------------------------------------------------- 
-enum NameKeyType : int
-{
-	NAMEKEY_INVALID					= 0,
-	NAMEKEY_MAX							= 1<<23,					// max ordinal value of a NameKey (some code relies on these fitting into 24 bits safely)
-	FORCE_NAMEKEYTYPE_LONG	= 0x7fffffff	// a trick to ensure the NameKeyType is a 32-bit int
-};
-
-/// A unique, generic "identifier" used to access Objects.
-enum ObjectID : int
-{
-	INVALID_ID = 0,
-	FORCE_OBJECTID_TO_LONG_SIZE = 0x7ffffff
-};
-
-/// A unique, generic "identifier" used to access Drawables.
-enum DrawableID : int
-{
-	INVALID_DRAWABLE_ID = 0,
-	FORCE_DRAWABLEID_TO_LONG_SIZE = 0x7ffffff
-};
+enum NameKeyType;
+enum ObjectID;
+enum DrawableID;
 
 #include <algorithm>
 #include <bitset>
-#include <unordered_map>
+#include <hash_map>
 #include <list>
 #include <map>
 #include <queue>
@@ -109,8 +85,8 @@ typedef std::list< AsciiString >::iterator								AsciiStringListIterator;
 typedef std::list< AsciiString >::const_iterator					AsciiStringListConstIterator;
 
 // One is used in GameLogic to keep track of objects to be destroyed
-typedef std::list<Object *>																ObjectPointerList;
-typedef std::list<Object *>::iterator											ObjectPointerListIterator;
+typedef std::list<Object*>																ObjectPointerList;
+typedef std::list<Object*>::iterator											ObjectPointerListIterator;
 
 typedef std::vector<ObjectID>															ObjectIDVector;
 typedef std::vector<ObjectID>::iterator										ObjectIDVectorIterator;
@@ -136,16 +112,16 @@ typedef std::vector<Bool>::iterator												BoolVectorIterator;
 typedef std::map< NameKeyType, Real, std::less<NameKeyType> > ProductionChangeMap;
 typedef std::map< NameKeyType, VeterancyLevel, std::less<NameKeyType> > ProductionVeterancyMap;
 
-// Some useful, common hash and equal_to functors for use with unordered_map
-namespace rts 
+// Some useful, common hash and equal_to functors for use with hash_map
+namespace rts
 {
-	
+
 	// Generic hash functor. This should almost always be overridden for 
 	// specific types.
 	template<typename T> struct hash
 	{
 		size_t operator()(const T& __t) const
-		{ 
+		{
 			std::hash<T> tmp;
 			return tmp(__t);
 		}
@@ -176,7 +152,7 @@ namespace rts
 	template<> struct hash<NameKeyType>
 	{
 		size_t operator()(NameKeyType nkt) const
-		{ 
+		{
 			std::hash<UnsignedInt> tmp;
 			return tmp((UnsignedInt)nkt);
 		}
@@ -185,7 +161,7 @@ namespace rts
 	template<> struct hash<DrawableID>
 	{
 		size_t operator()(DrawableID nkt) const
-		{ 
+		{
 			std::hash<UnsignedInt> tmp;
 			return tmp((UnsignedInt)nkt);
 		}
@@ -194,7 +170,7 @@ namespace rts
 	template<> struct hash<ObjectID>
 	{
 		size_t operator()(ObjectID nkt) const
-		{ 
+		{
 			std::hash<UnsignedInt> tmp;
 			return tmp((UnsignedInt)nkt);
 		}
@@ -212,23 +188,6 @@ namespace rts
 		}
 	};
 
-	template<> struct hash<AsciiString>
-	{
-		size_t operator()(AsciiString ast) const
-		{ 
-			std::hash<const char *> tmp;
-			return tmp((const char *) ast.str());
-		}
-	};
-
-	template<> struct equal_to<AsciiString>
-	{
-		Bool operator()(const AsciiString& __t1, const AsciiString& __t2) const
-		{
-			return (__t1 == __t2);
-		}
-	};
-
 	template<> struct less_than_nocase<AsciiString>
 	{
 		bool operator()(const AsciiString& __t1, const AsciiString& __t2) const
@@ -242,6 +201,33 @@ namespace rts
 		bool operator()(const UnicodeString& __t1, const UnicodeString& __t2) const
 		{
 			return (__t1.compareNoCase(__t2) < 0);
+		}
+	};
+
+	// Fix the hash specialization for AsciiString.
+	// This implementation uses the djb2 algorithm to compute a hash over the actual string content.
+	template<> struct hash<AsciiString>
+	{
+		size_t operator()(const AsciiString& ast) const
+		{
+			size_t hash = 5381;
+			const char* s = ast.str();
+			size_t len = std::strlen(ast.str());
+			for (size_t i = 0; i < len; i++)
+			{
+				hash = ((hash << 5) + hash) + static_cast<unsigned char>(s[i]); // hash * 33 + s[i]
+			}
+			return hash;
+		}
+	};
+
+	// Fix the equal_to specialization for AsciiString.
+	// This version compares the actual character data rather than pointer values.
+	template<> struct equal_to<AsciiString>
+	{
+		Bool operator()(const AsciiString& lhs, const AsciiString& rhs) const
+		{
+			return std::strcmp(lhs.str(), rhs.str()) == 0;
 		}
 	};
 }
