@@ -1,5 +1,5 @@
 /*
-**	Command & Conquer Generals Zero Hour(tm)
+**	Command & Conquer Generals(tm)
 **	Copyright 2025 Electronic Arts Inc.
 **
 **	This program is free software: you can redistribute it and/or modify
@@ -26,50 +26,38 @@
 // Be careful what you stick in here, because putting files that change often in here will 
 // tend to cheese people's goats.
 
-#ifndef __PRERTS_H__
-#define __PRERTS_H__
-
+#pragma once
 //-----------------------------------------------------------------------------
 // srj sez: this must come first, first, first.
 #define _STLP_USE_NEWALLOC					1
 //#define _STLP_USE_CUSTOM_NEWALLOC		STLSpecialAlloc
 class STLSpecialAlloc;
 
-#include <assert.h>
-#include <ctype.h>
-#include <float.h>
-#include <limits.h>
-#include <lmcons.h>
-#include <math.h>
-#include <memory.h>
-#include <stdarg.h>
-#include <stddef.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/stat.h>
-#include <sys/timeb.h>
-#include <sys/types.h>
-#include <time.h>
+#pragma warning(disable : 4018)
+#pragma warning(disable : 4996)
 
-#ifdef _WIN32
 // We actually don't use Windows for much other than timeGetTime, but it was included in 40 
 // different .cpp files, so I bit the bullet and included it here.
 // PLEASE DO NOT ABUSE WINDOWS OR IT WILL BE REMOVED ENTIRELY. :-)
 //--------------------------------------------------------------------------------- System Includes 
-#define WIN32_LEAN_AND_MEAN
+
+#define __PLACEMENT_VEC_NEW_INLINE // jmarshall
+#include <string.h>
 #include <atlbase.h>
 #include <windows.h>
-
-
+#include <assert.h>
+#include <ctype.h>
 #include <direct.h>
 #include <EXCPT.H>
-#include <fstream.h>
+#include <float.h>
+#include <fstream>
 #include <imagehlp.h>
 #include <io.h>
-
-//#include <mapicode.h>
-
+#include <limits.h>
+#include <lmcons.h>
+//#include <mapicode.h> // jmarshall
+#include <math.h>
+#include <memory.h>
 #include <mmsystem.h>
 #include <objbase.h>
 #include <ocidl.h>
@@ -78,41 +66,47 @@ class STLSpecialAlloc;
 #include <shlobj.h>
 #include <shlguid.h>
 #include <snmp.h>
-
+#include <stdarg.h>
+#include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <sys/timeb.h>
+#include <sys/types.h>
 #include <TCHAR.H>
-
+#include <time.h>
 #include <vfw.h>
 #include <winerror.h>
 #include <wininet.h>
 #include <winreg.h>
+#include <unordered_map>
+
 
 #ifndef DIRECTINPUT_VERSION
 #	define DIRECTINPUT_VERSION	0x800
 #endif
 
 #include <dinput.h>
-#endif
 
-#ifndef _MAX_PATH
-#define _MAX_PATH 1024
-#endif
+#undef AI_PASSIVE
 
 //------------------------------------------------------------------------------------ STL Includes
 // srj sez: no, include STLTypesdefs below, instead, thanks
-//#include <algorithm>
-//#include <bitset>
-//#include <unordered_map>
-//#include <list>
-//#include <map>
-//#include <queue>
-//#include <set>
-//#include <stack>
-//#include <string>
-//#include <vector>
+#include <algorithm>
+#include <bitset>
+#include <hash_map>
+#include <list>
+#include <map>
+#include <queue>
+#include <set>
+#include <stack>
+#include <string>
+#include <vector>
 
 //------------------------------------------------------------------------------------ RTS Includes
 // Icky. These have to be in this order.
-#include "Lib/BaseType.h"
+#include "Lib/Basetype.h"
 #include "Common/STLTypedefs.h"
 #include "Common/Errors.h"
 #include "Common/Debug.h"
@@ -132,9 +126,6 @@ class STLSpecialAlloc;
 #include "Common/NameKeyGenerator.h"
 #include "GameClient/ClientRandomValue.h"
 #include "GameLogic/LogicRandomValue.h"
-#include "Common/ObjectStatusTypes.h"
 
 #include "Common/Thing.h"
 #include "Common/UnicodeString.h"
-
-#endif /* __PRERTS_H__ */

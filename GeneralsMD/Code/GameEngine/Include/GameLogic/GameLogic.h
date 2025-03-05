@@ -38,8 +38,9 @@
 #include "Common/STLTypedefs.h"
 #include "Common/ObjectStatusTypes.h"
 #include "GameNetwork/NetworkDefs.h"
-#include "Common/STLTypedefs.h"
 #include "GameLogic/Module/UpdateModule.h"	// needed for DIRECT_UPDATEMODULE_ACCESS
+#include "../../../Lib/Include/Lib/BaseType.h"
+#include "../../../Lib/Include/Lib/Trig.h"
 
 /*
 	At one time, we distinguished between sleepy and nonsleepy
@@ -114,12 +115,12 @@ public:
 	virtual void reset( void );															///< Reset the logic system
 	virtual void update( void );														///< update the world
 
-#if defined(_DEBUG) || defined(_INTERNAL)
-	Int getNumberSleepyUpdates() const {return m_sleepyUpdates.size();} //For profiling, so not in Release.
+#if defined(_DEBUG)
+	int getNumberSleepyUpdates() const {return m_sleepyUpdates.size();} //For profiling, so not in Release.
 #endif
 	void processCommandList( CommandList *list );		///< process the command list
 
-	void prepareNewGame( Int gameMode, GameDifficulty diff, Int rankPoints );						///< prepare for new game 
+	void prepareNewGame( int gameMode, GameDifficulty diff, int rankPoints );						///< prepare for new game 
 
 	void logicMessageDispatcher( GameMessage *msg, 
 																			 void *userData );	///< Logic command list processing
@@ -130,24 +131,24 @@ public:
 	void removeObjectFromLookupTable( Object *obj );///< remove object ID from hash lookup table
 
 	/// @todo Change this to refer to a Region3D as an extent of the world
-	void setWidth( Real width );										///< Sets the width of the world
-	Real getWidth( void );													///< Returns the width of the world
-	void setHeight( Real height );									///< Sets the height of the world
-	Real getHeight( void );													///< Returns the height of the world
+	void setWidth( float width );										///< Sets the width of the world
+	float getWidth( void );													///< Returns the width of the world
+	void setHeight( float height );									///< Sets the height of the world
+	float getHeight( void );													///< Returns the height of the world
 
-	Bool isInGameLogicUpdate( void ) const { return m_isInUpdate; }
-	UnsignedInt getFrame( void );										///< Returns the current simulation frame number
-	UnsignedInt getCRC( Int mode = CRC_CACHED, AsciiString deepCRCFileName = AsciiString::TheEmptyString );		///< Returns the CRC
+	bool isInGameLogicUpdate( void ) const { return m_isInUpdate; }
+	unsigned int getFrame( void );										///< Returns the current simulation frame number
+	unsigned int getCRC( int mode = CRC_CACHED, AsciiString deepCRCFileName = AsciiString::TheEmptyString );		///< Returns the CRC
 
 	void setObjectIDCounter( ObjectID nextObjID ) { m_nextObjID = nextObjID; }
 	ObjectID getObjectIDCounter( void ) { return m_nextObjID; }
 
 	//-----------------------------------------------------------------------------------------------
 	void setBuildableStatusOverride(const ThingTemplate* tt, BuildableStatus bs);
-	Bool findBuildableStatusOverride(const ThingTemplate* tt, BuildableStatus& bs) const;
+	bool findBuildableStatusOverride(const ThingTemplate* tt, BuildableStatus& bs) const;
 
-	void setControlBarOverride(const AsciiString& commandSetName, Int slot, ConstCommandButtonPtr commandButton);
-	Bool findControlBarOverride(const AsciiString& commandSetName, Int slot, ConstCommandButtonPtr& commandButton) const;
+	void setControlBarOverride(const AsciiString& commandSetName, int slot, ConstCommandButtonPtr commandButton);
+	bool findControlBarOverride(const AsciiString& commandSetName, int slot, ConstCommandButtonPtr& commandButton) const;
 
 	//-----------------------------------------------------------------------------------------------
 	/// create an object given the thing template. (Only for use by ThingFactory.)
@@ -158,56 +159,56 @@ public:
 	ObjectID allocateObjectID( void );							///< Returns a new unique object id
 
 	// super hack
-	void startNewGame( Bool loadSaveGame );
+	void startNewGame( bool loadSaveGame );
 	void loadMapINI( AsciiString mapName );
 
-	void updateLoadProgress( Int progress );
+	void updateLoadProgress( int progress );
 	void deleteLoadScreen( void );
 	
 	//Kris: Cut setGameLoading() and replaced with setLoadingMap() and setLoadingSave() -- reason: nomenclature
-	//void setGameLoading( Bool loading ) { m_loadingScene = loading; }
-	void setLoadingMap( Bool loading ) { m_loadingMap = loading; }
-	void setLoadingSave( Bool loading ) { m_loadingSave = loading; }
-	void setClearingGameData( Bool clearing ) { m_clearingGameData = clearing; }
+	//void setGameLoading( bool loading ) { m_loadingScene = loading; }
+	void setLoadingMap( bool loading ) { m_loadingMap = loading; }
+	void setLoadingSave( bool loading ) { m_loadingSave = loading; }
+	void setClearingGameData( bool clearing ) { m_clearingGameData = clearing; }
 	
-	void setGameMode( Int mode );
-	Int getGameMode( void );
-	Bool isInGame( void );
-	Bool isInLanGame( void );
-	Bool isInSinglePlayerGame( void );
-	Bool isInSkirmishGame( void );
-	Bool isInReplayGame( void );
-	Bool isInInternetGame( void );
-	Bool isInShellGame( void );
-	Bool isInMultiplayerGame( void );
+	void setGameMode( int mode );
+	int getGameMode( void );
+	bool isInGame( void );
+	bool isInLanGame( void );
+	bool isInSinglePlayerGame( void );
+	bool isInSkirmishGame( void );
+	bool isInReplayGame( void );
+	bool isIninternetGame( void );
+	bool isInShellGame( void );
+	bool isInMultiplayerGame( void );
 
 	//Kris: Cut isLoadingGame() and replaced with isLoadingMap() and isLoadingSave() -- reason: nomenclature
-	//Bool isLoadingGame() const { return m_loadingScene; }		// This is the old function that isn't very clear on it's definition.
-	Bool isLoadingMap() const { return m_loadingMap; }			// Whenever a map is in the process of loading.
-	Bool isLoadingSave() const { return m_loadingSave; }		// Whenever a saved game is in the process of loading.
-	Bool isClearingGameData() const { return m_clearingGameData; }
+	//bool isLoadingGame() const { return m_loadingScene; }		// This is the old function that isn't very clear on it's definition.
+	bool isLoadingMap() const { return m_loadingMap; }			// Whenever a map is in the process of loading.
+	bool isLoadingSave() const { return m_loadingSave; }		// Whenever a saved game is in the process of loading.
+	bool isClearingGameData() const { return m_clearingGameData; }
 
-	void enableScoring(Bool score) { m_isScoringEnabled = score; }
-	Bool isScoringEnabled() const { return m_isScoringEnabled; }
+	void enableScoring(bool score) { m_isScoringEnabled = score; }
+	bool isScoringEnabled() const { return m_isScoringEnabled; }
 
-	void setShowBehindBuildingMarkers(Bool b) { m_showBehindBuildingMarkers = b; }
-	Bool getShowBehindBuildingMarkers() const { return m_showBehindBuildingMarkers; }
+	void setShowBehindBuildingMarkers(bool b) { m_showBehindBuildingMarkers = b; }
+	bool getShowBehindBuildingMarkers() const { return m_showBehindBuildingMarkers; }
 
-	void setDrawIconUI(Bool b) { m_drawIconUI = b; }
-	Bool getDrawIconUI() const { return m_drawIconUI; }
+	void setDrawIconUI(bool b) { m_drawIconUI = b; }
+	bool getDrawIconUI() const { return m_drawIconUI; }
 
-	void setShowDynamicLOD(Bool b) { m_showDynamicLOD = b; }
-	Bool getShowDynamicLOD() const { return m_showDynamicLOD; }
+	void setShowDynamicLOD(bool b) { m_showDynamicLOD = b; }
+	bool getShowDynamicLOD() const { return m_showDynamicLOD; }
 
-	void setHulkMaxLifetimeOverride(Int b) { m_scriptHulkMaxLifetimeOverride = b; }
-	Int getHulkMaxLifetimeOverride() const { return m_scriptHulkMaxLifetimeOverride; }
+	void setHulkMaxLifetimeOverride(int b) { m_scriptHulkMaxLifetimeOverride = b; }
+	int getHulkMaxLifetimeOverride() const { return m_scriptHulkMaxLifetimeOverride; }
 
-	Bool isIntroMoviePlaying();
+	bool isintroMoviePlaying();
 
 	void updateObjectsChangedTriggerAreas(void) {m_frameObjectsChangedTriggerAreas = m_frame;}
-	UnsignedInt getFrameObjectsChangedTriggerAreas(void) {return m_frameObjectsChangedTriggerAreas;}
+	unsigned int getFrameObjectsChangedTriggerAreas(void) {return m_frameObjectsChangedTriggerAreas;}
 
-	void clearGameData(Bool showScoreScreen = TRUE);														///< Clear the game data
+	void clearGameData(bool showScoreScreen = TRUE);														///< Clear the game data
 	void closeWindows( void );
 
 	void sendObjectCreated( Object *obj );
@@ -215,45 +216,45 @@ public:
 
 	void bindObjectAndDrawable(Object* obj, Drawable* draw);
 
-	void setGamePaused( Bool paused, Bool pauseMusic = TRUE );
-	Bool isGamePaused( void );
-	Bool getInputEnabledMemory( void ) { return m_inputEnabledMemory; }
+	void setGamePaused( bool paused, bool pauseMusic = TRUE );
+	bool isGamePaused( void );
+	bool getInputEnabledMemory( void ) { return m_inputEnabledMemory; }
 
-	void processProgress(Int playerId, Int percentage);
-	void processProgressComplete(Int playerId);
-	Bool isProgressComplete( void );
+	void processProgress(int playerId, int percentage);
+	void processProgressComplete(int playerId);
+	bool isProgressComplete( void );
 	void timeOutGameStart( void );
 	void initTimeOutValues( void );
-	UnsignedInt getObjectCount( void );
+	unsigned int getObjectCount( void );
 
-	Int getRankLevelLimit() const { return m_rankLevelLimit; }
-	void setRankLevelLimit(Int limit) 
+	int getRankLevelLimit() const { return m_rankLevelLimit; }
+	void setRankLevelLimit(int limit) 
 	{ 
 		if (limit < 1) limit = 1;
 		m_rankLevelLimit = limit; 
 	}
 	
 	// We need to allow access to this, because on a restartGame, we need to restart with the settings we started with
-	Int getRankPointsToAddAtGameStart() const { return m_rankPointsToAddAtGameStart; }
+	int getRankPointsToAddAtGameStart() const { return m_rankPointsToAddAtGameStart; }
 
   UnsignedShort getSuperweaponRestriction( void ) const; ///< Get any optional limits on superweapons
   void setSuperweaponRestriction( void );
 
 #ifdef DUMP_PERF_STATS
-	void getAIMetricsStatistics( UnsignedInt *numAI, UnsignedInt *numMoving, UnsignedInt *numAttacking, UnsignedInt *numWaitingForPath, UnsignedInt *overallFailedPathfinds );
+	void getAIMetricsStatistics( unsigned int *numAI, unsigned int *numMoving, unsigned int *numAttacking, unsigned int *numWaitingForPath, unsigned int *overallFailedPathfinds );
 	void resetOverallFailedPathfinds() { m_overallFailedPathfinds = 0; }
 	void incrementOverallFailedPathfinds() { m_overallFailedPathfinds++; }
-	UnsignedInt getOverallFailedPathfinds() const { return m_overallFailedPathfinds; }
+	unsigned int getOverallFailedPathfinds() const { return m_overallFailedPathfinds; }
 #endif
 	
 	// NOTE: selectObject and deselectObject should be called *only* by logical things, NEVER by the
 	// client. These will cause the client to select or deselect the object, if affectClient is true.
 	// If createToSelection is TRUE, this object causes a new group to be selected.
-	void selectObject(Object *obj, Bool createNewSelection, PlayerMaskType playerMask, Bool affectClient = FALSE);
-	void deselectObject(Object *obj, PlayerMaskType playerMask, Bool affectClient = FALSE);
+	void selectObject(Object *obj, bool createNewSelection, PlayerMaskType playerMask, bool affectClient = FALSE);
+	void deselectObject(Object *obj, PlayerMaskType playerMask, bool affectClient = FALSE);
 
 	// this should be called only by UpdateModule, thanks.
-	void friend_awakenUpdateModule(Object* obj, UpdateModulePtr update, UnsignedInt whenToWakeUp);
+	void friend_awakenUpdateModule(Object* obj, UpdateModulePtr update, unsigned int whenToWakeUp);
 
 protected:
 
@@ -267,10 +268,10 @@ private:
 	void pushSleepyUpdate(UpdateModulePtr u);
 	UpdateModulePtr peekSleepyUpdate() const;
 	void popSleepyUpdate();
-	void eraseSleepyUpdate(Int i);
-	void rebalanceSleepyUpdate(Int i);
-	Int rebalanceParentSleepyUpdate(Int i);
-	Int rebalanceChildSleepyUpdate(Int i);
+	void eraseSleepyUpdate(int i);
+	void rebalanceSleepyUpdate(int i);
+	int rebalanceParentSleepyUpdate(int i);
+	int rebalanceChildSleepyUpdate(int i);
 	void remakeSleepyUpdate();
 	void validateSleepyUpdate() const;
 
@@ -289,34 +290,34 @@ private:
 	typedef std::unordered_map< AsciiString, ConstCommandButtonPtr, rts::hash<AsciiString>, rts::equal_to<AsciiString> > ControlBarOverrideMap;
 	ControlBarOverrideMap m_controlBarOverrides;
 
-	Real m_width, m_height;																	///< Dimensions of the world
-	UnsignedInt m_frame;																		///< Simulation frame number
+	float m_width, m_height;																	///< Dimensions of the world
+	unsigned int m_frame;																		///< Simulation frame number
 	
 	// CRC cache system -----------------------------------------------------------------------------
-	UnsignedInt	m_CRC;																			///< Cache of previous CRC value
-	std::map<Int, UnsignedInt> m_cachedCRCs;								///< CRCs we've seen this frame
-	Bool m_shouldValidateCRCs;															///< Should we validate CRCs this frame?
+	unsigned int	m_CRC;																			///< Cache of previous CRC value
+	std::map<int, unsigned int> m_cachedCRCs;								///< CRCs we've seen this frame
+	bool m_shouldValidateCRCs;															///< Should we validate CRCs this frame?
 	//-----------------------------------------------------------------------------------------------
 
 	//Added By Sadullah Nader
 	//Used to for load scene
-	//Bool m_loadingScene;
-	Bool m_loadingMap;
-	Bool m_loadingSave;
-	Bool m_clearingGameData;
+	//bool m_loadingScene;
+	bool m_loadingMap;
+	bool m_loadingSave;
+	bool m_clearingGameData;
 
-	Bool m_isInUpdate;
+	bool m_isInUpdate;
 
-	Int m_rankPointsToAddAtGameStart;
+	int m_rankPointsToAddAtGameStart;
 
-	Bool m_isScoringEnabled;
-	Bool m_showBehindBuildingMarkers;	//used by designers to override the user setting for cinematics
-	Bool m_drawIconUI;
-	Bool m_showDynamicLOD;	//used by designers to override the user setting for cinematics
-	Int m_scriptHulkMaxLifetimeOverride;	///< Scripts can change the lifetime of a hulk -- defaults to off (-1) in frames.
+	bool m_isScoringEnabled;
+	bool m_showBehindBuildingMarkers;	//used by designers to override the user setting for cinematics
+	bool m_drawIconUI;
+	bool m_showDynamicLOD;	//used by designers to override the user setting for cinematics
+	int m_scriptHulkMaxLifetimeOverride;	///< Scripts can change the lifetime of a hulk -- defaults to off (-1) in frames.
 
 	/// @todo remove this hack
-	Bool m_startNewGame;
+	bool m_startNewGame;
 	WindowLayout *m_background;
 
 	Object* m_objList;																			///< All of the objects in the world.
@@ -340,7 +341,7 @@ private:
 
 	ObjectID m_nextObjID;																		///< For allocating object id's
 
-	void setDefaults( Bool loadSaveGame );									///< Set default values of class object
+	void setDefaults( bool loadSaveGame );									///< Set default values of class object
 	void processDestroyList( void );												///< Destroy all pending objects on the destroy list
 
 	void destroyAllObjectsImmediate();											///< destroy, and process destroy list immediately
@@ -349,28 +350,28 @@ private:
 	virtual TerrainLogic *createTerrainLogic( void );
 	virtual GhostObjectManager *createGhostObjectManager(void);
 
-	Int m_gameMode;
-	Int m_rankLevelLimit;
+	int m_gameMode;
+	int m_rankLevelLimit;
   UnsignedShort m_superweaponRestriction;
 
-	LoadScreen *getLoadScreen( Bool loadSaveGame );
+	LoadScreen *getLoadScreen( bool loadSaveGame );
 	LoadScreen *m_loadScreen;
-	Bool m_gamePaused;
-	Bool m_inputEnabledMemory;// Latches used to remember what to restore to after we unpause
-	Bool m_mouseVisibleMemory;
+	bool m_gamePaused;
+	bool m_inputEnabledMemory;// Latches used to remember what to restore to after we unpause
+	bool m_mouseVisibleMemory;
 
-	Bool m_progressComplete[MAX_SLOTS];
+	bool m_progressComplete[MAX_SLOTS];
 	enum { PROGRESS_COMPLETE_TIMEOUT = 60000 };							///< Timeout we wait for when we've completed our Load
-	Int m_progressCompleteTimeout[MAX_SLOTS];
+	int m_progressCompleteTimeout[MAX_SLOTS];
 	void testTimeOut( void );
-	void lastHeardFrom( Int playerId );
-	Bool m_forceGameStartByTimeOut;													///< If we timeout someone we're waiting to load, set this flag to start the game
+	void lastHeardFrom( int playerId );
+	bool m_forceGameStartByTimeOut;													///< If we timeout someone we're waiting to load, set this flag to start the game
 
 #ifdef DUMP_PERF_STATS
-	UnsignedInt m_overallFailedPathfinds;
+	unsigned int m_overallFailedPathfinds;
 #endif
 
-	UnsignedInt m_frameObjectsChangedTriggerAreas;					///< Last frame objects moved into/outof trigger areas, or were created/destroyed. jba.
+	unsigned int m_frameObjectsChangedTriggerAreas;					///< Last frame objects moved into/outof trigger areas, or were created/destroyed. jba.
 
 	// ----------------------------------------------------------------------------------------------
 	struct ObjectTOCEntry
@@ -390,26 +391,26 @@ private:
 };
 
 // INLINE /////////////////////////////////////////////////////////////////////////////////////////
-inline void GameLogic::setWidth( Real width ) { m_width = width; }
-inline Real GameLogic::getWidth( void ) { return m_width; }
-inline void GameLogic::setHeight( Real height ) { m_height = height; }
-inline Real GameLogic::getHeight( void ) { return m_height; }
-inline UnsignedInt GameLogic::getFrame( void ) { return m_frame; }
+inline void GameLogic::setWidth( float width ) { m_width = width; }
+inline float GameLogic::getWidth( void ) { return m_width; }
+inline void GameLogic::setHeight( float height ) { m_height = height; }
+inline float GameLogic::getHeight( void ) { return m_height; }
+inline unsigned int GameLogic::getFrame( void ) { return m_frame; }
 
-inline Bool GameLogic::isInGame( void ) { return !(m_gameMode == GAME_NONE); }
-inline void GameLogic::setGameMode( Int mode ) { m_gameMode = mode; }
-inline Int  GameLogic::getGameMode( void ) { return m_gameMode; }
-inline Bool GameLogic::isInLanGame( void ) { return (m_gameMode == GAME_LAN); }
-inline Bool GameLogic::isInSkirmishGame( void ) { return (m_gameMode == GAME_SKIRMISH); }
-inline Bool GameLogic::isInMultiplayerGame( void ) { return ((m_gameMode == GAME_LAN) || (m_gameMode == GAME_INTERNET)) ; }
-inline Bool GameLogic::isInReplayGame( void ) { return (m_gameMode == GAME_REPLAY); }
-inline Bool GameLogic::isInInternetGame( void ) { return (m_gameMode == GAME_INTERNET); }
-inline Bool GameLogic::isInShellGame( void ) { return (m_gameMode == GAME_SHELL); }
+inline bool GameLogic::isInGame( void ) { return !(m_gameMode == GAME_NONE); }
+inline void GameLogic::setGameMode( int mode ) { m_gameMode = mode; }
+inline int  GameLogic::getGameMode( void ) { return m_gameMode; }
+inline bool GameLogic::isInLanGame( void ) { return (m_gameMode == GAME_LAN); }
+inline bool GameLogic::isInSkirmishGame( void ) { return (m_gameMode == GAME_SKIRMISH); }
+inline bool GameLogic::isInMultiplayerGame( void ) { return ((m_gameMode == GAME_LAN) || (m_gameMode == GAME_INTERNET)) ; }
+inline bool GameLogic::isInReplayGame( void ) { return (m_gameMode == GAME_REPLAY); }
+inline bool GameLogic::isIninternetGame( void ) { return (m_gameMode == GAME_INTERNET); }
+inline bool GameLogic::isInShellGame( void ) { return (m_gameMode == GAME_SHELL); }
 inline UnsignedShort GameLogic::getSuperweaponRestriction() const { return m_superweaponRestriction; }
 
 inline Object* GameLogic::findObjectByID( ObjectID id )
 {
-	if( id == INVALID_ID )
+	if( id == NULL)
 		return NULL;
 
 //	ObjectPtrHash::iterator it = m_objHash.find(id);
@@ -417,8 +418,8 @@ inline Object* GameLogic::findObjectByID( ObjectID id )
 //		return NULL;
 //	
 //	return (*it).second;
-	if( (Int)id < m_objVector.size() )
-		return m_objVector[(Int)id];
+	if( (int)id < m_objVector.size() )
+		return m_objVector[(int)id];
 
 	return NULL;
 }

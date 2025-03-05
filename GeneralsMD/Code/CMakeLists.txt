@@ -1,20 +1,28 @@
-project(cnc-zero-hour C CXX)
 
-cmake_minimum_required(VERSION 3.23)
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+cmake_minimum_required(VERSION 3.10)  # Use a lower version since 3.30 is too new
+project(GeneralsZH-AllStars)
 
-file(GLOB_RECURSE SOURCES_COMMON
-    ${CMAKE_CURRENT_SOURCE_DIR}/GameEngine/Source/Common/*.cpp
-)
+# Directories for game components
+add_subdirectory(GameEngine)
+add_subdirectory(GameEngineDevice)
+add_subdirectory(Dep)
+add_subdirectory(Lib)
+add_subdirectory(Tools)
+add_subdirectory(Main)
 
-add_library(cnc-zero-hour-common STATIC ${SOURCES_COMMON})
 
-target_include_directories(cnc-zero-hour-common PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/Libraries/Include
-    ${CMAKE_CURRENT_SOURCE_DIR}/GameEngine/Include
-    ${CMAKE_CURRENT_SOURCE_DIR}/GameEngine/Include/Precompiled
-    # Used in Thing.h via WWMath
-    ${CMAKE_CURRENT_SOURCE_DIR}/Libraries/Source/WWVegas
-    # Also pulls WWLib
-    ${CMAKE_CURRENT_SOURCE_DIR}/Libraries/Source/WWVegas/WWLib
-    ${CMAKE_CURRENT_SOURCE_DIR}/extern/dxvk-native
+target_include_directories(GeneralsZH-AllStars PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/Dep/DX90SDK/Include
 )
