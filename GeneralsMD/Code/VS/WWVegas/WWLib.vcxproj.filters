@@ -350,79 +350,227 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\b64pipe.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\b64straw.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\base64.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\blit.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\blowfish.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\buff.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\bufffile.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\chunkio.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\convert.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\cpudetect.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\crc.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\cstraw.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\data.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\ddraw.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\dsurface.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\ffactory.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\gcd_lcm.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\hash.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\hsv.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\ini.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\int.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\jshell.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\keyboard.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\LaunchWeb.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\lcw.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\load.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\mono.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\mpmath.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\mpu.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\msgloop.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\multilist.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\mutex.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\nstrdup.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\palette.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\pcx.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\pipe.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\pk.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\ramfile.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\random.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\rawfile.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\rc4.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\rcfile.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\readline.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\realcrc.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\refcount.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\registry.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\rgb.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\rle.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\rndstrng.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\sampler.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\sha.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\slnode.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\srandom.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\stimer.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\straw.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\strtok_r.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\systimer.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\tagblock.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\TARGA.CPP" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\textfile.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\thread.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\trim.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\vector.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\widestring.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\win.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\WWCOMUtil.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\wwfile.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\wwfont.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\wwstring.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\xpipe.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\xstraw.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\xsurface.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\_convert.cpp" />
-    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\_mono.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\_convert.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\_mono.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\b64pipe.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\b64straw.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\base64.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\blit.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\blowfish.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\buff.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\bufffile.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\chunkio.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\convert.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\cpudetect.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\crc.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\cstraw.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\data.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\ddraw.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\dsurface.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\ffactory.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\gcd_lcm.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\hash.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\hsv.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\ini.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\int.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\jshell.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\keyboard.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\LaunchWeb.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\lcw.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\load.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\mono.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\mpmath.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\mpu.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\msgloop.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\multilist.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\mutex.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\nstrdup.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\palette.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\pcx.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\pipe.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\pk.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\ramfile.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\random.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\rawfile.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\rc4.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\rcfile.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\readline.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\realcrc.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\refcount.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\registry.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\rgb.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\rle.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\rndstrng.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\sampler.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\sha.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\slnode.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\srandom.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\stimer.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\straw.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\strtok_r.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\systimer.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\tagblock.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\TARGA.CPP">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\textfile.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\thread.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\trim.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\vector.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\widestring.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\win.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\WWCOMUtil.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\wwfile.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\wwfont.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\wwstring.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\xpipe.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\xstraw.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\xsurface.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

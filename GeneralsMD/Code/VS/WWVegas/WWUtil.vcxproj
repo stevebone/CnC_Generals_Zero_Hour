@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <ProjectGuid>{BB333CD2-42E0-4787-8C7F-1ADD61DAF031}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>WWUtil</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>..\..\..\Run\Release\WWUtil\</OutDir>
+    <IntDir>..\..\..\Run\Release\WWUtil\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>..\..\..\Run\Debug\WWUtil\</OutDir>
+    <IntDir>..\..\..\Run\Debug\WWUtil\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PreprocessorDefinitions>__PLACEMENT_VEC_NEW_INLINE;_DEBUG;_LIB;WIN32;_WINDOWS;WIN32_LEAN_AND_MEAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    <AdditionalIncludeDirectories>..\..\Src\Lib\WWVegas\WWDebug;..\..\Src\Lib\WWVegas\WWLib;..\..\Src\Lib\WWVegas\WWMath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    <StringPooling>true</StringPooling>
+    <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+    <FunctionLevelLinking>true</FunctionLevelLinking>
+    <PrecompiledHeaderOutputFile>..\..\Run\WWUtil\Debug/WWUtil.pch</PrecompiledHeaderOutputFile>
+    <AssemblerListingLocation>..\..\Run\WWUtil\Debug/</AssemblerListingLocation>
+    <ObjectFileName>..\..\Debug/</ObjectFileName>
+    <ProgramDataBaseFileName>..\..\Run\WWUtil\Debug/</ProgramDataBaseFileName>
+    <Optimization>Disabled</Optimization>
+    <ExceptionHandling>Sync</ExceptionHandling>
+    <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+    <WarningLevel>Level3</WarningLevel>
+    <TreatWarningAsError>false</TreatWarningAsError>
+    <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    <Lib>
+      <OutputFile>..\..\..\Run\Debug\WWUtilD.lib</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>..\..\..\Run\Debug/WWUtilD.bsc</OutputFile>
+    </Bscmake>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PreprocessorDefinitions>__PLACEMENT_VEC_NEW_INLINE;_LIB;_WINDOWS;WIN32_LEAN_AND_MEAN;NDEBUG;WIN32;IG_DEBUG_STACKTRACE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    <AdditionalIncludeDirectories>..\..\Src\Lib\WWVegas\WWDebug;..\..\Src\Lib\WWVegas\WWLib;..\..\Src\Lib\WWVegas\WWMath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    <StringPooling>true</StringPooling>
+    <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+    <FunctionLevelLinking>true</FunctionLevelLinking>
+    <PrecompiledHeaderOutputFile>..\..\..\Run\Release\WWUtil/WWUtil.pch</PrecompiledHeaderOutputFile>
+    <AssemblerListingLocation>..\..\Run\WWUtil\Release/</AssemblerListingLocation>
+    <ObjectFileName>..\..\Run\WWUtil\Release/</ObjectFileName>
+    <ProgramDataBaseFileName>..\..\WWUtil\Release/</ProgramDataBaseFileName>
+    <Optimization>MaxSpeed</Optimization>
+    <ExceptionHandling>Sync</ExceptionHandling>
+    <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+    <WarningLevel>Level3</WarningLevel>
+    <TreatWarningAsError>false</TreatWarningAsError>
+    <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+    </ResourceCompile>
+    <Lib>
+      <OutputFile>..\..\..\Run\Release\WWUtil.lib</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>..\..\..\Run\Release/WWUtil.bsc</OutputFile>
+    </Bscmake>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\Src\Lib\WWVegas\WWLib</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>__PLACEMENT_VEC_NEW_INLINE;_DEBUG;_LIB;WIN32;_WINDOWS;WIN32_LEAN_AND_MEAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\Src\Lib\WWVegas\WWDebug;..\..\Src\Lib\WWVegas\WWLib;..\..\Src\Lib\WWVegas\WWMath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>__PLACEMENT_VEC_NEW_INLINE;_LIB;_WINDOWS;WIN32_LEAN_AND_MEAN;NDEBUG;WIN32;IG_DEBUG_STACKTRACE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ItemGroup>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWUtil\mathutil.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWUtil\miscutil.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWUtil\mathutil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWUtil\miscutil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <Extensions>cpp;c</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <Extensions>h;hpp</Extensions>
+    </Filter>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+</Project>

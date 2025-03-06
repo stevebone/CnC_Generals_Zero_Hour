@@ -5,9 +5,11 @@ VisualStudioVersion = 17.12.35707.178
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ZeroHour-AllStars", "ZeroHour-AllStars.vcxproj", "{1BF80399-C9E3-464C-9263-CFB3C432B74C}"
 EndProject
-Project("{4E83553C-D499-4D91-B744-5AAC6986A33B}") = "WWDebug", "WWVegas\WWDebug.vcxproj", "{4E83553C-D499-4D91-B744-5AAC6986A33B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WWDebug", "WWVegas\WWDebug.vcxproj", "{4E83553C-D499-4D91-B744-5AAC6986A33B}"
 EndProject
-Project("{441114DE-F54C-4876-978A-C288103CEEA0}") = "WWLib", "WWVegas\WWLib.vcxproj", "{441114DE-F54C-4876-978A-C288103CEEA0}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WWLib", "WWVegas\WWLib.vcxproj", "{441114DE-F54C-4876-978A-C288103CEEA0}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WWUtil", "WWVegas\WWUtil.vcxproj", "{BB333CD2-42E0-4787-8C7F-1ADD61DAF031}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,6 +28,10 @@ Global
 		{441114DE-F54C-4876-978A-C288103CEEA0}.Debug|Win32.Build.0 = Debug|Win32
 		{441114DE-F54C-4876-978A-C288103CEEA0}.Release|Win32.ActiveCfg = Release|Win32
 		{441114DE-F54C-4876-978A-C288103CEEA0}.Release|Win32.Build.0 = Release|Win32
+		{BB333CD2-42E0-4787-8C7F-1ADD61DAF031}.Debug|Win32.ActiveCfg = Debug|Win32
+		{BB333CD2-42E0-4787-8C7F-1ADD61DAF031}.Debug|Win32.Build.0 = Debug|Win32
+		{BB333CD2-42E0-4787-8C7F-1ADD61DAF031}.Release|Win32.ActiveCfg = Release|Win32
+		{BB333CD2-42E0-4787-8C7F-1ADD61DAF031}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
