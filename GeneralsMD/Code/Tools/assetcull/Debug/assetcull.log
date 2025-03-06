@@ -1,0 +1,11 @@
+﻿cl : command line  warning D9035: option 'Gm' has been deprecated and will be removed in a future release
+  assetcull.cpp
+F:\Github\CnC_Generals_Zero_Hour_stevebone\GeneralsMD\Code\Tools\assetcull\assetcull.cpp(63,22): warning C4018: '<': signed/unsigned mismatch
+F:\Github\CnC_Generals_Zero_Hour_stevebone\GeneralsMD\Code\Tools\assetcull\assetcull.cpp(77,10): error C2065: 'k': undeclared identifier
+F:\Github\CnC_Generals_Zero_Hour_stevebone\GeneralsMD\Code\Tools\assetcull\assetcull.cpp(55,12): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+F:\Github\CnC_Generals_Zero_Hour_stevebone\GeneralsMD\Code\Tools\assetcull\assetcull.cpp(58,12): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+F:\Github\CnC_Generals_Zero_Hour_stevebone\GeneralsMD\Code\Tools\assetcull\assetcull.cpp(141,8): error C2065: 'i': undeclared identifier
+F:\Github\CnC_Generals_Zero_Hour_stevebone\GeneralsMD\Code\Tools\assetcull\assetcull.cpp(141,25): error C2065: 'i': undeclared identifier
+F:\Github\CnC_Generals_Zero_Hour_stevebone\GeneralsMD\Code\Tools\assetcull\assetcull.cpp(141,43): error C2065: 'i': undeclared identifier
+F:\Github\CnC_Generals_Zero_Hour_stevebone\GeneralsMD\Code\Tools\assetcull\assetcull.cpp(145,12): error C2065: 'i': undeclared identifier
+F:\Github\CnC_Generals_Zero_Hour_stevebone\GeneralsMD\Code\Tools\assetcull\assetcull.cpp(167,11): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
