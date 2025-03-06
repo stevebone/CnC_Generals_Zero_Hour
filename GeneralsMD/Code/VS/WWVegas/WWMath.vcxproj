@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <ProjectGuid>{034E07EF-9C39-4A94-9BC9-E19B18996951}</ProjectGuid>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>17.0.35707.178</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>..\..\..\Run\Release\WWMath\</OutDir>
+    <IntDir>..\..\..\Run\Release\WWMath\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>..\..\..\Run\Debug\WWMath\</OutDir>
+    <IntDir>..\..\..\Run\Debug\WWMath\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <AdditionalIncludeDirectories>..\..\Dep\DirectX8\Include;..\..\Src\Lib\WWVegas\WWLib;..\..\Src\Lib\WWVegas\WWDebug;..\..\Src\Lib\WWVegas\WWSaveLoad;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>__PLACEMENT_VEC_NEW_INLINE;WINVER=0x0501
+;_WIN32_WINNT=0x0501
+;_WIN32
+;WIN32_LEAN_AND_MEAN;G_CODE_BASE;DIRECTX;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeaderOutputFile>..\..\Run\Debug\WWMath/wwmath.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>..\..\Run\Debug\WWMath/</AssemblerListingLocation>
+      <ObjectFileName>...\..\Run\Debug\WWMath/</ObjectFileName>
+      <ProgramDataBaseFileName>..\..\Run\Debug\WWMath/</ProgramDataBaseFileName>
+      <BrowseInformation>true</BrowseInformation>
+      <BrowseInformationFile>..\..\Run\Debug\WWMath/</BrowseInformationFile>
+      <WarningLevel>Level3</WarningLevel>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ForceConformanceInForLoopScope>false</ForceConformanceInForLoopScope>
+    </ClCompile>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+    </ResourceCompile>
+    <Lib>
+      <OutputFile>..\..\..\Run\Debug\WWMath\WWMathD.lib</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>..\..\..\Run\Debug\WWMath/wwmath.bsc</OutputFile>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <AdditionalIncludeDirectories>..\..\Dep\DirectX8\Include;..\..\Src\Lib\WWVegas\WWLib;..\..\Src\Lib\WWVegas\WWDebug;..\..\Src\Lib\WWVegas\WWSaveLoad;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>__PLACEMENT_VEC_NEW_INLINE;_WIN32;WINVER=0x0501;_WINDOWS;WIN32_LEAN_AND_MEAN;NDEBUG;IG_DEBUG_STACKTRACE</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeaderOutputFile>..\..\..\Run\Release\WWMath/wwmath.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>..\..\..\Run\Release\WWMath/</AssemblerListingLocation>
+      <ObjectFileName>..\..\..\Run\Release\WWMath/</ObjectFileName>
+      <ProgramDataBaseFileName>.\Release/</ProgramDataBaseFileName>
+      <BrowseInformation>true</BrowseInformation>
+      <BrowseInformationFile>..\..\..\Run\Release\WWMath/</BrowseInformationFile>
+      <WarningLevel>Level3</WarningLevel>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <ForceConformanceInForLoopScope>false</ForceConformanceInForLoopScope>
+    </ClCompile>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+    </ResourceCompile>
+    <Lib>
+      <OutputFile>..\..\..\Run\Release\WWMath\WWMath.lib</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>..\..\..\Run\Release\WWMath/wwmath.bsc</OutputFile>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWMath\aabox.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWMath\aabtreecull.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWMath\cardinalspline.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWMath\catmullromspline.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWMath\colmath.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWMath\colmathaabox.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWMath\colmathaabtri.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWMath\colmathfrustum.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWMath\colmathline.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWMath\colmathobbobb.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWMath\colmathobbox.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWMath\colmathobbtri.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWMath\colmathplane.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWMath\colmathsphere.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWMath\cullsys.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWMath\curve.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWMath\euler.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWMath\frustum.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWMath\gridcull.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWMath\hermitespline.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWMath\lineseg.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWMath\lookuptable.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWMath\matrix3.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWMath\matrix3d.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWMath\matrix4.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWMath\obbox.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWMath\ode.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWMath\pot.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWMath\quat.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWMath\tcbspline.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWMath\tri.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWMath\v3_rnd.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWMath\vehiclecurve.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWMath\vp.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWMath\wwmath.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWMath\aabox.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWMath\aabtreecull.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWMath\aaplane.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWMath\cardinalspline.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWMath\castres.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWMath\catmullromspline.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWMath\colmath.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWMath\colmathaabox.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWMath\colmathfrustum.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWMath\colmathinlines.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWMath\colmathline.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWMath\colmathplane.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWMath\cullsys.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWMath\culltype.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWMath\curve.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWMath\euler.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWMath\frustum.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWMath\gridcull.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWMath\hermitespline.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWMath\lineseg.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWMath\lookuptable.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWMath\matrix3.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWMath\matrix3d.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWMath\matrix4.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWMath\normalcone.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWMath\obbox.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWMath\ode.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWMath\plane.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWMath\pot.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWMath\quat.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWMath\rect.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWMath\sphere.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWMath\tcbspline.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWMath\tri.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWMath\v3_rnd.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWMath\vector2.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWMath\vector2i.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWMath\vector3.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWMath\Vector3i.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWMath\vector4.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWMath\vehiclecurve.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWMath\vp.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWMath\wwmath.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWMath\wwmathids.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

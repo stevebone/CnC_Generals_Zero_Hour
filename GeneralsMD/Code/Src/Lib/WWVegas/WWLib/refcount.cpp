@@ -39,8 +39,9 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 
-#include "refcount.h"
 #include <windows.h>
+#include "refcount.h"
+
 
 
 #ifndef NDEBUG
