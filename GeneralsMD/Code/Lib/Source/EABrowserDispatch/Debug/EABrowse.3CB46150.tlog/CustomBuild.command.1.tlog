@@ -1,2 +1,0 @@
-^F:\GITHUB\CNC_GENERALS_ZERO_HOUR_STEVEBONE\GENERALSMD\CODE\LIBRARIES\SOURCE\EABROWSERDISPATCH\BROWSERDISPATCH.IDL
-midl.exe /out ..\..\Include\EABrowserDispatch /tlb "BrowserDispatch.tlb" /h "BrowserDispatch.h" /iid "BrowserDispatch_i.c" /mktyplib203 /win32 F:\Github\CnC_Generals_Zero_Hour_stevebone\GeneralsMD\Code\Libraries\Source\EABrowserDispatch\BrowserDispatch.idl
