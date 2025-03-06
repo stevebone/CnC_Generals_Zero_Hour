@@ -42,12 +42,13 @@
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 
-#include "wwdebug.h"
+
 #ifdef _WIN32
 #include <windows.h>
 #else
 #include <errno.h>
 #endif
+#include "wwdebug.h"
 //#include "win.h" can use this if allowed to see wwlib
 #include <stdlib.h>
 #include <stdarg.h>

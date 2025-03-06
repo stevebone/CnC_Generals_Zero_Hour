@@ -53,10 +53,7 @@
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <AdditionalIncludeDirectories>..\..\Dep\DirectX8\Include;..\..\Src\Lib\WWVegas\WWLib;..\..\Src\Lib\WWVegas\WWDebug;..\..\Src\Lib\WWVegas\WWSaveLoad;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>__PLACEMENT_VEC_NEW_INLINE;WINVER=0x0501
-;_WIN32_WINNT=0x0501
-;_WIN32
-;WIN32_LEAN_AND_MEAN;G_CODE_BASE;DIRECTX;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>__PLACEMENT_VEC_NEW_INLINE;WINVER=0x0501;_WIN32_WINNT=0x0501;_WIN32;WIN32_LEAN_AND_MEAN;G_CODE_BASE;DIRECTX;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -88,21 +85,23 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\..\Dep\DirectX8\Include;..\..\Src\Lib\WWVegas\WWLib;..\..\Src\Lib\WWVegas\WWDebug;..\..\Src\Lib\WWVegas\WWSaveLoad;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>__PLACEMENT_VEC_NEW_INLINE;_WIN32;WINVER=0x0501;_WINDOWS;WIN32_LEAN_AND_MEAN;NDEBUG;IG_DEBUG_STACKTRACE</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\Src\Lib\WWVegas\WWLib;..\..\Src\Lib\WWVegas\WWDebug;..\..\Src\Lib\WWVegas\WWSaveLoad;..\..\Dep\DirectX8\Include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>__PLACEMENT_VEC_NEW_INLINE;_WIN32;_WIN32_WINNT=0x0501;WINVER=0x0501;_WINDOWS;WIN32_LEAN_AND_MEAN;NDEBUG;IG_DEBUG_STACKTRACE</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <FunctionLevelLinking>false</FunctionLevelLinking>
       <PrecompiledHeaderOutputFile>..\..\..\Run\Release\WWMath/wwmath.pch</PrecompiledHeaderOutputFile>
       <AssemblerListingLocation>..\..\..\Run\Release\WWMath/</AssemblerListingLocation>
       <ObjectFileName>..\..\..\Run\Release\WWMath/</ObjectFileName>
-      <ProgramDataBaseFileName>.\Release/</ProgramDataBaseFileName>
+      <ProgramDataBaseFileName>..\..\..\Run\Release\WWMath/</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
       <BrowseInformationFile>..\..\..\Run\Release\WWMath/</BrowseInformationFile>
       <WarningLevel>Level3</WarningLevel>
       <TreatWarningAsError>false</TreatWarningAsError>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <ForceConformanceInForLoopScope>false</ForceConformanceInForLoopScope>
+      <UndefinePreprocessorDefinitions>win64;_win64</UndefinePreprocessorDefinitions>
+      <AdditionalOptions>/D "_M_IX86" </AdditionalOptions>
     </ClCompile>
     <ResourceCompile>
       <Culture>0x0409</Culture>

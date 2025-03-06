@@ -36,10 +36,10 @@
     <StringPooling>true</StringPooling>
     <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     <FunctionLevelLinking>true</FunctionLevelLinking>
-    <PrecompiledHeaderOutputFile>..\..\Run\WWUtil\Debug/WWUtil.pch</PrecompiledHeaderOutputFile>
-    <AssemblerListingLocation>..\..\Run\WWUtil\Debug/</AssemblerListingLocation>
-    <ObjectFileName>..\..\Debug/</ObjectFileName>
-    <ProgramDataBaseFileName>..\..\Run\WWUtil\Debug/</ProgramDataBaseFileName>
+    <PrecompiledHeaderOutputFile>..\..\..\Run\Debug\WWUtil/WWUtil.pch</PrecompiledHeaderOutputFile>
+    <AssemblerListingLocation>..\..\..\Run\Debug\WWUtil/</AssemblerListingLocation>
+    <ObjectFileName>..\..\..\Run\Debug\WWUtil/</ObjectFileName>
+    <ProgramDataBaseFileName>..\..\..\Run\Debug\WWUtil/</ProgramDataBaseFileName>
     <Optimization>Disabled</Optimization>
     <ExceptionHandling>Sync</ExceptionHandling>
     <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -66,9 +66,9 @@
     <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     <FunctionLevelLinking>true</FunctionLevelLinking>
     <PrecompiledHeaderOutputFile>..\..\..\Run\Release\WWUtil/WWUtil.pch</PrecompiledHeaderOutputFile>
-    <AssemblerListingLocation>..\..\Run\WWUtil\Release/</AssemblerListingLocation>
-    <ObjectFileName>..\..\Run\WWUtil\Release/</ObjectFileName>
-    <ProgramDataBaseFileName>..\..\WWUtil\Release/</ProgramDataBaseFileName>
+    <AssemblerListingLocation>..\..\..\Run\Release\WWUtil/</AssemblerListingLocation>
+    <ObjectFileName>..\..\Run\Release\WWUtil/</ObjectFileName>
+    <ProgramDataBaseFileName>..\..\Run\Release\WWUtil/</ProgramDataBaseFileName>
     <Optimization>MaxSpeed</Optimization>
     <ExceptionHandling>Sync</ExceptionHandling>
     <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
@@ -96,7 +96,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <AdditionalIncludeDirectories>..\..\Src\Lib\WWVegas\WWDebug;..\..\Src\Lib\WWVegas\WWLib;..\..\Src\Lib\WWVegas\WWMath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>__PLACEMENT_VEC_NEW_INLINE;_LIB;_WINDOWS;WIN32_LEAN_AND_MEAN;NDEBUG;WIN32;IG_DEBUG_STACKTRACE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>__PLACEMENT_VEC_NEW_INLINE;_LIB;_WIN32;_WINDOWS;WIN32_LEAN_AND_MEAN;NDEBUG;IG_DEBUG_STACKTRACE</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
