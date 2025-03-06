@@ -19,27 +19,27 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>..\..\Run\Release\</OutDir>
-    <IntDir>..\..\Run\Release\</IntDir>
+    <OutDir>..\..\..\Run\Release\WWDebug\</OutDir>
+    <IntDir>..\..\..\Run\Release\WWDebug\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>..\..\Run\Debug\</OutDir>
-    <IntDir>..\..\Run\Debug\</IntDir>
+    <OutDir>..\..\..\Run\Debug\WWDebug\</OutDir>
+    <IntDir>..\..\..\Run\Debug\WWDebug\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <PlatformToolset>v143</PlatformToolset>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
-    <PreprocessorDefinitions>_DEBUG;WWDEBUG;WINVER=0x400;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    <PreprocessorDefinitions>__PLACEMENT_VEC_NEW_INLINE;_DEBUG;WWDEBUG;WINVER=0x400;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     <AdditionalIncludeDirectories>..\..\Src\Lib\WWVegas\wwlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     <StringPooling>true</StringPooling>
     <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     <FunctionLevelLinking>true</FunctionLevelLinking>
-    <PrecompiledHeaderOutputFile>..\..\Debug/wwdebug.pch</PrecompiledHeaderOutputFile>
-    <AssemblerListingLocation>..\..\Debug/</AssemblerListingLocation>
+    <PrecompiledHeaderOutputFile>..\..\Run\WWDebug\Debug/wwdebug.pch</PrecompiledHeaderOutputFile>
+    <AssemblerListingLocation>..\..\Run\WWDebug\Debug/</AssemblerListingLocation>
     <ObjectFileName>..\..\Debug/</ObjectFileName>
-    <ProgramDataBaseFileName>..\..\Debug/</ProgramDataBaseFileName>
+    <ProgramDataBaseFileName>..\..\Run\WWDebug\Debug/</ProgramDataBaseFileName>
     <Optimization>Disabled</Optimization>
     <ExceptionHandling>Sync</ExceptionHandling>
     <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -47,12 +47,12 @@
     <TreatWarningAsError>false</TreatWarningAsError>
     <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     <Lib>
-      <OutputFile>..\..\Debug\WWDebugD.lib</OutputFile>
+      <OutputFile>..\..\..\Run\Debug\WWDebugD.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>..\..\Debug/WWDebugD.bsc</OutputFile>
+      <OutputFile>..\..\..\Run\Debug/WWDebugD.bsc</OutputFile>
     </Bscmake>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -60,15 +60,15 @@
     <PlatformToolset>v143</PlatformToolset>
     <UseDebugLibraries>false</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
-    <PreprocessorDefinitions>NDEBUG;WINVER=0x400;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    <PreprocessorDefinitions>__PLACEMENT_VEC_NEW_INLINE;NDEBUG;WINVER=0x400;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     <AdditionalIncludeDirectories>..\..\Src\Lib\WWVegas\wwlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     <StringPooling>true</StringPooling>
     <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     <FunctionLevelLinking>true</FunctionLevelLinking>
-    <PrecompiledHeaderOutputFile>..\..\Release/wwdebug.pch</PrecompiledHeaderOutputFile>
-    <AssemblerListingLocation>..\..\Release/</AssemblerListingLocation>
-    <ObjectFileName>..\..\Release/</ObjectFileName>
-    <ProgramDataBaseFileName>..\..\Release/</ProgramDataBaseFileName>
+    <PrecompiledHeaderOutputFile>..\..\..\Run\Release\WWDebug/wwdebug.pch</PrecompiledHeaderOutputFile>
+    <AssemblerListingLocation>..\..\Run\WWDebug\Release/</AssemblerListingLocation>
+    <ObjectFileName>..\..\Run\WWDebug\Release/</ObjectFileName>
+    <ProgramDataBaseFileName>..\..\WWDebug\Release/</ProgramDataBaseFileName>
     <Optimization>MaxSpeed</Optimization>
     <ExceptionHandling>Sync</ExceptionHandling>
     <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
@@ -79,21 +79,27 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>..\..\Release\WWDebug.lib</OutputFile>
+      <OutputFile>..\..\..\Run\Release\WWDebug.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>..\..\Release/WWDebug.bsc</OutputFile>
+      <OutputFile>..\..\..\Run\Release/WWDebug.bsc</OutputFile>
     </Bscmake>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <AdditionalIncludeDirectories>..\..\Src\Lib\WWVegas\WWLib</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>__PLACEMENT_VEC_NEW_INLINE;_DEBUG;WINVER=0x400;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;REGEX_MALLOC;STDC_HEADERS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\Src\Lib\WWVegas\WWLib</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>__PLACEMENT_VEC_NEW_INLINE;_DEBUG;WINVER=0x400;_WINDOWS;WIN32_LEAN_AND_MEAN;WIN32;REGEX_MALLOC;STDC_HEADERS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  
   <ItemGroup>
     <ClCompile Include="..\..\Src\Lib\WWVegas\WWDebug\wwdebug.cpp">
       <Filter>Source Files</Filter>
@@ -105,7 +111,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
-  
   <ItemGroup>
     <ClInclude Include="..\..\Src\Lib\WWVegas\WWDebug\wwdebug.h">
       <Filter>Header Files</Filter>
@@ -120,7 +125,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
-  
   <ItemGroup>
     <Filter Include="Source Files">
       <Extensions>cpp;c</Extensions>
@@ -129,6 +133,5 @@
       <Extensions>h;hpp</Extensions>
     </Filter>
   </ItemGroup>
-  
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>

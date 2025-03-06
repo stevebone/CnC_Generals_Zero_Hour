@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35707.178 d17.12
+VisualStudioVersion = 17.12.35707.178
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ZeroHour-AllStars", "ZeroHour-AllStars.vcxproj", "{1BF80399-C9E3-464C-9263-CFB3C432B74C}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WWDebug", "WWVegas\WWDebug.vcxproj", "{1BF80399-C9E3-464C-9263-CFB3C432B74C}"
+Project("{4E83553C-D499-4D91-B744-5AAC6986A33B}") = "WWDebug", "WWVegas\WWDebug.vcxproj", "{4E83553C-D499-4D91-B744-5AAC6986A33B}"
+EndProject
+Project("{441114DE-F54C-4876-978A-C288103CEEA0}") = "WWLib", "WWVegas\WWLib.vcxproj", "{441114DE-F54C-4876-978A-C288103CEEA0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,17 +15,22 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{ED91CF2D-FF0B-4568-8DC8-9911A75646DC}.Release|Win32.ActiveCfg = Release|Win32
-		{ED91CF2D-FF0B-4568-8DC8-9911A75646DC}.Release|Win32.Build.0 = Release|Win32
 		{1BF80399-C9E3-464C-9263-CFB3C432B74C}.Debug|Win32.ActiveCfg = Debug|Win32
 		{1BF80399-C9E3-464C-9263-CFB3C432B74C}.Debug|Win32.Build.0 = Debug|Win32
-# WWDebug
-		{4E83553C-D499-4D91-B744-5AAC6986A33B}.Release|Win32.ActiveCfg = Release|Win32
-		{4E83553C-D499-4D91-B744-5AAC6986A33B}.Release|Win32.Build.0 = Release|Win32
+		{1BF80399-C9E3-464C-9263-CFB3C432B74C}.Release|Win32.ActiveCfg = Debug|Win32
 		{4E83553C-D499-4D91-B744-5AAC6986A33B}.Debug|Win32.ActiveCfg = Debug|Win32
 		{4E83553C-D499-4D91-B744-5AAC6986A33B}.Debug|Win32.Build.0 = Debug|Win32
+		{4E83553C-D499-4D91-B744-5AAC6986A33B}.Release|Win32.ActiveCfg = Release|Win32
+		{4E83553C-D499-4D91-B744-5AAC6986A33B}.Release|Win32.Build.0 = Release|Win32
+		{441114DE-F54C-4876-978A-C288103CEEA0}.Debug|Win32.ActiveCfg = Debug|Win32
+		{441114DE-F54C-4876-978A-C288103CEEA0}.Debug|Win32.Build.0 = Debug|Win32
+		{441114DE-F54C-4876-978A-C288103CEEA0}.Release|Win32.ActiveCfg = Release|Win32
+		{441114DE-F54C-4876-978A-C288103CEEA0}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CFDFA4F5-6D89-44C6-A0BC-672932D665C6}
 	EndGlobalSection
 EndGlobal

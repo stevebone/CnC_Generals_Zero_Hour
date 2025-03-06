@@ -1,0 +1,428 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="_mono.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="always.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="argv.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="b64pipe.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="b64straw.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="base64.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="binheap.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="bittype.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="blit.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="blitter.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="bool.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="borlandc.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="bound.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="BSEARCH.H">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="bsurface.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="BUFF.H">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="bufffile.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="CallbackHook.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="chunkio.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="Convert.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="cpudetect.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="CRC.H">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="cstraw.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="data.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="dsurface.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="ffactory.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="FONT.H">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="gcd_lcm.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="growmix.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="hash.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="hashcalc.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="HASHLIST.H">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="hashtemplate.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="IFF.H">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="INDEX.H">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="INI.H">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="inisup.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="INT.H">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="iostruct.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="keyboard.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="LaunchWeb.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="LCW.H">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="LISTNODE.H">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="mempool.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="mixfile.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="MONO.H">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="MONODRVR.H">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="MPMATH.H">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="MPU.H">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="msgloop.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="multilist.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="mutex.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="Notify.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="nstrdup.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="ntree.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="PALETTE.H">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="pcx.H">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="PIPE.H">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="PK.H">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="Point.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="RAMFILE.H">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="RANDOM.H">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="RAWFILE.H">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="rc4.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="rcfile.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="readline.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="realcrc.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="ref_ptr.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="refcount.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="registry.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="RGB.H">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="RLE.H">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="RNDSTRAW.H">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="rndstrng.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="rng.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="rsacrypt.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="sampler.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="sha.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="shapeset.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="sharebuf.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="Signaler.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="simplevec.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="SLIST.H">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="SLNODE.H">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="srandom.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="stl.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="STRAW.H">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="strtok_r.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="Surface.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="surfrect.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="systimer.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="TagBlock.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="TARGA.H">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="textfile.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="thread.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="timer.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="trackwin.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="trect.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="trim.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="uarray.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector.H">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="verchk.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="visualc.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="WATCOM.H">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="widestring.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="win.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="WWCOMUtil.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="WWFILE.H">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="wwstring.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="xmouse.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="XPIPE.H">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="XSTRAW.H">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="xsurface.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source">
+      <UniqueIdentifier>{96aba6f9-13b2-420b-9dd6-92dffa98d2bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Includes">
+      <UniqueIdentifier>{359240f1-7223-4915-9227-b324070b3437}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\b64pipe.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\b64straw.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\base64.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\blit.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\blowfish.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\buff.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\bufffile.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\chunkio.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\convert.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\cpudetect.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\crc.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\cstraw.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\data.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\ddraw.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\dsurface.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\ffactory.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\gcd_lcm.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\hash.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\hsv.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\ini.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\int.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\jshell.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\keyboard.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\LaunchWeb.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\lcw.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\load.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\mono.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\mpmath.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\mpu.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\msgloop.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\multilist.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\mutex.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\nstrdup.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\palette.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\pcx.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\pipe.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\pk.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\ramfile.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\random.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\rawfile.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\rc4.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\rcfile.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\readline.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\realcrc.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\refcount.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\registry.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\rgb.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\rle.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\rndstrng.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\sampler.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\sha.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\slnode.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\srandom.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\stimer.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\straw.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\strtok_r.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\systimer.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\tagblock.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\TARGA.CPP" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\textfile.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\thread.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\trim.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\vector.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\widestring.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\win.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\WWCOMUtil.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\wwfile.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\wwfont.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\wwstring.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\xpipe.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\xstraw.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\xsurface.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\_convert.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWLib\_mono.cpp" />
+  </ItemGroup>
+</Project>
