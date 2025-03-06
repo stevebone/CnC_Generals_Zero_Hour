@@ -86,6 +86,7 @@ void __cdecl Print_Win32Error(unsigned long win32Error);
 
 #else // _WINDOWS
 //#include <unistd.h>	// file does not exist
+#include "windows_compat.h"
 #endif // _WINDOWS
 
 #endif // WIN_H
