@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWSaveLoad\definition.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWSaveLoad\definitionfactory.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWSaveLoad\definitionfactorymgr.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWSaveLoad\definitionmgr.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWSaveLoad\parameter.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWSaveLoad\persistfactory.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWSaveLoad\pointerremap.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWSaveLoad\saveload.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWSaveLoad\saveloadstatus.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWSaveLoad\saveloadsubsystem.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWSaveLoad\twiddler.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWSaveLoad\wwsaveload.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWSaveLoad\definition.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWSaveLoad\definitionclassids.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWSaveLoad\definitionfactory.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWSaveLoad\definitionfactorymgr.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWSaveLoad\definitionmgr.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWSaveLoad\editable.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWSaveLoad\parameter.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWSaveLoad\parameterlist.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWSaveLoad\parametertypes.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWSaveLoad\persist.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWSaveLoad\persistfactory.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWSaveLoad\pointerremap.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWSaveLoad\postloadable.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWSaveLoad\saveload.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWSaveLoad\saveloadids.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWSaveLoad\saveloadstatus.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWSaveLoad\saveloadsubsystem.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWSaveLoad\simpledefinitionfactory.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWSaveLoad\simpleparameter.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWSaveLoad\twiddler.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWSaveLoad\wwsaveload.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Includes">
+      <UniqueIdentifier>{aa62fb8a-8550-492c-801e-420ba1ae7ca6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{c59183fd-26f3-4b97-b156-f60527b92f99}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

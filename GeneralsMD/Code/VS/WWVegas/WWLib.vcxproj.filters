@@ -1,343 +1,343 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClInclude Include="_mono.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\_mono.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="always.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\always.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="argv.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\argv.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="b64pipe.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\b64pipe.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="b64straw.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\b64straw.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="base64.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\base64.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="binheap.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\binheap.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="bittype.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\bittype.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="blit.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\blit.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="blitter.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\blitter.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="bool.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\bool.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="borlandc.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\borlandc.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="bound.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\bound.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="BSEARCH.H">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\BSEARCH.H">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="bsurface.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\bsurface.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="BUFF.H">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\BUFF.H">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="bufffile.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\bufffile.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="CallbackHook.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\CallbackHook.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="chunkio.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\chunkio.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="Convert.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\Convert.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="cpudetect.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\cpudetect.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="CRC.H">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\CRC.H">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="cstraw.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\cstraw.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="data.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\data.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="dsurface.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\dsurface.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="ffactory.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\ffactory.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="FONT.H">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\FONT.H">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="gcd_lcm.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\gcd_lcm.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="growmix.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\growmix.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="hash.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\hash.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="hashcalc.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\hashcalc.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="HASHLIST.H">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\HASHLIST.H">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="hashtemplate.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\hashtemplate.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="IFF.H">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\IFF.H">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="INDEX.H">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\INDEX.H">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="INI.H">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\INI.H">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="inisup.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\inisup.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="INT.H">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\INT.H">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="iostruct.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\iostruct.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="keyboard.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\keyboard.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="LaunchWeb.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\LaunchWeb.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="LCW.H">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\LCW.H">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="LISTNODE.H">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\LISTNODE.H">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="mempool.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\mempool.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="mixfile.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\mixfile.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="MONO.H">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\MONO.H">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="MONODRVR.H">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\MONODRVR.H">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="MPMATH.H">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\MPMATH.H">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="MPU.H">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\MPU.H">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="msgloop.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\msgloop.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="multilist.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\multilist.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="mutex.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\mutex.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="Notify.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\Notify.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="nstrdup.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\nstrdup.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="ntree.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\ntree.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="PALETTE.H">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\PALETTE.H">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="pcx.H">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\pcx.H">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="PIPE.H">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\PIPE.H">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="PK.H">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\PK.H">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="Point.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\Point.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="RAMFILE.H">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\RAMFILE.H">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="RANDOM.H">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\RANDOM.H">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="RAWFILE.H">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\RAWFILE.H">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="rc4.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\rc4.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="rcfile.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\rcfile.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="readline.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\readline.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="realcrc.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\realcrc.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="ref_ptr.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\ref_ptr.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="refcount.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\refcount.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="registry.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\registry.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="RGB.H">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\RGB.H">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="RLE.H">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\RLE.H">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="RNDSTRAW.H">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\RNDSTRAW.H">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="rndstrng.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\rndstrng.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="rng.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\rng.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="rsacrypt.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\rsacrypt.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="sampler.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\sampler.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="sha.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\sha.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="shapeset.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\shapeset.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="sharebuf.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\sharebuf.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="Signaler.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\Signaler.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="simplevec.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\simplevec.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="SLIST.H">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\SLIST.H">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="SLNODE.H">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\SLNODE.H">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="srandom.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\srandom.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="stl.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\stl.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="STRAW.H">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\STRAW.H">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="strtok_r.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\strtok_r.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="Surface.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\Surface.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="surfrect.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\surfrect.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="systimer.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\systimer.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="TagBlock.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\TagBlock.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="TARGA.H">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\TARGA.H">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="textfile.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\textfile.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="thread.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\thread.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="timer.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\timer.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="trackwin.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\trackwin.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="trect.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\trect.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="trim.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\trim.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="uarray.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\uarray.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="Vector.H">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\Vector.H">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="verchk.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\verchk.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="visualc.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\visualc.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="WATCOM.H">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\WATCOM.H">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="widestring.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\widestring.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="win.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\win.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="WWCOMUtil.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\WWCOMUtil.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="WWFILE.H">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\WWFILE.H">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="wwstring.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\wwstring.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="xmouse.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\xmouse.h">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="XPIPE.H">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\XPIPE.H">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="XSTRAW.H">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\XSTRAW.H">
       <Filter>Includes</Filter>
     </ClInclude>
-    <ClInclude Include="xsurface.h">
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWLib\xsurface.h">
       <Filter>Includes</Filter>
     </ClInclude>
   </ItemGroup>

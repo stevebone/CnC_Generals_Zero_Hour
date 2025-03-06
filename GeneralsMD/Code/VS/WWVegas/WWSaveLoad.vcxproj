@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <ProjectGuid>{86908043-4887-4A76-8DA4-3350E9932E32}</ProjectGuid>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>17.0.35707.178</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>..\..\..\Run\Debug\WWSaveLoad\</OutDir>
+    <IntDir>..\..\..\Run\Debug\WWSaveLoad\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>..\..\..\Run\Release\WWSaveLoad\</OutDir>
+    <IntDir>..\..\..\Run\Release\WWSaveLoad\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <AdditionalIncludeDirectories>..\..\Src\Lib\WWVegas\WWLib;..\..\Src\Lib\WWVegas\WWDebug;..\..\Src\Lib\WWVegas\WWMath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>__PLACEMENT_VEC_NEW_INLINE;_DEBUG;WINVER=0x400;_WINDOWS;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeaderOutputFile>..\..\..\Run\Debug\WWSaveLoad/WWSaveLoad.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>..\..\..\Run\Debug\WWSaveLoad/</AssemblerListingLocation>
+      <ObjectFileName>..\..\..\Run\Debug\WWSaveLoad/</ObjectFileName>
+      <ProgramDataBaseFileName>..\..\..\Run\Debug\WWSaveLoad/</ProgramDataBaseFileName>
+      <BrowseInformation>true</BrowseInformation>
+      <BrowseInformationFile>..\..\..\Run\Debug\WWSaveLoad/</BrowseInformationFile>
+      <WarningLevel>Level3</WarningLevel>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+    </ResourceCompile>
+    <Lib>
+      <OutputFile>..\..\..\Run\Debug\WWSaveLoad\WWSaveLoadD.lib</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>..\..\..\Run\Debug\WWSaveLoad/WWSaveLoad.bsc</OutputFile>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <AdditionalIncludeDirectories>..\..\Src\Lib\WWVegas\WWLib;..\..\Src\Lib\WWVegas\WWDebug;..\..\Src\Lib\WWVegas\WWMath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>__PLACEMENT_VEC_NEW_INLINE;WINVER=0x400;_WINDOWS;NDEBUG;WIN32;IG_DEBUG_STACKTRACE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeaderOutputFile>..\..\..\Run\Release\WWSaveLoad/WWSaveLoad.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>..\..\..\Run\Release\WWSaveLoad/</AssemblerListingLocation>
+      <ObjectFileName>..\..\..\Run\Release\WWSaveLoad/</ObjectFileName>
+      <ProgramDataBaseFileName>..\..\..\Run\Release\WWSaveLoad/</ProgramDataBaseFileName>
+      <BrowseInformation>true</BrowseInformation>
+      <BrowseInformationFile>..\..\..\Run\Release\WWSaveLoad/</BrowseInformationFile>
+      <WarningLevel>Level3</WarningLevel>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </ClCompile>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+    </ResourceCompile>
+    <Lib>
+      <OutputFile>..\..\..\Run\Release\WWSaveLoad\WWSaveLoad.lib</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>..\..\..\Run\Release\WWSaveLoad/WWSaveLoad.bsc</OutputFile>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWSaveLoad\definition.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWSaveLoad\definitionfactory.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWSaveLoad\definitionfactorymgr.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWSaveLoad\definitionmgr.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWSaveLoad\parameter.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWSaveLoad\persistfactory.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWSaveLoad\pointerremap.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWSaveLoad\saveload.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWSaveLoad\saveloadstatus.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWSaveLoad\saveloadsubsystem.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWSaveLoad\twiddler.cpp" />
+    <ClCompile Include="..\..\Src\Lib\WWVegas\WWSaveLoad\wwsaveload.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWSaveLoad\definition.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWSaveLoad\definitionclassids.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWSaveLoad\definitionfactory.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWSaveLoad\definitionfactorymgr.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWSaveLoad\definitionmgr.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWSaveLoad\editable.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWSaveLoad\parameter.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWSaveLoad\parameterlist.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWSaveLoad\parametertypes.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWSaveLoad\persist.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWSaveLoad\persistfactory.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWSaveLoad\pointerremap.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWSaveLoad\postloadable.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWSaveLoad\saveload.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWSaveLoad\saveloadids.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWSaveLoad\saveloadstatus.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWSaveLoad\saveloadsubsystem.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWSaveLoad\simpledefinitionfactory.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWSaveLoad\simpleparameter.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWSaveLoad\twiddler.h" />
+    <ClInclude Include="..\..\Src\Lib\WWVegas\WWSaveLoad\wwsaveload.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
