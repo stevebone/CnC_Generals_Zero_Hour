@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <ProjectGuid>{72A36DC7-8FE2-439A-A503-F220901CC311}</ProjectGuid>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Internal|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>17.0.35707.178</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>..\..\Run\Release\Compression\</OutDir>
+    <IntDir>..\..\Run\Release\Compression\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>..\..\Run\Debug\Compression\</OutDir>
+    <IntDir>..\..\Run\Debug\Compression\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/Zc:forScope- %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <AdditionalIncludeDirectories>F:\Github\CnC_Generals_Zero_Hour_stevebone\GeneralsMD\Code\Src\Lib\Include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeaderOutputFile>..\..\Run\Release\Compression/Compression.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>..\..\Run\Release\Compression/</AssemblerListingLocation>
+      <ObjectFileName>..\..\Run\Release\Compression/</ObjectFileName>
+      <ProgramDataBaseFileName>..\..\Run\Release\Compression/</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+    </ResourceCompile>
+    <Lib>
+      <OutputFile>..\..\Run\Release\Compression\Compression.lib</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>..\..\Run\Release\Compression/Compression.bsc</OutputFile>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/Zc:forScope- %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeaderOutputFile>..\..\Run\Debug\Compression/Compression.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>..\..\Run\Debug\Compression/</AssemblerListingLocation>
+      <ObjectFileName>..\..\Run\Debug\Compression/</ObjectFileName>
+      <ProgramDataBaseFileName>..\..\Run\Debug\Compression/</ProgramDataBaseFileName>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level3</WarningLevel>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+    </ResourceCompile>
+    <Lib>
+      <OutputFile>..\..\Run\Debug\Compression\CompressionD.lib</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>..\..\Run\Debug\Compression/Compression.bsc</OutputFile>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Src\Lib\Compression\CompressionManager.cpp" />
+    <ClCompile Include="..\Src\Lib\Compression\EAC\btreeabout.cpp" />
+    <ClCompile Include="..\Src\Lib\Compression\EAC\btreedecode.cpp" />
+    <ClCompile Include="..\Src\Lib\Compression\EAC\btreeencode.cpp" />
+    <ClCompile Include="..\Src\Lib\Compression\EAC\huffabout.cpp" />
+    <ClCompile Include="..\Src\Lib\Compression\EAC\huffdecode.cpp" />
+    <ClCompile Include="..\Src\Lib\Compression\EAC\huffencode.cpp" />
+    <ClCompile Include="..\Src\Lib\Compression\EAC\refabout.cpp" />
+    <ClCompile Include="..\Src\Lib\Compression\EAC\refdecode.cpp" />
+    <ClCompile Include="..\Src\Lib\Compression\EAC\refencode.cpp" />
+    <ClCompile Include="..\Src\Lib\Compression\LZHCompress\CompLibSource\Huff.cpp" />
+    <ClCompile Include="..\Src\Lib\Compression\LZHCompress\CompLibSource\Lz.cpp" />
+    <ClCompile Include="..\Src\Lib\Compression\LZHCompress\CompLibSource\Lzhl.cpp" />
+    <ClCompile Include="..\Src\Lib\Compression\LZHCompress\CompLibSource\Lzhl_tcp.cpp" />
+    <ClCompile Include="..\Src\Lib\Compression\LZHCompress\NoxCompress.cpp" />
+    <ClCompile Include="..\Src\Lib\Compression\ZLib\adler32.c" />
+    <ClCompile Include="..\Src\Lib\Compression\ZLib\compress.c" />
+    <ClCompile Include="..\Src\Lib\Compression\ZLib\crc32.c" />
+    <ClCompile Include="..\Src\Lib\Compression\ZLib\deflate.c" />
+    <ClCompile Include="..\Src\Lib\Compression\ZLib\gzio.c" />
+    <ClCompile Include="..\Src\Lib\Compression\ZLib\infblock.c" />
+    <ClCompile Include="..\Src\Lib\Compression\ZLib\infcodes.c" />
+    <ClCompile Include="..\Src\Lib\Compression\ZLib\inffast.c" />
+    <ClCompile Include="..\Src\Lib\Compression\ZLib\inflate.c" />
+    <ClCompile Include="..\Src\Lib\Compression\ZLib\inftrees.c" />
+    <ClCompile Include="..\Src\Lib\Compression\ZLib\infutil.c" />
+    <ClCompile Include="..\Src\Lib\Compression\ZLib\maketree.c" />
+    <ClCompile Include="..\Src\Lib\Compression\ZLib\trees.c" />
+    <ClCompile Include="..\Src\Lib\Compression\ZLib\uncompr.c" />
+    <ClCompile Include="..\Src\Lib\Compression\ZLib\zutil.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Src\Lib\Compression\LZHCompress\CompLibSource\Hdec_g.tbl" />
+    <None Include="..\Src\Lib\Compression\LZHCompress\CompLibSource\Hdec_s.tbl" />
+    <None Include="..\Src\Lib\Compression\LZHCompress\CompLibSource\Hdisp.tbl" />
+    <None Include="..\Src\Lib\Compression\LZHCompress\CompLibSource\Henc.tbl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Src\Lib\Compression\Compression.h" />
+    <ClCompile Include="..\Src\Lib\Compression\EAC\btreecodex.h" />
+    <ClCompile Include="..\Src\Lib\Compression\EAC\codex.h" />
+    <ClCompile Include="..\Src\Lib\Compression\EAC\gimex.h" />
+    <ClCompile Include="..\Src\Lib\Compression\EAC\huffcodex.h" />
+    <ClCompile Include="..\Src\Lib\Compression\EAC\refcodex.h" />
+    <ClCompile Include="..\Src\Lib\Compression\LZHCompress\CompLibHeader\Lzhl.h" />
+    <ClCompile Include="..\Src\Lib\Compression\LZHCompress\CompLibHeader\Lzhl_tcp.h" />
+    <ClCompile Include="..\Src\Lib\Compression\LZHCompress\CompLibHeader\_huff.h" />
+    <ClCompile Include="..\Src\Lib\Compression\LZHCompress\CompLibHeader\_lz.h" />
+    <ClCompile Include="..\Src\Lib\Compression\LZHCompress\CompLibHeader\_lzhl.h" />
+    <ClCompile Include="..\Src\Lib\Compression\LZHCompress\NoxCompress.h" />
+    <ClCompile Include="..\Src\Lib\Compression\ZLib\deflate.h" />
+    <ClCompile Include="..\Src\Lib\Compression\ZLib\infblock.h" />
+    <ClCompile Include="..\Src\Lib\Compression\ZLib\infcodes.h" />
+    <ClCompile Include="..\Src\Lib\Compression\ZLib\inffast.h" />
+    <ClCompile Include="..\Src\Lib\Compression\ZLib\inffixed.h" />
+    <ClCompile Include="..\Src\Lib\Compression\ZLib\inftrees.h" />
+    <ClCompile Include="..\Src\Lib\Compression\ZLib\infutil.h" />
+    <ClCompile Include="..\Src\Lib\Compression\ZLib\trees.h" />
+    <ClCompile Include="..\Src\Lib\Compression\ZLib\zconf.h" />
+    <ClCompile Include="..\Src\Lib\Compression\ZLib\zlib.h" />
+    <ClCompile Include="..\Src\Lib\Compression\ZLib\zutil.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
